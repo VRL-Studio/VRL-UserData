@@ -23,7 +23,7 @@ import java.io.Serializable;
  * @author night
  */
 @ObjectInfo(name="TwoBodyProblem")
-@ComponentInfo(name = "TwoBodyProblem", category = "BasicMath")
+@ComponentInfo(name = "TwoBodyProblem", category = "BasicMath/Procedure")
 public class TwoBodyProblem implements Function, Serializable {
 
     private static final long serialVersionUID=1;

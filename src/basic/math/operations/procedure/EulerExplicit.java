@@ -20,7 +20,7 @@ import java.io.Serializable;
  * @author night
  */
 @ObjectInfo(name="ExplicitEuler")
-@ComponentInfo(name = "EulerExplicit", category = "BasicMath")
+@ComponentInfo(name = "EulerExplicit", category = "BasicMath/Procedure")
 public class EulerExplicit implements Serializable {
 
     private static final long serialVersionUID=1;

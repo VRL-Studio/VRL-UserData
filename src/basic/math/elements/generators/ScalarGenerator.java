@@ -20,7 +20,7 @@ import java.io.Serializable;
  * @author night
  */
 @ObjectInfo(name = "Scalar Generator")
-@ComponentInfo(name = "ScalarGenerator", category = "BasicMath")
+@ComponentInfo(name = "ScalarGenerator", category = "BasicMath/ElementGenerator")
 public class ScalarGenerator extends ElementGenerator implements Serializable {
 
     private static final long serialVersionUID = 1;

@@ -24,7 +24,7 @@ import eu.mihosoft.vrl.annotation.ObjectInfo;
  * @author Night
  */
 @ObjectInfo(name = "VisualTensor")
-//@ComponentInfo(name = "VisualTensor", category = "BasicMath")
+@ComponentInfo(name = "VisualTensor", category = "BasicMath/VisualElement")
 public class VisualTensor extends VisualElement implements VisualTensorInterface {
 
     private static final long serialVersionUID = 1;

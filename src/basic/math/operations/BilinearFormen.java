@@ -35,7 +35,7 @@ import eu.mihosoft.vrl.visual.Connector;
  * @author night
  */
 @ObjectInfo(name = "Bilinearform")
-@ComponentInfo(name = "Bilinearform", category = "BasicMath")
+@ComponentInfo(name = "Bilinearform", category = "BasicMath/Operations")
 public class BilinearFormen extends ThreeParameterOperationAbstractBase {
 
     protected transient VisualCanvas mainCanvas;

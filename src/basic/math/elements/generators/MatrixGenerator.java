@@ -20,7 +20,7 @@ import java.io.Serializable;
  * @author night
  */
 @ObjectInfo(name = "Matrix Generater")
-@ComponentInfo(name = "MatrixGenerator", category = "BasicMath")
+@ComponentInfo(name = "MatrixGenerator", category = "BasicMath/ElementGenerator")
 public class MatrixGenerator extends ElementGenerator implements Serializable {
 
     private static final long serialVersionUID = 1;

@@ -9,42 +9,15 @@ import basic.math.elements.generators.ScalarGenerator;
 import basic.math.elements.generators.TensorGenerator;
 import basic.math.elements.generators.VectorGenerator;
 import basic.math.helpers.ElementContainer;
-import basic.math.operations.BilinearFormen;
-import basic.math.operations.CrossProduct;
-import basic.math.operations.GeometryTransformation;
-import basic.math.operations.MatrixVectorMultiplication;
-import basic.math.operations.Norm;
+import basic.math.operations.*;
 import basic.math.operations.conception.AddOperation;
-import basic.math.operations.procedure.EulerExplicit;
-import basic.math.operations.procedure.FunctionType;
-import basic.math.operations.procedure.Heun;
-import basic.math.operations.procedure.Plotter;
-import basic.math.operations.procedure.TrajectoryArrayType;
-import basic.math.operations.procedure.TrajectoryType;
-import basic.math.operations.procedure.TwoBodyProblem;
-import basic.math.types.ClassSelectionType;
-import basic.math.types.MathMLType;
-import basic.math.types.ParametersOperationSelectionType;
-import basic.math.types.VisualElementArrayType;
-import basic.math.types.VisualElementType;
-import basic.math.types.VisualMatrixType;
-import basic.math.types.VisualScalarType;
-import basic.math.types.VisualTensorType;
-import basic.math.types.VisualVectorArrayType;
-import basic.math.types.VisualVectorType;
-import basic.math.types.intArrayType;
+import basic.math.operations.procedure.*;
+import basic.math.types.*;
 import basic.math.ug.equation.tools.LivePlotter;
 import basic.math.ug.equation.tools.PickPlotter;
 import basic.math.ug.equation.tools.SolutionPlotter;
 import basic.math.ug.equation.tools.UGInput;
-import basic.math.ug.skin.SkinGeometryPlotter;
-import basic.math.ug.skin.SkinModel;
-import basic.math.ug.skin.SkinModelExecuteWindow;
-import basic.math.ug.skin.SkinModelGeometryWindow;
-import basic.math.ug.skin.SkinModelGeometryWindowSimpler;
-import basic.math.ug.skin.SkinModelOutputWindow;
-import basic.math.ug.skin.SkinModelRefinementWindow;
-import basic.math.ug.skin.SkinModelSpecificParametersWindow;
+import basic.math.ug.skin.*;
 import eu.mihosoft.vrl.system.*;
 import eu.mihosoft.vrl.types.FileListType;
 
@@ -66,7 +39,10 @@ public class BasicMathPluginConfigurator extends VPluginConfigurator {
         setDescription("VRL Plugin for UG4-UserData visualisation.");
 
         // specify dependencies
-//         addDependency(new PluginDependency("VRL", "0.4", "0.4"));
+         addDependency(new PluginDependency("VRL", "0.4", "0.4"));
+
+        // specify dependencies
+         addDependency(new PluginDependency("VRL-UG4", "0.2", "0.2"));
     }
 
     @Override
@@ -75,9 +51,6 @@ public class BasicMathPluginConfigurator extends VPluginConfigurator {
         // this plugin only works if reflection is supported
         if (api instanceof VPluginAPI) {
             VPluginAPI vapi = (VPluginAPI) api;
-
-            
-            
 
              //
             /// TYPES 
@@ -126,8 +99,6 @@ public class BasicMathPluginConfigurator extends VPluginConfigurator {
             vapi.addTypeRepresentation(new basic.math.ug.types.SkinModelRefinementType());
             vapi.addTypeRepresentation(new basic.math.ug.types.LgmCeckingForNgFileType());
             vapi.addTypeRepresentation(new basic.math.ug.types.LgmFileType());
-
-
 
 
              //

@@ -21,7 +21,7 @@ import java.io.Serializable;
  * @author night
  */
 @ObjectInfo(name = "Heun")
-@ComponentInfo(name = "Heun", category = "BasicMath")
+@ComponentInfo(name = "Heun", category = "BasicMath/Procedure")
 public class Heun implements Serializable {
 
     private static final long serialVersionUID = 1;

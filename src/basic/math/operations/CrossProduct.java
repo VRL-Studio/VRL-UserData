@@ -27,7 +27,7 @@ import java.io.Serializable;
  * @author night
  */
 @ObjectInfo(name = "Crossproduct")
-@ComponentInfo(name = "CrossProduct", category = "BasicMath")
+@ComponentInfo(name = "CrossProduct", category = "BasicMath/Operations")
 public class CrossProduct implements Serializable {
 
     private static final long serialVersionUID = 1;

@@ -21,7 +21,7 @@ import java.io.Serializable;
  * @author night
  */
 @ObjectInfo(name = "Vector Generater")
-@ComponentInfo(name = "VectorGenerator", category = "BasicMath")
+@ComponentInfo(name = "VectorGenerator", category = "BasicMath/ElementGenerator")
 public class VectorGenerator extends ElementGenerator implements Serializable {
 
     private static final long serialVersionUID = 1;

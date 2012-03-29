@@ -21,7 +21,7 @@ import java.io.Serializable;
  * @author night
  */
 @ObjectInfo(name = "Tensor Generater")
-@ComponentInfo(name = "TensorGenerator", category = "BasicMath")
+@ComponentInfo(name = "TensorGenerator", category = "BasicMath/ElementGenerator")
 public class TensorGenerator extends ElementGenerator implements Serializable {
 
     private static final long serialVersionUID = 1;

@@ -30,7 +30,7 @@ import eu.mihosoft.vrl.annotation.ObjectInfo;
  * @author Night
  */
 @ObjectInfo(name = "VisualScalar")
-//@ComponentInfo(name = "VisualScalar", category = "BasicMath")
+@ComponentInfo(name = "VisualScalar", category = "BasicMath/VisualElement")
 public class VisualScalar extends VisualElement implements VisualScalarInterface {
 
     private static final long serialVersionUID = 1;

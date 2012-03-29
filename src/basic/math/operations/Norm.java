@@ -24,7 +24,7 @@ import eu.mihosoft.vrl.visual.Canvas;
  * @author night
  */
 @ObjectInfo(name = "Norm")
-@ComponentInfo(name = "Norm", category = "BasicMath")
+@ComponentInfo(name = "Norm", category = "BasicMath/Operations")
 public class Norm extends BilinearFormen {
 
     private static final long serialVersionUID = 1;

@@ -37,7 +37,7 @@ import javax.media.j3d.Shape3D;
  * @author night
  */
 @ObjectInfo(name="LivePlotter")
-@ComponentInfo(name = "LivePlotter", category = "BasicMath")
+@ComponentInfo(name = "LivePlotter", category = "BasicMath/Tools")
 public class LivePlotter implements Serializable {
 
     private static final long serialVersionUID = 1;

@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * @author night
  */
 @ObjectInfo(name = "Plotter")
-@ComponentInfo(name = "Plotter", category = "BasicMath")
+@ComponentInfo(name = "Plotter", category = "BasicMath/Procedure")
 public class Plotter implements Serializable {
 
     private static final long serialVersionUID = 2854798159077944571L;

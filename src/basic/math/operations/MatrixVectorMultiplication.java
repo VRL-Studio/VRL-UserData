@@ -24,7 +24,7 @@ import eu.mihosoft.vrl.annotation.ParamInfo;
  * @author night
  */
 @ObjectInfo(name = "MatrixVectorMultiplication")
-@ComponentInfo(name = "MatrixVectorMultiplication", category = "BasicMath")
+@ComponentInfo(name = "MatrixVectorMultiplication", category = "BasicMath/Operations")
 public class MatrixVectorMultiplication extends TwoParameterOperationAbstractBase {
 
     private static final long serialVersionUID = 1;

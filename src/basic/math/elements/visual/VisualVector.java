@@ -14,6 +14,7 @@ import basic.math.elements.interfaces.MatrixInterface;
 import basic.math.elements.interfaces.TensorInterface;
 import basic.math.elements.interfaces.VectorInterface;
 import basic.math.elements.mappings.Mapping;
+import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.MethodInfo;
 import eu.mihosoft.vrl.annotation.ObjectInfo;
 
@@ -27,7 +28,7 @@ import eu.mihosoft.vrl.annotation.ObjectInfo;
  * @author Night
  */
 @ObjectInfo(name="VisualVector")
-//@ComponentInfo(name = "VisualVector", category = "BasicMath")
+@ComponentInfo(name = "VisualVector", category = "BasicMath/VisualElement")
 public class VisualVector extends VisualElement implements  VisualVectorInterface {
 
     private static final long serialVersionUID = 1L;

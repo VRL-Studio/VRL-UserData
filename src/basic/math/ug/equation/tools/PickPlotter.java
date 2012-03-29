@@ -41,7 +41,7 @@ import javax.media.j3d.Shape3D;
  * @author night
  */
 @ObjectInfo(name = "PickPlotter")
-@ComponentInfo(name = "PickPlotter", category = "BasicMath")
+@ComponentInfo(name = "PickPlotter", category = "BasicMath/Tools")
 public class PickPlotter implements Serializable {
 
     private static final long serialVersionUID = 1;

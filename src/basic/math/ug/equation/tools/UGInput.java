@@ -33,7 +33,7 @@ import java.util.logging.Logger;
  * @author Night
  */
 @ObjectInfo(name = "UGInput")
-@ComponentInfo(name = "UGInput", category = "BasicMath")
+@ComponentInfo(name = "UGInput", category = "BasicMath/Tools")
 public class UGInput extends ProcessTemplate implements Serializable {
 
     private static final long serialVersionUID = 1;

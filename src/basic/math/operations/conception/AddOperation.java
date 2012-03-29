@@ -40,7 +40,7 @@ import java.io.Serializable;
  * @author night
  */
 @ObjectInfo(name = "AddOperation")
-@ComponentInfo(name = "AddOperation", category = "BasicMath")
+@ComponentInfo(name = "AddOperation", category = "BasicMath/Concept")
 public class AddOperation extends Operation implements Serializable {
 
     private static final long serialVersionUID = 1;

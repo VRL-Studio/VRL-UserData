@@ -30,7 +30,7 @@ import javax.media.j3d.Shape3D;
  * @author night
  */
 @ObjectInfo(name = "SolutionMovPlotter")
-@ComponentInfo(name = "SolutionMovPlotter", category = "BasicMath")
+@ComponentInfo(name = "SolutionMovPlotter", category = "BasicMath/Tools")
 public class SolutionMovPlotter implements Serializable {
 
     private static final long serialVersionUID = 1;

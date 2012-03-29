@@ -28,7 +28,7 @@ import eu.mihosoft.vrl.annotation.ObjectInfo;
  * @author Night
  */
 @ObjectInfo(name = "VisualMatrix")
-//@ComponentInfo(name = "VisualMatrix", category = "BasicMath")
+@ComponentInfo(name = "VisualMatrix", category = "BasicMath/VisualElement")
 public class VisualMatrix extends VisualElement implements VisualMatrixInterface {
 
     private static final long serialVersionUID = 1;

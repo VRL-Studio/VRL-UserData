@@ -36,7 +36,7 @@ import javax.vecmath.Point3f;
  * @author night
  */
 @ObjectInfo(name = "GeometryTransformation")
-@ComponentInfo(name = "GeometryTransformation", category = "BasicMath")
+@ComponentInfo(name = "GeometryTransformation", category = "BasicMath/Operations")
 public class GeometryTransformation implements Serializable {
 
     protected transient VisualCanvas mainCanvas;
