@@ -146,7 +146,7 @@ public class VisualTensor extends VisualElement implements VisualTensorInterface
     /**
      * {@inheritDoc}
      */
-    @MethodInfo(callOptions = "autoinvoke", name="getTensor")
+    @MethodInfo(hide = false, callOptions = "autoinvoke", name="getTensor")
     @Override
     public VisualTensorInterface getReferenceAsVisualTensor() {
         return this;

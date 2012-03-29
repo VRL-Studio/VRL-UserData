@@ -176,7 +176,7 @@ public class VisualMatrix extends VisualElement implements VisualMatrixInterface
     /**
      * {@inheritDoc}
      */
-    @MethodInfo(callOptions = "autoinvoke", name="getMatrix")
+    @MethodInfo(hide = false, callOptions = "autoinvoke", name="getMatrix")
     @Override
     public VisualMatrixInterface getReferenceAsVisualMatrix() {
         return this;

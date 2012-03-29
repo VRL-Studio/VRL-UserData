@@ -229,7 +229,7 @@ public class VisualVector extends VisualElement implements  VisualVectorInterfac
     /**
      * {@inheritDoc}
      */
-    @MethodInfo(callOptions = "autoinvoke", name="getVector")
+    @MethodInfo(hide = false, callOptions = "autoinvoke", name="getVector")
     @Override
     public VisualVectorInterface getReferenceAsVisualVector() {
         return this;
