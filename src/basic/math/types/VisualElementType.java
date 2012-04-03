@@ -83,7 +83,8 @@ public class VisualElementType extends MathMLType implements Serializable {
                                 getInputWindow(visualElem, (VisualCanvas) getMainCanvas(), e);
 
                         //add InputWindow to canvas
-                        getMainCanvas().getWindows().add(w);
+                        getMainCanvas().addWindow(w);
+                        
                     }
                 } else if ( visualElem!=null && e.getButton() == MouseEvent.BUTTON3) {
                     //right mouse click
