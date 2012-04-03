@@ -359,17 +359,18 @@ public class PickUniverseCreator implements UniverseCreator {
 
     @Override
     public void setZoomFactor(double d) {
-        throw new UnsupportedOperationException("Not supported yet.");
+//        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public double getZoomFactor() {
         throw new UnsupportedOperationException("Not supported yet.");
+//        return 1.0;
     }
 
     @Override
     public void dispose() {
-        throw new UnsupportedOperationException("Not supported yet.");
+//        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
 
