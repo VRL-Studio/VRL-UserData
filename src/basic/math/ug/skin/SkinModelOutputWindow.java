@@ -6,6 +6,7 @@
 package basic.math.ug.skin;
 
 import basic.math.ug.path.UGVariables;
+import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.ObjectInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
 import java.io.BufferedWriter;
@@ -19,6 +20,7 @@ import java.io.Serializable;
  * @author Night
  */
 @ObjectInfo(name="Skin Output")
+@ComponentInfo(name = "SkinModelOutputWindow", category = "BasicMath/skin")
 public class SkinModelOutputWindow implements Serializable{
     private static final long serialVersionUID = 1L;
 

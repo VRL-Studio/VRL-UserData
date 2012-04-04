@@ -30,10 +30,10 @@ public class BasicMathPluginConfigurator extends VPluginConfigurator {
         public BasicMathPluginConfigurator() {
 
         //specify the plugin name and version
-        setIdentifier(new PluginIdentifier("VRL-UserData", "0.1"));
+        setIdentifier(new PluginIdentifier("BasicMath", "0.1"));
 
         // allow other plugins to use the api of this plugin
-        exportPackage("basic.math.utils");
+        exportPackage("basic.math");
 
         // describe the plugin
         setDescription("VRL Plugin for UG4-UserData visualisation.");
@@ -157,63 +157,3 @@ public class BasicMathPluginConfigurator extends VPluginConfigurator {
 //        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
-/*
-
-
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
-
-package plugin;
-
-import eu.mihosoft.vrl.system.PluginAPI;
-import eu.mihosoft.vrl.system.PluginIdentifier;
-import eu.mihosoft.vrl.system.VPluginAPI;
-import eu.mihosoft.vrl.system.VPluginConfigurator;
-
-
- * VRL PluginConfigurator entweder implements PluginConfigurator interface
- * oder extends VPluginConfigurator
- * @author christianpoliwoda
-
-public class PluginConfigurator extends VPluginConfigurator{
-
-public PluginConfigurator() {
-
-// set plugin name
-setIdentifier(new PluginIdentifier("NativePlugin", "0.1"));
-
-// set dependencies
-//        addDependency(new PluginDependency("UG4", "0.1", "0.2"));
-
-setDescription("Native Library Test (JNI)");
-}
-
-
-
-@Override
-public void register(PluginAPI api) {
-
-// this plugin only works if reflection is supported
-if (api instanceof VPluginAPI) {
-VPluginAPI vapi = (VPluginAPI) api;
-
-vapi.addComponent(NativeComponent.class);
-}
-}
-
-@Override
-public void unregister(PluginAPI api) {
-// not used
-}
-
-@Override
-public void init() {
-// not used
-}
-
-
-
-}
-
-
- */

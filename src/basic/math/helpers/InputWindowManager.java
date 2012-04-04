@@ -81,6 +81,8 @@ public class InputWindowManager implements Serializable {
     public ElementInputWindow getInputWindow(VisualElementInterface visualElement,
             VisualCanvas mainCanvas, MouseEvent event) {
 
+        System.out.println("InputWindowManager.getInputWindow()");
+        
         ElementInputWindow inputWindow = inputWindowMap.get(visualElement);
 
         if (inputWindow == null) {
@@ -116,6 +118,7 @@ public class InputWindowManager implements Serializable {
      * @param element which InputWindow we want to be removed
      */
     public void removeInputWindow(VisualElementInterface element) {
+        System.out.println("InputWindowManager.removeInputWindow()");
 
         if (element != null) {
 
@@ -146,6 +149,8 @@ public class InputWindowManager implements Serializable {
      */
     public void addVisualElementToElementDataMap(ElementInterface dataElement, VisualElementInterface visualElement) {
 
+        System.out.println("InputWindowManager.addVisualElementToElementDataMap()");
+        
         if (dataElement != null) {
 
             ArrayList list = elementDataMap.get(dataElement);
@@ -234,6 +239,8 @@ public class InputWindowManager implements Serializable {
      */
     void updateOtherInputWindowsWithSameDataElement(ElementInterface element, VisualElementInterface visualElement) {
 
+     System.out.println("InputWindowManager.updateOtherInputWindowsWithSameDataElement()");
+        
         for (VisualElementInterface visElem : elementDataMap.get(element)) {
 
             if (!visElem.equals(visualElement)) {

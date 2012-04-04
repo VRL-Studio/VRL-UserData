@@ -5,6 +5,7 @@
 package basic.math.helpers;
 
 import basic.math.elements.interfaces.VisualElementInterface;
+import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.MethodInfo;
 import eu.mihosoft.vrl.annotation.ObjectInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
@@ -29,6 +30,8 @@ import java.io.Serializable;
  * @author night
  */
 @ObjectInfo(name="ElementContainer")
+
+@ComponentInfo(name = "ElementContainer", category = "BasicMath")
 public class ElementContainer implements Serializable {
 
     private static final long serialVersionUID = 1L;

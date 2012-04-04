@@ -5,7 +5,9 @@
 package basic.math.ug.skin;
 
 import basic.math.ug.path.UGVariables;
+import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.MethodInfo;
+import eu.mihosoft.vrl.annotation.ObjectInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
 import eu.mihosoft.vrl.io.ProcessTemplate;
 import eu.mihosoft.vrl.reflection.VisualCanvas;
@@ -26,6 +28,8 @@ import javax.imageio.ImageIO;
  *
  * @author night
  */
+@ObjectInfo(name="SkinGeometryPlotter")
+@ComponentInfo(name = "SkinGeometryPlotter", category = "BasicMath/skin")
 public class SkinGeometryPlotter extends ProcessTemplate {
 
     public SkinGeometryPlotter() {

@@ -6,6 +6,7 @@ package basic.math.ug.skin;
 
 import basic.math.helpers.FileUtils;
 import basic.math.ug.path.UGVariables;
+import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.ObjectInfo;
 import eu.mihosoft.vrl.io.ProcessTemplate;
 import eu.mihosoft.vrl.visual.DefaultViewer;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
  * @author Night
  */
 @ObjectInfo(name = "SkinModel")
+@ComponentInfo(name = "SkinModel", category = "BasicMath/skin")
 public class SkinModel extends ProcessTemplate implements Serializable {
 
     private static final long serialVersionUID = 1;
