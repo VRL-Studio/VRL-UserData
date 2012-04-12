@@ -17,19 +17,19 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
-public class MatrixPane extends JPanel{
+public class VectorPane extends JPanel{
     
     private JTable table;
     private DefaultTableModel dataModel;
     private int dim;
 
-    public MatrixPane(int d) {
+    public VectorPane(int d) {
         dim = d;
         
         setBackground(new Color(0, 0, 0, 0));
         setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        dataModel = new DefaultTableModel(d, d);
+        dataModel = new DefaultTableModel(1, d);
         table = new JTable(getDataModel());
 
         fillWithZero();
@@ -98,6 +98,12 @@ public class MatrixPane extends JPanel{
      */
     public DefaultTableModel getDataModel() {
         return dataModel;
+    }
+    
+    public void setDataModel(DefaultTableModel dataModel) {
+        remove(table);
+        table = new JTable(dataModel);
+        this.dataModel = dataModel;
     }
 
     
