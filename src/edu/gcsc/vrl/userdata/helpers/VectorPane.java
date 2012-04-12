@@ -29,7 +29,7 @@ public class VectorPane extends JPanel{
         setBackground(new Color(0, 0, 0, 0));
         setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        dataModel = new DefaultTableModel(1, d);
+        dataModel = new DefaultTableModel(d, 1);
         table = new JTable(getDataModel());
 
         fillWithZero();

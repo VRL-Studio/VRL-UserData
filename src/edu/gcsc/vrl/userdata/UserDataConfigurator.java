@@ -47,6 +47,7 @@ public class UserDataConfigurator extends VPluginConfigurator {
             //
 
             vapi.addTypeRepresentation(new UserNumberType());
+            vapi.addTypeRepresentation(new UserVectorType());
             
              //
             /// BASICMATH Components

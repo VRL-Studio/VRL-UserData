@@ -9,19 +9,19 @@ package edu.gcsc.vrl.userdata;
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
 public class UserVectorModel extends UserDataModel{
-    private double[] data;
+    private Double[] data;
 
     /**
      * @return the data
      */
-    public double[] getData() {
+    public Double[] getData() {
         return data;
     }
 
     /**
      * @param data the data to set
      */
-    public void setData(double[] data) {
+    public void setData(Double[] data) {
         this.data = data;
     }
 }
