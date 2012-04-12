@@ -21,15 +21,15 @@ public class MatrixPane extends JPanel{
     
     private JTable table;
     private DefaultTableModel datamodel;
-    private Dimensions dim;
+    private int dim;
 
-    public MatrixPane(Dimensions d) {
+    public MatrixPane(int d) {
         dim = d;
         
         setBackground(new Color(0, 0, 0, 0));
         setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        datamodel = new DefaultTableModel(d.ordinal()+1, d.ordinal()+1);
+        datamodel = new DefaultTableModel(d, d);
         table = new JTable(datamodel);
 
         fillWithZero();

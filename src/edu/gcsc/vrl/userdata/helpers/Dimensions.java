@@ -8,10 +8,10 @@ package edu.gcsc.vrl.userdata.helpers;
  *
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
-public enum Dimensions {
+public class Dimensions {
     
-    ONE,
-    TWO,
-    THREE
+    public static final int ONE = 1;
+    public static final int TWO = 2;
+    public static final int THREE = 3;
     
 }

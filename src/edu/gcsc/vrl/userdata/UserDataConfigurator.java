@@ -4,6 +4,7 @@
  */
 package edu.gcsc.vrl.userdata;
 
+import eu.mihosoft.vrl.io.VersionInfo;
 import eu.mihosoft.vrl.system.*;
 
 /**
@@ -24,10 +25,10 @@ public class UserDataConfigurator extends VPluginConfigurator {
         setDescription("VRL Plugin for UG4-UserData visualisation.");
 
         // specify dependencies
-         addDependency(new PluginDependency("VRL", "0.4", "0.4"));
+        addDependency(new PluginDependency("VRL", "0.4", VersionInfo.UNDEFINED));
 
         // specify dependencies
-         addDependency(new PluginDependency("VRL-UG4", "0.2", "0.2"));
+        addDependency(new PluginDependency("VRL-UG4", "0.2", VersionInfo.UNDEFINED));
         
     }
 
@@ -51,8 +52,7 @@ public class UserDataConfigurator extends VPluginConfigurator {
             //
             
             vapi.addComponent(AddUserDataWindow.class);
-            
-            vapi.addComponent(UserDataWindow.class);
+        
         }
     }
 

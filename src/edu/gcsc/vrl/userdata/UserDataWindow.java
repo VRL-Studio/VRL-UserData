@@ -8,18 +8,12 @@ import edu.gcsc.vrl.userdata.helpers.Dimensions;
 import edu.gcsc.vrl.userdata.helpers.MatrixPane;
 import eu.mihosoft.vrl.lang.CompilerProvider;
 import eu.mihosoft.vrl.lang.visual.EditorProvider;
-import eu.mihosoft.vrl.visual.Canvas;
-import eu.mihosoft.vrl.visual.CanvasWindow;
-import eu.mihosoft.vrl.visual.VCodeEditor;
-import eu.mihosoft.vrl.visual.VConstrainedScrollPane;
+import eu.mihosoft.vrl.visual.*;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
-import javax.swing.Box;
-import javax.swing.ButtonGroup;
-import javax.swing.JComboBox;
-import javax.swing.JRadioButton;
+import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
@@ -30,9 +24,11 @@ import javax.swing.border.EmptyBorder;
 public class UserDataWindow extends CanvasWindow implements Serializable {
 
     private static final long serialVersionUID = 1;
-    Box outter = null;
-    MatrixPane matrixPane = null;
-    VCodeEditor editor = null;
+    private transient Box outter = null;
+    private transient MatrixPane matrixPane = null;
+    private transient VCodeEditor editor = null;
+    private transient VContainer editorPane;
+    private transient JComponent parent;
 
     public UserDataWindow(String title, Canvas canvas) {
 
@@ -44,7 +40,7 @@ public class UserDataWindow extends CanvasWindow implements Serializable {
 
     }
 
-    void init() {
+    private void init() {
         outter = Box.createVerticalBox();
         add(outter);
 
@@ -55,7 +51,7 @@ public class UserDataWindow extends CanvasWindow implements Serializable {
         inner1.setBorder(border1);
         outter.add(inner1);
 
-        Dimensions[] dims = {Dimensions.ONE, Dimensions.TWO, Dimensions.THREE};
+        Integer[] dims = {Dimensions.ONE, Dimensions.TWO, Dimensions.THREE};
         final JComboBox dimsCoose = new JComboBox(dims);
 
         inner1.add(dimsCoose);
@@ -82,29 +78,34 @@ public class UserDataWindow extends CanvasWindow implements Serializable {
 
         Dimension prefDim = new Dimension(300, 200);
         Dimension maxDim = new Dimension(300, 200);
-        
+
         editor = EditorProvider.getEditor(CompilerProvider.LANG_GROOVY, this);
-        editor.setVisible(true);
-        
+//        editor.setVisible(true);
+
         editor.setMinimumSize(prefDim);
         editor.setPreferredSize(prefDim);
         editor.setMaximumSize(maxDim);
 
-        
+
         VConstrainedScrollPane vScrollPane = new VConstrainedScrollPane(editor);
         vScrollPane.setVisible(true);
-        
+
         vScrollPane.setMaxHeight(maxDim.height);
         vScrollPane.setMaxWidth(maxDim.width);
 
         vScrollPane.setMinimumSize(prefDim);
         vScrollPane.setPreferredSize(prefDim);
         vScrollPane.setMaximumSize(maxDim);
-
-        inner2.add(vScrollPane);
-
         
         
+
+        editorPane = new VContainer(vScrollPane);
+        
+        editorPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+        inner2.add(editorPane);
+
+        parent = inner2;
 
         //
         /// LISTENER 
@@ -136,13 +137,16 @@ public class UserDataWindow extends CanvasWindow implements Serializable {
                 }
 
                 if (constant.isSelected()) {
-                    matrixPane.setVisible(true);
+//                    matrixPane.setVisible(true);
+                    parent.remove(editorPane);
+                    parent.add(matrixPane);
                 } else {
-                    matrixPane.setVisible(false);
+//                    matrixPane.setVisible(false);
+                    parent.remove(matrixPane);
+                    parent.add(editorPane);
                 }
 
-                inner2.add(matrixPane);
-                updateUI();
+                revalidate();
 
             }
         });
@@ -154,8 +158,9 @@ public class UserDataWindow extends CanvasWindow implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                matrixPane.setVisible(true);
-                editor.setVisible(false);
+                parent.add(matrixPane);
+                parent.remove(editorPane);
+                revalidate();
             }
         });
         constant.doClick();//set as default choosen
@@ -168,9 +173,11 @@ public class UserDataWindow extends CanvasWindow implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                editor.setVisible(true);
-                matrixPane.setVisible(false);
+                parent.remove(matrixPane);
+                parent.add(editorPane);
+                revalidate();
             }
         });
+
     }
 }

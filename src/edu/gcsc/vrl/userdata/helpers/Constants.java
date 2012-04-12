@@ -11,5 +11,5 @@ package edu.gcsc.vrl.userdata.helpers;
 public class Constants {
     
     public static final String PLUGIN_NAME ="VRL-UserData";
-    public static final String CATEGORY ="VRL/"+PLUGIN_NAME;
+    public static final String CATEGORY ="UG4/VRL";
 }

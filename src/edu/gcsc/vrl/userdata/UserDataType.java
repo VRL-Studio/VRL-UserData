@@ -44,7 +44,6 @@ public class UserDataType extends TypeRepresentationBase implements Serializable
                     }
                 } else if ( visualElem!=null && e.getButton() == MouseEvent.BUTTON3) {
                     //right mouse click
-
                     
                 }
             }
