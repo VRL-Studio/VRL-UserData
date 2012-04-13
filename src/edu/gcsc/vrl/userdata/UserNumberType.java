@@ -9,10 +9,14 @@ import edu.gcsc.vrl.ug.UserDataCompiler;
 import edu.gcsc.vrl.ug.api.*;
 import eu.mihosoft.vrl.reflection.RepresentationType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
+import eu.mihosoft.vrl.visual.VButton;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.Serializable;
 import java.util.ArrayList;
+import javax.swing.border.EmptyBorder;
 
 /**
  *
@@ -30,11 +34,38 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
 
         setName("");
 
+        VButton btn = new VButton("edit");
+
+        add(btn);
+
         add(nameLabel);
 
 //        setStyleName("default");
 
         addSupportedRepresentationType(RepresentationType.INPUT);
+
+        btn.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                window = new UserNumberWindow(
+                        UserNumberType.this, "User Data Input", getMainCanvas());
+
+                //add InputWindow to canvas
+                getMainCanvas().addWindow(window);
+
+                if (getCustomData() != null) {
+                    Object o = getCustomData().get(MODEL_KEY);
+
+                    if (o instanceof UserNumberModel) {
+                        UserNumberModel model =
+                                (UserNumberModel) o;
+                        window.setModel(model);
+                    }
+                }
+            }
+        });
 
         addMouseListener(new MouseListener() {
 
@@ -88,9 +119,9 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
     public Object getViewValue() {
 
         Object result = null;
-        
+
         UserNumberModel model = null;
-        
+
         if (window == null && getCustomData() != null) {
             Object o = getCustomData().get(MODEL_KEY);
 
@@ -100,11 +131,11 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
 
             }
         }
-        
-        if (window!=null) {
+
+        if (window != null) {
             model = window.getModel();
         }
-        
+
         try {
             boolean isConst = model.isConstData();
 

@@ -9,10 +9,14 @@ import edu.gcsc.vrl.ug.UserDataCompiler;
 import edu.gcsc.vrl.ug.api.*;
 import eu.mihosoft.vrl.reflection.RepresentationType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
+import eu.mihosoft.vrl.visual.VButton;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.Serializable;
 import java.util.ArrayList;
+import javax.swing.border.EmptyBorder;
 
 /**
  *
@@ -30,58 +34,37 @@ public class UserMatrixType extends TypeRepresentationBase implements Serializab
 
         setName("");
 
+        VButton btn = new VButton("edit");
+
+        add(btn);
+
         add(nameLabel);
 
 //        setStyleName("default");
 
         addSupportedRepresentationType(RepresentationType.INPUT);
 
-        addMouseListener(new MouseListener() {
+        btn.addActionListener(new ActionListener() {
 
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void actionPerformed(ActionEvent e) {
+                window = new UserMatrixWindow(
+                        UserMatrixType.this, "User Data Input", getMainCanvas());
 
-                if (e.getButton() == MouseEvent.BUTTON1) {
+                //add InputWindow to canvas
+                getMainCanvas().addWindow(window);
 
-                    window = new UserMatrixWindow(
-                            UserMatrixType.this, "User Data Input", getMainCanvas());
+                if (getCustomData() != null) {
+                    Object o = getCustomData().get(MODEL_KEY);
 
-                    //add InputWindow to canvas
-                    getMainCanvas().addWindow(window);
-
-                    if (getCustomData() != null) {
-                        Object o = getCustomData().get(MODEL_KEY);
-
-                        if (o instanceof UserMatrixModel) {
-                            UserMatrixModel model =
-                                    (UserMatrixModel) o;
-                            window.setModel(model);
-                        }
+                    if (o instanceof UserMatrixModel) {
+                        UserMatrixModel model =
+                                (UserMatrixModel) o;
+                        window.setModel(model);
                     }
                 }
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                //throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                //throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-//                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-//                throw new UnsupportedOperationException("Not supported yet.");
-            }
         });
-
     }
 
     @Override
