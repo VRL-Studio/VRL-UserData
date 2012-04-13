@@ -51,7 +51,7 @@ public class VectorPane extends JPanel{
     private void fillWithZero() {
         for (int i = 0; i < table.getRowCount(); i++) {
             for (int j = 0; j < table.getColumnCount(); j++) {
-                table.setValueAt(0, i, j);
+                table.setValueAt(0.0, i, j);
             }
         }
     }

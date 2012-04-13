@@ -18,15 +18,15 @@ import java.util.ArrayList;
  *
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
-public class UserVectorType extends TypeRepresentationBase implements Serializable {
+public class UserMatrixType extends TypeRepresentationBase implements Serializable {
 
     private static final long serialVersionUID = 1;
-    private UserVectorWindow window;
-    static final String MODEL_KEY = "UserVectorType:model";
+    private UserMatrixWindow window;
+    static final public String MODEL_KEY = "UserMatrixType:model";
 
-    public UserVectorType() {
+    public UserMatrixType() {
 
-        setType(I_UserVector.class);
+        setType(I_UserMatrix.class);
 
         setName("");
 
@@ -43,8 +43,8 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
 
                 if (e.getButton() == MouseEvent.BUTTON1) {
 
-                    window = new UserVectorWindow(
-                            UserVectorType.this, "User Data Input", getMainCanvas());
+                    window = new UserMatrixWindow(
+                            UserMatrixType.this, "User Data Input", getMainCanvas());
 
                     //add InputWindow to canvas
                     getMainCanvas().addWindow(window);
@@ -52,9 +52,9 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
                     if (getCustomData() != null) {
                         Object o = getCustomData().get(MODEL_KEY);
 
-                        if (o instanceof UserVectorModel) {
-                            UserVectorModel model =
-                                    (UserVectorModel) o;
+                        if (o instanceof UserMatrixModel) {
+                            UserMatrixModel model =
+                                    (UserMatrixModel) o;
                             window.setModel(model);
                         }
                     }
@@ -88,43 +88,43 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
     public Object getViewValue() {
 
         Object result = null;
-        
-        UserVectorModel model = null;
-        
+
+        UserMatrixModel model = null;
+
         if (window == null && getCustomData() != null) {
             Object o = getCustomData().get(MODEL_KEY);
 
-            if (o instanceof UserVectorModel) {
+            if (o instanceof UserMatrixModel) {
                 model =
-                        (UserVectorModel) o;
+                        (UserMatrixModel) o;
 
             }
         }
-        
-        if (window!=null) {
+
+        if (window != null) {
             model = window.getModel();
         }
-        
+
         try {
             boolean isConst = model.isConstData();
 
             if (isConst) {
-               result = arrayToUserVector(model.getData());
+                result = arrayToUserMatrix(model.getData());
             } else {
 
                 switch (model.getDimension()) {
                     case 1:
-                        I_VRLUserVector1d vector1d = new VRLUserVector1d();
+                        I_VRLUserMatrix1d vector1d = new VRLUserMatrix1d();
                         vector1d.data(create1dCode(model.getCode()));
                         result = vector1d;
                         break;
                     case 2:
-                        I_VRLUserVector2d vector2d = new VRLUserVector2d();
+                        I_VRLUserMatrix2d vector2d = new VRLUserMatrix2d();
                         vector2d.data(create2dCode(model.getCode()));
                         result = vector2d;
                         break;
                     case 3:
-                        I_VRLUserVector3d vector3d = new VRLUserVector3d();
+                        I_VRLUserMatrix3d vector3d = new VRLUserMatrix3d();
                         vector3d.data(create3dCode(model.getCode()));
                         result = vector3d;
                         break;
@@ -148,8 +148,8 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
         paramNames.add("t");
         paramNames.add("si");
 
-        code = UserDataCompiler.getUserDataImplCode(code, 1,
-                paramNames, UserData.returnTypes[1]);
+        code = UserDataCompiler.getUserDataImplCode(code, 2,
+                paramNames, UserData.returnTypes[2]);
 
         return code;
     }
@@ -163,8 +163,8 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
         paramNames.add("t");
         paramNames.add("si");
 
-        code = UserDataCompiler.getUserDataImplCode(code, 1,
-                paramNames, UserData.returnTypes[1]);
+        code = UserDataCompiler.getUserDataImplCode(code, 2,
+                paramNames, UserData.returnTypes[2]);
 
         return code;
     }
@@ -179,32 +179,34 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
         paramNames.add("t");
         paramNames.add("si");
 
-        code = UserDataCompiler.getUserDataImplCode(code, 1,
-                paramNames, UserData.returnTypes[1]);
+        code = UserDataCompiler.getUserDataImplCode(code, 2,
+                paramNames, UserData.returnTypes[2]);
 
         return code;
     }
 
-    private static I_ConstUserVector createVector(int dim) {
+    private static I_ConstUserMatrix createMatrix(int dim) {
         if (dim == 1) {
-            return new ConstUserVector1d();
+            return new ConstUserMatrix1d();
         } else if (dim == 2) {
-            return new ConstUserVector2d();
+            return new ConstUserMatrix2d();
         } else if (dim == 3) {
-            return new ConstUserVector3d();
+            return new ConstUserMatrix3d();
         }
 
         return null;
     }
 
-    private static I_ConstUserVector arrayToUserVector(Double[] data) {
+    private static I_ConstUserMatrix arrayToUserMatrix(Double[][] data) {
 
-        I_ConstUserVector result = createVector(data.length);
+        I_ConstUserMatrix result = createMatrix(data.length);
 
-        for (int i = 0; i < data.length; i++) {
-            result.set_entry(i, data[i]);
+        for (int j = 0; j < data.length; j++) {
+            for (int i = 0; i < data[j].length; i++) {
+                result.set_entry(i, j, data[i][j]);
+            }
         }
-        
+
         return result;
     }
 }
