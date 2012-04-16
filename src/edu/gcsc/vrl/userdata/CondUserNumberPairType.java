@@ -139,17 +139,15 @@ public class CondUserNumberPairType extends TypeRepresentationBase implements Se
     @Override
     public Object getValue() {
 
-//        if (value != null && value instanceof I_CondUserNumber) {
-//            value = new CondUserNumberPair("", (I_CondUserNumber)value);
-//        }
-
         return super.getValue();
     }
 
     @Override
     public void setValue(Object o) {
+        
+        // custom convert method (we allow  I_CondUserNumber as input)
         if (o instanceof I_CondUserNumber) {
-            o = new CondUserNumberPair(input.getText(), (I_CondUserNumber) value);
+            o = new CondUserNumberPair(input.getText(), (I_CondUserNumber) o);
         }
 
         super.setValue(o);
