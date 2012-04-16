@@ -51,6 +51,9 @@ public class UserDataConfigurator extends VPluginConfigurator {
             vapi.addTypeRepresentation(new UserMatrixType());
             
             vapi.addTypeRepresentation(new CondUserNumberType());
+            vapi.addTypeRepresentation(new CondUserNumberPairType());
+            vapi.addTypeRepresentation(new CondArrayType());
+            vapi.addTypeRepresentation(new CondPairArrayType());
             
              //
             /// BASICMATH Components
