@@ -72,7 +72,7 @@ public class CondUserNumberType extends TypeRepresentationBase implements Serial
     @Override
     public Object getViewValue() {
 
-        Object result = null;
+        I_CondUserNumber result = null;
 
         UserNumberModel model = null;
 
@@ -112,10 +112,21 @@ public class CondUserNumberType extends TypeRepresentationBase implements Serial
         } catch (Exception ex) {
             //
         }
+        
+        Object finalResult = createFinalUserData(result);
 
-
-        return result;
+        return finalResult;
     }
+    
+    /**
+     * May be used to create the final userdata object such as UserNumberPair.
+     * @param data
+     * @return 
+     */
+    protected Object createFinalUserData(I_CondUserNumber data) {
+        return data;
+    }
+
 
     private String create1dCode(String code) {
 

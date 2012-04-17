@@ -33,12 +33,15 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
         setType(I_UserNumber.class);
 
         setName("");
+        
+        nameLabel.setAlignmentX(LEFT_ALIGNMENT);
+        
+        add(nameLabel);
 
         VButton btn = new VButton("edit");
 
         add(btn);
 
-        add(nameLabel);
 
 //        setStyleName("default");
 
@@ -118,7 +121,7 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
     @Override
     public Object getViewValue() {
 
-        Object result = null;
+        I_UserNumber result = null;
 
         UserNumberModel model = null;
 
@@ -169,7 +172,17 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
             //
         }
 
-        return result;
+        return createFinalUserData(result);
+    }
+
+    /**
+     * May be used to create the final userdata object such as UserNumberPair.
+     *
+     * @param data
+     * @return
+     */
+    protected Object createFinalUserData(I_UserNumber data) {
+        return data;
     }
 
     private String create1dCode(String code) {

@@ -5,33 +5,28 @@
 package edu.gcsc.vrl.userdata;
 
 import edu.gcsc.vrl.ug.api.*;
-import eu.mihosoft.vrl.reflection.RepresentationType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.visual.ConnectionResult;
 import eu.mihosoft.vrl.visual.ConnectionStatus;
-import eu.mihosoft.vrl.visual.VButton;
 import eu.mihosoft.vrl.visual.VTextField;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.Serializable;
 
 /**
  *
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
-public class CondUserNumberPairType extends CondUserNumberType implements Serializable {
+public class UserNumberPairType extends UserNumberType implements Serializable {
 
     private static final long serialVersionUID = 1;
-    private CondUserNumberWindow window;
+    private UserNumberWindow window;
     private VTextField input = new VTextField("");
-    static final String MODEL_KEY = "CondUserType:model";
 
-    public CondUserNumberPairType() {
+    public UserNumberPairType() {
         
         super();
 
-        setType(CondUserNumberPair.class);
+        setType(UserNumberPair.class);
 
         input.setMinimumSize(new Dimension(80, input.getHeight()));
         input.setPreferredSize(new Dimension(80, input.getHeight()));
@@ -40,33 +35,24 @@ public class CondUserNumberPairType extends CondUserNumberType implements Serial
         setInputComponent(input);
 
         add(input);
-
-
-
     }
-    
+
     @Override
-    protected Object createFinalUserData(I_CondUserNumber data) {
-        // additional
-        CondUserNumberPair finalResult =
-                new CondUserNumberPair(
-                input.getText(), (I_CondUserNumber) data);
-        
+    protected Object createFinalUserData(I_UserNumber number) {
+         // additional
+        UserNumberPair finalResult =
+                new UserNumberPair(
+                input.getText(), number);
         return finalResult;
     }
-
-    @Override
-    public Object getValue() {
-
-        return super.getValue();
-    }
+    
 
     @Override
     public void setValue(Object o) {
         
-        // custom convert method (we allow  I_CondUserNumber as input)
-        if (o instanceof I_CondUserNumber) {
-            o = new CondUserNumberPair(input.getText(), (I_CondUserNumber) o);
+        // custom convert method (we allow  I_UserNumber as input)
+        if (o instanceof I_UserNumber) {
+            o = new UserNumberPair(input.getText(), (I_UserNumber) o);
         }
 
         super.setValue(o);
@@ -74,8 +60,8 @@ public class CondUserNumberPairType extends CondUserNumberType implements Serial
 
     @Override
     public void setViewValue(Object o) {
-        if (o instanceof CondUserNumberPair) {
-            CondUserNumberPair pair = (CondUserNumberPair) o;
+        if (o instanceof UserNumberPair) {
+            UserNumberPair pair = (UserNumberPair) o;
             input.setText(pair.getSubset());
         }
     }
@@ -84,10 +70,10 @@ public class CondUserNumberPairType extends CondUserNumberType implements Serial
     public ConnectionResult compatible(TypeRepresentationBase tRep) {
         ConnectionResult result = super.compatible(tRep);
 
-        // we allow connectiosn from I_CondUserNumber as we can convert
-        // regular CondUserNumbers to CondUserNumberPairs
+        // we allow connectiosn from I_UserNumber as we can convert
+        // regular UserNumbers to UserNumberPairs
         if (result.getStatus() != ConnectionStatus.VALID) {
-            if (I_CondUserNumber.class.isAssignableFrom(tRep.getType())) {
+            if (I_UserNumber.class.isAssignableFrom(tRep.getType())) {
                 result = new ConnectionResult(
                         null, ConnectionStatus.VALID);
             }
