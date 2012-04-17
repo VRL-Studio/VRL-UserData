@@ -4,25 +4,25 @@
  */
 package edu.gcsc.vrl.userdata;
 
-import edu.gcsc.vrl.ug.api.I_CondUserNumber;
+import edu.gcsc.vrl.ug.api.I_UserNumber;
 import java.io.Serializable;
 
 /**
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
-public class CondUserNumberPair implements Serializable {
+public class UserNumberPair implements Serializable {
     private static final long serialVersionUID = 1L;
     private String subset;
-    private I_CondUserNumber data;
+    private I_UserNumber data;
 
-    public CondUserNumberPair() {
+    public UserNumberPair() {
         //
     }
 
-    public CondUserNumberPair(String subset, I_CondUserNumber cond) {
+    public UserNumberPair(String subset, I_UserNumber data) {
         this.subset = subset;
-        this.data = cond;
+        this.data = data;
     }
     
 
@@ -43,14 +43,14 @@ public class CondUserNumberPair implements Serializable {
     /**
      * @return the cond
      */
-    public I_CondUserNumber getData() {
+    public I_UserNumber getData() {
         return data;
     }
 
     /**
-     * @param data the cond to set
+     * @param cond the cond to set
      */
-    public void setData(I_CondUserNumber data) {
-        this.data = data;
+    public void setData(I_UserNumber cond) {
+        this.data = cond;
     }
 }

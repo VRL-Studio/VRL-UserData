@@ -22,14 +22,14 @@ public class UserDataConfigurator extends VPluginConfigurator {
         exportPackage("edu.gcsc.vrl.userdata");
 
         // describe the plugin
-        setDescription("VRL Plugin for UG4-UserData visualisation.");
+        setDescription("VRL Plugin for UG4-UserData visualization.");
 
         // specify dependencies
         addDependency(new PluginDependency("VRL", "0.4", VersionInfo.UNDEFINED));
 
         // specify dependencies
         addDependency(new PluginDependency("VRL-UG4", "0.2", VersionInfo.UNDEFINED));
-        addDependency(new PluginDependency("VRL-UG4-API", "0.1", VersionInfo.UNDEFINED));
+        addDependency(new PluginDependency("VRL-UG4-API", "0.2", VersionInfo.UNDEFINED));
         
     }
 
@@ -54,6 +54,18 @@ public class UserDataConfigurator extends VPluginConfigurator {
             vapi.addTypeRepresentation(new CondUserNumberPairType());
             vapi.addTypeRepresentation(new CondArrayType());
             vapi.addTypeRepresentation(new CondPairArrayType());
+            
+            vapi.addTypeRepresentation(new UserNumberPairType());
+            vapi.addTypeRepresentation(new UserNumberPairArrayType());
+            vapi.addTypeRepresentation(new UserNumberArrayType());
+            
+            vapi.addTypeRepresentation(new UserVectorPairType());
+            vapi.addTypeRepresentation(new UserVectorPairArrayType());
+            vapi.addTypeRepresentation(new UserVectorArrayType());
+            
+            vapi.addTypeRepresentation(new UserMatrixPairType());
+            vapi.addTypeRepresentation(new UserMatrixPairArrayType());
+            vapi.addTypeRepresentation(new UserMatrixArrayType());
             
              //
             /// BASICMATH Components

@@ -212,15 +212,15 @@ public class UserMatrixWindow extends CanvasWindow implements Serializable {
 
 
 
-//        addActionListener(new CanvasActionListener() {
-//
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                if (e.getActionCommand().equals(CanvasWindow.CLOSE_ACTION)) {
-//                    updateModel();
-//                }
-//            }
-//        });
+        addActionListener(new CanvasActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getActionCommand().equals(CanvasWindow.CLOSE_ACTION)) {
+                    updateModel();
+                }
+            }
+        });
 
     }
 
