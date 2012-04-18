@@ -172,4 +172,10 @@ public class CondUserNumberType extends TypeRepresentationBase implements Serial
 
         return code;
     }
+    
+    @Override
+    public String getValueAsCode() {
+        // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
+        return "null as " + getType().getName();
+    }
 }
