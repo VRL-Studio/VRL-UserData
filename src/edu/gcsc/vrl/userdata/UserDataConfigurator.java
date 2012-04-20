@@ -4,11 +4,28 @@
  */
 package edu.gcsc.vrl.userdata;
 
+import edu.gcsc.vrl.userdata.types.CondPairArrayType;
+import edu.gcsc.vrl.userdata.types.CondUserNumberPairType;
+import edu.gcsc.vrl.userdata.types.UserMatrixPairArrayType;
+import edu.gcsc.vrl.userdata.types.UserMatrixArrayType;
+import edu.gcsc.vrl.userdata.types.UserMatrixPairType;
+import edu.gcsc.vrl.userdata.types.CondUserNumberType;
+import edu.gcsc.vrl.userdata.types.UserMatrixType;
+import edu.gcsc.vrl.userdata.types.CondArrayType;
+import edu.gcsc.vrl.userdata.types.UserNumberPairArrayType;
+import edu.gcsc.vrl.userdata.types.UserNumberType;
+import edu.gcsc.vrl.userdata.types.UserNumberArrayType;
+import edu.gcsc.vrl.userdata.types.UserVectorPairArrayType;
+import edu.gcsc.vrl.userdata.types.UserVectorType;
+import edu.gcsc.vrl.userdata.types.UserVectorArrayType;
+import edu.gcsc.vrl.userdata.types.UserNumberPairType;
+import edu.gcsc.vrl.userdata.types.UserVectorPairType;
 import eu.mihosoft.vrl.io.VersionInfo;
 import eu.mihosoft.vrl.system.*;
 
 /**
  *
+ * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
 public class UserDataConfigurator extends VPluginConfigurator {

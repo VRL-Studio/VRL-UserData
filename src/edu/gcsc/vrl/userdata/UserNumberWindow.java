@@ -5,8 +5,8 @@
 package edu.gcsc.vrl.userdata;
 
 import edu.gcsc.vrl.userdata.helpers.Dimensions;
-import edu.gcsc.vrl.userdata.helpers.MatrixPane;
 import edu.gcsc.vrl.userdata.helpers.VectorPane;
+import edu.gcsc.vrl.userdata.types.UserNumberType;
 import eu.mihosoft.vrl.lang.CompilerProvider;
 import eu.mihosoft.vrl.lang.visual.EditorProvider;
 import eu.mihosoft.vrl.reflection.CustomParamData;
@@ -25,6 +25,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
+ * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
 public class UserNumberWindow extends CanvasWindow implements Serializable {
@@ -220,7 +221,7 @@ public class UserNumberWindow extends CanvasWindow implements Serializable {
         getModel().setDimension((Integer) dimsCoose.getSelectedItem());
 
         CustomParamData pData = new CustomParamData();
-        pData.put(UserNumberType.MODEL_KEY, getModel());
+        pData.put(UserNumberType.getMODEL_KEY(), getModel());
         tRep.setCustomData(pData);
     }
 

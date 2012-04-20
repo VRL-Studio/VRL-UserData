@@ -4,6 +4,7 @@
  */
 package edu.gcsc.vrl.userdata;
 
+import edu.gcsc.vrl.userdata.types.CondUserNumberType;
 import edu.gcsc.vrl.userdata.helpers.Dimensions;
 import edu.gcsc.vrl.userdata.helpers.VectorPane;
 import eu.mihosoft.vrl.lang.CompilerProvider;
@@ -23,6 +24,7 @@ import javax.swing.border.EmptyBorder;
 
 /**
  *
+ * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
 public class CondUserNumberWindow extends CanvasWindow implements Serializable {
@@ -156,7 +158,7 @@ public class CondUserNumberWindow extends CanvasWindow implements Serializable {
         getModel().setDimension((Integer) dimsCoose.getSelectedItem());
 
         CustomParamData pData = new CustomParamData();
-        pData.put(CondUserNumberType.MODEL_KEY, getModel());
+        pData.put(CondUserNumberType.getMODEL_KEY(), getModel());
         tRep.setCustomData(pData);
     }
 

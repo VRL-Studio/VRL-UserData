@@ -15,6 +15,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
+ * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
 public class VectorPane extends JPanel{

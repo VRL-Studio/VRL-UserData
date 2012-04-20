@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.gcsc.vrl.userdata;
+package edu.gcsc.vrl.userdata.types;
 
 import edu.gcsc.vrl.ug.api.I_CondUserNumber;
 import eu.mihosoft.vrl.types.ArrayBaseType;
@@ -11,10 +11,10 @@ import eu.mihosoft.vrl.types.ArrayBaseType;
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
-public class CondPairArrayType extends ArrayBaseType {
+public class CondArrayType extends ArrayBaseType {
 
-    public CondPairArrayType() {
+    public CondArrayType() {
         setValueName("Array");
-        setType(CondUserNumberPair[].class);
+        setType(I_CondUserNumber[].class);
     }
 }

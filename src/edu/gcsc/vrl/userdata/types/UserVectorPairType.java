@@ -2,9 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.gcsc.vrl.userdata;
+package edu.gcsc.vrl.userdata.types;
 
 import edu.gcsc.vrl.ug.api.*;
+import edu.gcsc.vrl.userdata.UserVectorPair;
+import edu.gcsc.vrl.userdata.UserVectorWindow;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.visual.ConnectionResult;
 import eu.mihosoft.vrl.visual.ConnectionStatus;
@@ -14,19 +16,20 @@ import java.io.Serializable;
 
 /**
  *
+ * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
-public class UserNumberPairType extends UserNumberType implements Serializable {
+public class UserVectorPairType extends UserVectorType implements Serializable {
 
     private static final long serialVersionUID = 1;
-    private UserNumberWindow window;
+    private UserVectorWindow window;
     private VTextField input = new VTextField("");
 
-    public UserNumberPairType() {
+    public UserVectorPairType() {
         
         super();
 
-        setType(UserNumberPair.class);
+        setType(UserVectorPair.class);
 
         input.setMinimumSize(new Dimension(80, input.getHeight()));
         input.setPreferredSize(new Dimension(80, input.getHeight()));
@@ -38,11 +41,11 @@ public class UserNumberPairType extends UserNumberType implements Serializable {
     }
 
     @Override
-    protected Object createFinalUserData(I_UserNumber number) {
+    protected Object createFinalUserData(I_UserVector vector) {
          // additional
-        UserNumberPair finalResult =
-                new UserNumberPair(
-                input.getText(), number);
+        UserVectorPair finalResult =
+                new UserVectorPair(
+                input.getText(), vector);
         return finalResult;
     }
     
@@ -50,9 +53,9 @@ public class UserNumberPairType extends UserNumberType implements Serializable {
     @Override
     public void setValue(Object o) {
         
-        // custom convert method (we allow  I_UserNumber as input)
-        if (o instanceof I_UserNumber) {
-            o = new UserNumberPair(input.getText(), (I_UserNumber) o);
+        // custom convert method (we allow  I_UserVector as input)
+        if (o instanceof I_UserVector) {
+            o = new UserVectorPair(input.getText(), (I_UserVector) o);
         }
 
         super.setValue(o);
@@ -60,8 +63,8 @@ public class UserNumberPairType extends UserNumberType implements Serializable {
 
     @Override
     public void setViewValue(Object o) {
-        if (o instanceof UserNumberPair) {
-            UserNumberPair pair = (UserNumberPair) o;
+        if (o instanceof UserVectorPair) {
+            UserVectorPair pair = (UserVectorPair) o;
             input.setText(pair.getSubset());
         }
     }
@@ -70,10 +73,10 @@ public class UserNumberPairType extends UserNumberType implements Serializable {
     public ConnectionResult compatible(TypeRepresentationBase tRep) {
         ConnectionResult result = super.compatible(tRep);
 
-        // we allow connectiosn from I_UserNumber as we can convert
-        // regular UserNumbers to UserNumberPairs
+        // we allow connectiosn from I_UserVector as we can convert
+        // regular UserVectors to UserVectorPairs
         if (result.getStatus() != ConnectionStatus.VALID) {
-            if (I_UserNumber.class.isAssignableFrom(tRep.getType())) {
+            if (I_UserVector.class.isAssignableFrom(tRep.getType())) {
                 result = new ConnectionResult(
                         null, ConnectionStatus.VALID);
             }

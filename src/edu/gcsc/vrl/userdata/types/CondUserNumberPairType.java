@@ -2,9 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.gcsc.vrl.userdata;
+package edu.gcsc.vrl.userdata.types;
 
 import edu.gcsc.vrl.ug.api.*;
+import edu.gcsc.vrl.userdata.CondUserNumberPair;
+import edu.gcsc.vrl.userdata.CondUserNumberWindow;
 import eu.mihosoft.vrl.reflection.RepresentationType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.visual.ConnectionResult;
@@ -18,6 +20,7 @@ import java.io.Serializable;
 
 /**
  *
+ * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
 public class CondUserNumberPairType extends CondUserNumberType implements Serializable {

@@ -2,11 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.gcsc.vrl.userdata;
+package edu.gcsc.vrl.userdata.types;
 
 import edu.gcsc.vrl.ug.UserData;
 import edu.gcsc.vrl.ug.UserDataCompiler;
 import edu.gcsc.vrl.ug.api.*;
+import edu.gcsc.vrl.userdata.UserMatrixModel;
+import edu.gcsc.vrl.userdata.UserMatrixWindow;
 import eu.mihosoft.vrl.reflection.RepresentationType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.visual.VButton;
@@ -20,6 +22,7 @@ import javax.swing.border.EmptyBorder;
 
 /**
  *
+ * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
 public class UserMatrixType extends TypeRepresentationBase implements Serializable {

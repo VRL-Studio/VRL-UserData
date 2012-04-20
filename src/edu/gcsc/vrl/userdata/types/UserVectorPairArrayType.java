@@ -2,19 +2,19 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.gcsc.vrl.userdata;
+package edu.gcsc.vrl.userdata.types;
 
-import edu.gcsc.vrl.ug.api.I_UserNumber;
+import edu.gcsc.vrl.userdata.UserVectorPair;
 import eu.mihosoft.vrl.types.ArrayBaseType;
 
 /**
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
-public class UserNumberArrayType extends ArrayBaseType {
+public class UserVectorPairArrayType extends ArrayBaseType {
 
-    public UserNumberArrayType() {
+    public UserVectorPairArrayType() {
         setValueName("Array");
-        setType(I_UserNumber[].class);
+        setType(UserVectorPair[].class);
     }
 }

@@ -4,6 +4,7 @@ package edu.gcsc.vrl.userdata;
  * To change this template, choose Tools | Templates and open the template in
  * the editor.
  */
+import edu.gcsc.vrl.userdata.types.UserMatrixType;
 import edu.gcsc.vrl.userdata.*;
 import edu.gcsc.vrl.userdata.helpers.Dimensions;
 import edu.gcsc.vrl.userdata.helpers.MatrixPane;
@@ -26,6 +27,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
+ * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
 public class UserMatrixWindow extends CanvasWindow implements Serializable {

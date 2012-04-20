@@ -6,6 +6,7 @@ package edu.gcsc.vrl.userdata.helpers;
 
 /**
  *
+ * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
 public class Dimensions {

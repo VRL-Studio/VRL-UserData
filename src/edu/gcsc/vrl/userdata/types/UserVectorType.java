@@ -2,31 +2,38 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.gcsc.vrl.userdata;
+package edu.gcsc.vrl.userdata.types;
 
 import edu.gcsc.vrl.ug.UserData;
 import edu.gcsc.vrl.ug.UserDataCompiler;
 import edu.gcsc.vrl.ug.api.*;
+import edu.gcsc.vrl.userdata.UserVectorModel;
+import edu.gcsc.vrl.userdata.UserVectorWindow;
 import eu.mihosoft.vrl.reflection.RepresentationType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.visual.VButton;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.Serializable;
 import java.util.ArrayList;
-import javax.swing.border.EmptyBorder;
 
 /**
  *
+ * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
 public class UserVectorType extends TypeRepresentationBase implements Serializable {
 
     private static final long serialVersionUID = 1;
+
+    /**
+     * @return the MODEL_KEY
+     */
+    public static String getMODEL_KEY() {
+        return MODEL_KEY;
+    }
     private UserVectorWindow window;
-    static final String MODEL_KEY = "UserVectorType:model";
+    private static final String MODEL_KEY = "UserVectorType:model";
 
     public UserVectorType() {
 
@@ -58,7 +65,7 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
                 getMainCanvas().addWindow(window);
 
                 if (getCustomData() != null) {
-                    Object o = getCustomData().get(MODEL_KEY);
+                    Object o = getCustomData().get(getMODEL_KEY());
 
                     if (o instanceof UserVectorModel) {
                         UserVectorModel model =
@@ -78,7 +85,7 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
         UserVectorModel model = null;
 
         if (window == null && getCustomData() != null) {
-            Object o = getCustomData().get(MODEL_KEY);
+            Object o = getCustomData().get(getMODEL_KEY());
 
             if (o instanceof UserVectorModel) {
                 model =

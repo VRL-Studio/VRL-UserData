@@ -2,9 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.gcsc.vrl.userdata;
+package edu.gcsc.vrl.userdata.types;
 
 import edu.gcsc.vrl.ug.api.*;
+import edu.gcsc.vrl.userdata.UserMatrixPair;
+import edu.gcsc.vrl.userdata.UserMatrixWindow;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.visual.ConnectionResult;
 import eu.mihosoft.vrl.visual.ConnectionStatus;
@@ -14,19 +16,20 @@ import java.io.Serializable;
 
 /**
  *
+ * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
-public class UserVectorPairType extends UserVectorType implements Serializable {
+public class UserMatrixPairType extends UserMatrixType implements Serializable {
 
     private static final long serialVersionUID = 1;
-    private UserVectorWindow window;
+    private UserMatrixWindow window;
     private VTextField input = new VTextField("");
 
-    public UserVectorPairType() {
+    public UserMatrixPairType() {
         
         super();
 
-        setType(UserVectorPair.class);
+        setType(UserMatrixPair.class);
 
         input.setMinimumSize(new Dimension(80, input.getHeight()));
         input.setPreferredSize(new Dimension(80, input.getHeight()));
@@ -38,10 +41,10 @@ public class UserVectorPairType extends UserVectorType implements Serializable {
     }
 
     @Override
-    protected Object createFinalUserData(I_UserVector vector) {
+    protected Object createFinalUserData(I_UserMatrix vector) {
          // additional
-        UserVectorPair finalResult =
-                new UserVectorPair(
+        UserMatrixPair finalResult =
+                new UserMatrixPair(
                 input.getText(), vector);
         return finalResult;
     }
@@ -50,9 +53,9 @@ public class UserVectorPairType extends UserVectorType implements Serializable {
     @Override
     public void setValue(Object o) {
         
-        // custom convert method (we allow  I_UserVector as input)
-        if (o instanceof I_UserVector) {
-            o = new UserVectorPair(input.getText(), (I_UserVector) o);
+        // custom convert method (we allow  I_UserMatrix as input)
+        if (o instanceof I_UserMatrix) {
+            o = new UserMatrixPair(input.getText(), (I_UserMatrix) o);
         }
 
         super.setValue(o);
@@ -60,8 +63,8 @@ public class UserVectorPairType extends UserVectorType implements Serializable {
 
     @Override
     public void setViewValue(Object o) {
-        if (o instanceof UserVectorPair) {
-            UserVectorPair pair = (UserVectorPair) o;
+        if (o instanceof UserMatrixPair) {
+            UserMatrixPair pair = (UserMatrixPair) o;
             input.setText(pair.getSubset());
         }
     }
@@ -70,10 +73,10 @@ public class UserVectorPairType extends UserVectorType implements Serializable {
     public ConnectionResult compatible(TypeRepresentationBase tRep) {
         ConnectionResult result = super.compatible(tRep);
 
-        // we allow connectiosn from I_UserVector as we can convert
-        // regular UserVectors to UserVectorPairs
+        // we allow connectiosn from I_UserMatrix as we can convert
+        // regular UserMatrixs to UserMatrixPairs
         if (result.getStatus() != ConnectionStatus.VALID) {
-            if (I_UserVector.class.isAssignableFrom(tRep.getType())) {
+            if (I_UserMatrix.class.isAssignableFrom(tRep.getType())) {
                 result = new ConnectionResult(
                         null, ConnectionStatus.VALID);
             }
