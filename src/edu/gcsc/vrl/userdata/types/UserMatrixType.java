@@ -9,22 +9,20 @@ import edu.gcsc.vrl.ug.UserDataCompiler;
 import edu.gcsc.vrl.ug.api.*;
 import edu.gcsc.vrl.userdata.UserMatrixModel;
 import edu.gcsc.vrl.userdata.UserMatrixWindow;
-import eu.mihosoft.vrl.reflection.RepresentationType;
+import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.visual.VButton;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.Serializable;
 import java.util.ArrayList;
-import javax.swing.border.EmptyBorder;
 
 /**
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
+@TypeInfo(type=I_UserMatrix.class, input=true, output=false, style="default")
 public class UserMatrixType extends TypeRepresentationBase implements Serializable {
 
     private static final long serialVersionUID = 1;
@@ -33,7 +31,7 @@ public class UserMatrixType extends TypeRepresentationBase implements Serializab
 
     public UserMatrixType() {
 
-        setType(I_UserMatrix.class);
+//        setType(I_UserMatrix.class);
 
         setName("");
         
@@ -47,8 +45,7 @@ public class UserMatrixType extends TypeRepresentationBase implements Serializab
 
 
 //        setStyleName("default");
-
-        addSupportedRepresentationType(RepresentationType.INPUT);
+//        addSupportedRepresentationType(RepresentationType.INPUT);
 
         btn.addActionListener(new ActionListener() {
 

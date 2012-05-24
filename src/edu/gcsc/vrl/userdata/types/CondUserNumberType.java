@@ -8,7 +8,7 @@ import edu.gcsc.vrl.ug.CondUserDataCompiler;
 import edu.gcsc.vrl.ug.api.*;
 import edu.gcsc.vrl.userdata.CondUserNumberWindow;
 import edu.gcsc.vrl.userdata.UserNumberModel;
-import eu.mihosoft.vrl.reflection.RepresentationType;
+import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.visual.VButton;
 import java.awt.event.ActionEvent;
@@ -21,6 +21,7 @@ import java.util.ArrayList;
  * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
+@TypeInfo(type=I_CondUserNumber.class, input=true, output=false, style="default")
 public class CondUserNumberType extends TypeRepresentationBase implements Serializable {
 
     private static final long serialVersionUID = 1;
@@ -36,7 +37,7 @@ public class CondUserNumberType extends TypeRepresentationBase implements Serial
 
     public CondUserNumberType() {
 
-        setType(I_CondUserNumber.class);
+//        setType(I_CondUserNumber.class);
 
         setName("");
 
@@ -47,8 +48,7 @@ public class CondUserNumberType extends TypeRepresentationBase implements Serial
         add(nameLabel);
 
 //        setStyleName("default");
-
-        addSupportedRepresentationType(RepresentationType.INPUT);
+//        addSupportedRepresentationType(RepresentationType.INPUT);
 
         btn.addActionListener(new ActionListener() {
 

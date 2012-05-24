@@ -42,7 +42,7 @@ public class UserDataConfigurator extends VPluginConfigurator {
         setDescription("VRL Plugin for UG4-UserData visualization.");
 
         // specify dependencies
-        addDependency(new PluginDependency("VRL", "0.4", VersionInfo.UNDEFINED));
+        addDependency(new PluginDependency("VRL", "0.4.1", VersionInfo.UNDEFINED));
 
         // specify dependencies
         addDependency(new PluginDependency("VRL-UG4", "0.2", VersionInfo.UNDEFINED));
@@ -63,26 +63,26 @@ public class UserDataConfigurator extends VPluginConfigurator {
             /// TYPES 
             //
 
-            vapi.addTypeRepresentation(new UserNumberType());
-            vapi.addTypeRepresentation(new UserVectorType());
-            vapi.addTypeRepresentation(new UserMatrixType());
+            vapi.addTypeRepresentation( UserNumberType.class);
+            vapi.addTypeRepresentation( UserVectorType.class);
+            vapi.addTypeRepresentation( UserMatrixType.class);
             
-            vapi.addTypeRepresentation(new CondUserNumberType());
-            vapi.addTypeRepresentation(new CondUserNumberPairType());
-            vapi.addTypeRepresentation(new CondArrayType());
-            vapi.addTypeRepresentation(new CondPairArrayType());
+            vapi.addTypeRepresentation( CondUserNumberType.class);
+            vapi.addTypeRepresentation( CondUserNumberPairType.class);
+            vapi.addTypeRepresentation( CondArrayType.class);
+            vapi.addTypeRepresentation( CondPairArrayType.class);
             
-            vapi.addTypeRepresentation(new UserNumberPairType());
-            vapi.addTypeRepresentation(new UserNumberPairArrayType());
-            vapi.addTypeRepresentation(new UserNumberArrayType());
+            vapi.addTypeRepresentation( UserNumberPairType.class);
+            vapi.addTypeRepresentation( UserNumberPairArrayType.class);
+            vapi.addTypeRepresentation( UserNumberArrayType.class);
             
-            vapi.addTypeRepresentation(new UserVectorPairType());
-            vapi.addTypeRepresentation(new UserVectorPairArrayType());
-            vapi.addTypeRepresentation(new UserVectorArrayType());
+            vapi.addTypeRepresentation( UserVectorPairType.class);
+            vapi.addTypeRepresentation( UserVectorPairArrayType.class);
+            vapi.addTypeRepresentation( UserVectorArrayType.class);
             
-            vapi.addTypeRepresentation(new UserMatrixPairType());
-            vapi.addTypeRepresentation(new UserMatrixPairArrayType());
-            vapi.addTypeRepresentation(new UserMatrixArrayType());
+            vapi.addTypeRepresentation( UserMatrixPairType.class);
+            vapi.addTypeRepresentation( UserMatrixPairArrayType.class);
+            vapi.addTypeRepresentation( UserMatrixArrayType.class);
             
              //
             /// BASICMATH Components

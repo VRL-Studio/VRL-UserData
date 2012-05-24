@@ -9,7 +9,7 @@ import edu.gcsc.vrl.ug.UserDataCompiler;
 import edu.gcsc.vrl.ug.api.*;
 import edu.gcsc.vrl.userdata.UserVectorModel;
 import edu.gcsc.vrl.userdata.UserVectorWindow;
-import eu.mihosoft.vrl.reflection.RepresentationType;
+import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.visual.VButton;
 import java.awt.event.ActionEvent;
@@ -22,6 +22,7 @@ import java.util.ArrayList;
  * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
+@TypeInfo(type=I_UserVector.class, input=true, output=false, style="default")
 public class UserVectorType extends TypeRepresentationBase implements Serializable {
 
     private static final long serialVersionUID = 1;
@@ -37,7 +38,7 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
 
     public UserVectorType() {
 
-        setType(I_UserVector.class);
+//        setType(I_UserVector.class);
 
         setName("");
         
@@ -51,8 +52,7 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
 
 
 //        setStyleName("default");
-
-        addSupportedRepresentationType(RepresentationType.INPUT);
+//        addSupportedRepresentationType(RepresentationType.INPUT);
 
         btn.addActionListener(new ActionListener() {
 

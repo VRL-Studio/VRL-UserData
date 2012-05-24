@@ -9,6 +9,7 @@ import edu.gcsc.vrl.ug.UserDataCompiler;
 import edu.gcsc.vrl.ug.api.*;
 import edu.gcsc.vrl.userdata.UserNumberModel;
 import edu.gcsc.vrl.userdata.UserNumberWindow;
+import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.reflection.RepresentationType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.visual.VButton;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
  * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
+@TypeInfo(type=I_UserNumber.class, input=true, output=false, style="default")
 public class UserNumberType extends TypeRepresentationBase implements Serializable {
 
     private static final long serialVersionUID = 1;
@@ -39,7 +41,7 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
 
     public UserNumberType() {
 
-        setType(I_UserNumber.class);
+//        setType(I_UserNumber.class);
 
         setName("");
         
@@ -53,8 +55,7 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
 
 
 //        setStyleName("default");
-
-        addSupportedRepresentationType(RepresentationType.INPUT);
+//        addSupportedRepresentationType(RepresentationType.INPUT);
 
         btn.addActionListener(new ActionListener() {
 

@@ -7,6 +7,7 @@ package edu.gcsc.vrl.userdata.types;
 import edu.gcsc.vrl.ug.api.*;
 import edu.gcsc.vrl.userdata.UserNumberPair;
 import edu.gcsc.vrl.userdata.UserNumberWindow;
+import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.visual.ConnectionResult;
 import eu.mihosoft.vrl.visual.ConnectionStatus;
@@ -19,6 +20,7 @@ import java.io.Serializable;
  * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
+@TypeInfo(type=UserNumberPair.class, input=true, output=false, style="default")
 public class UserNumberPairType extends UserNumberType implements Serializable {
 
     private static final long serialVersionUID = 1;
@@ -29,7 +31,7 @@ public class UserNumberPairType extends UserNumberType implements Serializable {
         
         super();
 
-        setType(UserNumberPair.class);
+//        setType(UserNumberPair.class);
 
         input.setMinimumSize(new Dimension(80, input.getHeight()));
         input.setPreferredSize(new Dimension(80, input.getHeight()));
