@@ -4,14 +4,14 @@
  */
 package edu.gcsc.vrl.userdata;
 
-import edu.gcsc.vrl.userdata.types.CondPairArrayType;
+import edu.gcsc.vrl.userdata.types.CondUserNumberPairArrayType;
 import edu.gcsc.vrl.userdata.types.CondUserNumberPairType;
 import edu.gcsc.vrl.userdata.types.UserMatrixPairArrayType;
 import edu.gcsc.vrl.userdata.types.UserMatrixArrayType;
 import edu.gcsc.vrl.userdata.types.UserMatrixPairType;
 import edu.gcsc.vrl.userdata.types.CondUserNumberType;
 import edu.gcsc.vrl.userdata.types.UserMatrixType;
-import edu.gcsc.vrl.userdata.types.CondArrayType;
+import edu.gcsc.vrl.userdata.types.CondUserNumberArrayType;
 import edu.gcsc.vrl.userdata.types.UserNumberPairArrayType;
 import edu.gcsc.vrl.userdata.types.UserNumberType;
 import edu.gcsc.vrl.userdata.types.UserNumberArrayType;
@@ -69,8 +69,8 @@ public class UserDataConfigurator extends VPluginConfigurator {
             
             vapi.addTypeRepresentation( CondUserNumberType.class);
             vapi.addTypeRepresentation( CondUserNumberPairType.class);
-            vapi.addTypeRepresentation( CondArrayType.class);
-            vapi.addTypeRepresentation( CondPairArrayType.class);
+            vapi.addTypeRepresentation( CondUserNumberArrayType.class);
+            vapi.addTypeRepresentation( CondUserNumberPairArrayType.class);
             
             vapi.addTypeRepresentation( UserNumberPairType.class);
             vapi.addTypeRepresentation( UserNumberPairArrayType.class);

@@ -12,7 +12,7 @@ import eu.mihosoft.vrl.types.ArrayBaseType;
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
-@TypeInfo(type=UserVectorPair[].class, input=true, output=false, style="default")
+@TypeInfo(type=UserVectorPair[].class, input=true, output=false, style="array")
 public class UserVectorPairArrayType extends ArrayBaseType {
 
     public UserVectorPairArrayType() {

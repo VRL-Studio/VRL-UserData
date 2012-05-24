@@ -139,14 +139,16 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
             Object o = getCustomData().get(getMODEL_KEY());
 
             if (o instanceof UserNumberModel) {
-                model =
-                        (UserNumberModel) o;
+                model = (UserNumberModel) o;
 
             }
         }
 
         if (window != null) {
             model = window.getModel();
+        }
+        if (model == null) {
+            System.err.println(" >> UserNumberType.getViewValue(): model == null");
         }
 
         try {

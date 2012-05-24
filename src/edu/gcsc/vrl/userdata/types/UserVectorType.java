@@ -88,14 +88,17 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
             Object o = getCustomData().get(getMODEL_KEY());
 
             if (o instanceof UserVectorModel) {
-                model =
-                        (UserVectorModel) o;
+                model = (UserVectorModel) o;
 
             }
         }
 
         if (window != null) {
             model = window.getModel();
+        }
+        
+        if (model == null) {
+            System.err.println(" >> UserVectorType.getViewValue(): model == null");
         }
 
         try {
@@ -126,7 +129,7 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
                 }
             }
         } catch (Exception ex) {
-            ex.printStackTrace(System.err);
+//            ex.printStackTrace(System.err);
         }
 
 

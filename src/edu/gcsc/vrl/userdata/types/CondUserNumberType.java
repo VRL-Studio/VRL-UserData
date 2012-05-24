@@ -94,6 +94,10 @@ public class CondUserNumberType extends TypeRepresentationBase implements Serial
             model = window.getModel();
         }
 
+        if (model == null) {
+            System.err.println(" >> CondUserNumberrType.getViewValue(): model == null");
+        }
+        
         try {
             switch (model.getDimension()) {
                 case 1:

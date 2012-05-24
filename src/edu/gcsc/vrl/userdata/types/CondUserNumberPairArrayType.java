@@ -4,7 +4,7 @@
  */
 package edu.gcsc.vrl.userdata.types;
 
-import edu.gcsc.vrl.ug.api.I_CondUserNumber;
+import edu.gcsc.vrl.userdata.CondUserNumberPair;
 import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.types.ArrayBaseType;
 
@@ -12,11 +12,11 @@ import eu.mihosoft.vrl.types.ArrayBaseType;
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
-@TypeInfo(type=I_CondUserNumber[].class, input=true, output=false, style="default")
-public class CondArrayType extends ArrayBaseType {
+@TypeInfo(type=CondUserNumberPair[].class, input=true, output=false, style="array")
+public class CondUserNumberPairArrayType extends ArrayBaseType {
 
-    public CondArrayType() {
+    public CondUserNumberPairArrayType() {
         setValueName("Array");
-//        setType(I_CondUserNumber[].class);
+//        setType(CondUserNumberPair[].class);
     }
 }

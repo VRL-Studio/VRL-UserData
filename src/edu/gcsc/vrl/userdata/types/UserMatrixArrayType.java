@@ -12,7 +12,7 @@ import eu.mihosoft.vrl.types.ArrayBaseType;
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
-@TypeInfo(type=I_UserMatrix[].class, input=true, output=false, style="default")
+@TypeInfo(type=I_UserMatrix[].class, input=true, output=false, style="array")
 public class UserMatrixArrayType extends ArrayBaseType {
 
     public UserMatrixArrayType() {

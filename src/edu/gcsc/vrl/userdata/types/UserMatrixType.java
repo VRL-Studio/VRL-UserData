@@ -81,14 +81,17 @@ public class UserMatrixType extends TypeRepresentationBase implements Serializab
             Object o = getCustomData().get(MODEL_KEY);
 
             if (o instanceof UserMatrixModel) {
-                model =
-                        (UserMatrixModel) o;
+                model = (UserMatrixModel) o;
 
             }
         }
 
         if (window != null) {
             model = window.getModel();
+        }
+        
+        if (model == null) {
+            System.err.println(" >> UserMatrixType.getViewValue(): model == null");
         }
 
         try {
@@ -119,7 +122,7 @@ public class UserMatrixType extends TypeRepresentationBase implements Serializab
                 }
             }
         } catch (Exception ex) {
-            ex.printStackTrace(System.err);
+//            ex.printStackTrace(System.err);
         }
 
 

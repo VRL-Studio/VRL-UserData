@@ -12,7 +12,7 @@ import eu.mihosoft.vrl.types.ArrayBaseType;
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
-@TypeInfo(type=UserNumberPair[].class, input=true, output=false, style="default")
+@TypeInfo(type=UserNumberPair[].class, input=true, output=false, style="array")
 public class UserNumberPairArrayType extends ArrayBaseType {
 
     public UserNumberPairArrayType() {
