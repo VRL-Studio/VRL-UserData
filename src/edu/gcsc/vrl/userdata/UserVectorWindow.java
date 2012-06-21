@@ -253,6 +253,11 @@ public class UserVectorWindow extends CanvasWindow implements Serializable {
         dimsCoose.setSelectedIndex(model.getDimension() - 1);
 
         DefaultTableModel dataModel = vectorPane.getDataModel();
+        
+        System.out.println("UserVectorWindow.setModel():");
+        System.out.println("dataModel ="+dataModel);
+        System.out.println("model.getData() ="+model.getData());
+        
         arrayToModel(dataModel, model.getData());
 
         editor.getEditor().setText(model.getCode());
