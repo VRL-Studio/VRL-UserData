@@ -55,6 +55,9 @@ public class UserNumberWindow extends CanvasWindow implements Serializable {
     }
 
     private void init() {
+        
+        int startDim = Dimensions.TWO;
+
         outter = Box.createVerticalBox();
         add(outter);
 
@@ -66,7 +69,8 @@ public class UserNumberWindow extends CanvasWindow implements Serializable {
 
         Integer[] dims = {Dimensions.ONE, Dimensions.TWO, Dimensions.THREE};
         dimsCoose = new JComboBox(dims);
-
+        dimsCoose.setSelectedItem(startDim);
+        
         inner1.add(dimsCoose);
 
         constant = new JRadioButton("Constant");
@@ -220,7 +224,10 @@ public class UserNumberWindow extends CanvasWindow implements Serializable {
         }
         getModel().setDimension((Integer) dimsCoose.getSelectedItem());
 
-        CustomParamData pData = new CustomParamData();
+        CustomParamData pData = tRep.getCustomData();
+        if(pData == null)
+            pData = new CustomParamData();
+//        CustomParamData pData = new CustomParamData();
         pData.put(UserNumberType.getMODEL_KEY(), getModel());
         tRep.setCustomData(pData);
     }

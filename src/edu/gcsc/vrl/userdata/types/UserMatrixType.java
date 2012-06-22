@@ -192,7 +192,7 @@ public class UserMatrixType extends TypeRepresentationBase implements Serializab
         } else if (dim == 3) {
             return new ConstUserMatrix3d();
         }
-
+        
         return null;
     }
 
