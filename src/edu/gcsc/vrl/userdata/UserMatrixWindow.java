@@ -57,6 +57,9 @@ public class UserMatrixWindow extends CanvasWindow implements Serializable {
     }
 
     private void init() {
+        
+        int startDim = Dimensions.TWO;
+        
         outter = Box.createVerticalBox();
         add(outter);
 
@@ -68,7 +71,8 @@ public class UserMatrixWindow extends CanvasWindow implements Serializable {
 
         Integer[] dims = {Dimensions.ONE, Dimensions.TWO, Dimensions.THREE};
         dimsCoose = new JComboBox(dims);
-
+        dimsCoose.setSelectedItem(startDim);
+        
         inner1.add(dimsCoose);
 
         constant = new JRadioButton("Constant");
@@ -87,7 +91,7 @@ public class UserMatrixWindow extends CanvasWindow implements Serializable {
         final Box inner2 = Box.createHorizontalBox();
         outter.add(inner2);
 
-        matrixPane = new MatrixPane(Dimensions.ONE);
+        matrixPane = new MatrixPane(startDim);
         inner2.add(matrixPane);
 
         Dimension prefDim = new Dimension(300, 200);
@@ -234,8 +238,11 @@ public class UserMatrixWindow extends CanvasWindow implements Serializable {
         }
         getModel().setDimension((Integer) dimsCoose.getSelectedItem());
 
-        CustomParamData pData = new CustomParamData();
-        pData.put(UserMatrixType.MODEL_KEY, getModel());
+        CustomParamData pData = tRep.getCustomData();
+        if(pData == null)
+            pData = new CustomParamData();
+ //        CustomParamData pData = new CustomParamData();
+       pData.put(UserMatrixType.MODEL_KEY, getModel());
         tRep.setCustomData(pData);
     }
 
