@@ -73,6 +73,13 @@ public class CondUserNumberType extends TypeRepresentationBase implements Serial
         });
 
     }
+    private CondUserNumberWindow getWindow() {
+        if (window == null) {
+            window = new CondUserNumberWindow(
+                    CondUserNumberType.this, "User Data Input", getMainCanvas());
+        }
+        return window;
+    }
 
     @Override
     public Object getViewValue() {
@@ -95,6 +102,9 @@ public class CondUserNumberType extends TypeRepresentationBase implements Serial
         }
 
         if (model == null) {
+            getWindow().updateModel();
+
+            model = getWindow().getModel();
             System.err.println(" >> CondUserNumberrType.getViewValue(): model == null");
         }
         

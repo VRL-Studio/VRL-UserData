@@ -25,7 +25,7 @@ import java.util.ArrayList;
  * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
-@TypeInfo(type=I_UserNumber.class, input=true, output=false, style="default")
+@TypeInfo(type = I_UserNumber.class, input = true, output = false, style = "default")
 public class UserNumberType extends TypeRepresentationBase implements Serializable {
 
     private static final long serialVersionUID = 1;
@@ -44,9 +44,9 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
 //        setType(I_UserNumber.class);
 
         setName("");
-        
+
         nameLabel.setAlignmentX(LEFT_ALIGNMENT);
-        
+
         add(nameLabel);
 
         VButton btn = new VButton("edit");
@@ -128,6 +128,14 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
 
     }
 
+    private UserNumberWindow getWindow() {
+        if (window == null) {
+            window = new UserNumberWindow(
+                    UserNumberType.this, "User Data Input", getMainCanvas());
+        }
+        return window;
+    }
+
     @Override
     public Object getViewValue() {
 
@@ -147,7 +155,13 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
         if (window != null) {
             model = window.getModel();
         }
+
         if (model == null) {
+
+            getWindow().updateModel();
+
+            model = getWindow().getModel();
+
             System.err.println(" >> UserNumberType.getViewValue(): model == null");
         }
 
@@ -241,7 +255,7 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
 
         return code;
     }
-    
+
     @Override
     public String getValueAsCode() {
         // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)

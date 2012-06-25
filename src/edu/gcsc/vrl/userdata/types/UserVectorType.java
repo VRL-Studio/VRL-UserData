@@ -77,6 +77,14 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
         });
     }
 
+     private UserVectorWindow getWindow() {
+        if (window == null) {
+            window = new UserVectorWindow(
+                    UserVectorType.this, "User Data Input", getMainCanvas());
+        }
+        return window;
+    }
+    
     @Override
     public Object getViewValue() {
 
@@ -98,6 +106,11 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
         }
         
         if (model == null) {
+
+            getWindow().updateModel();
+
+            model = getWindow().getModel();
+
             System.err.println(" >> UserVectorType.getViewValue(): model == null");
         }
 

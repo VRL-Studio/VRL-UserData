@@ -144,6 +144,30 @@ public class UserConvDiffDataTupleType extends TypeRepresentationBase implements
         }
     }
 
+    private UserMatrixWindow getDiffusionWindow() {
+        if (diffusionWindow == null) {
+            diffusionWindow = new UserMatrixWindow(
+                    UserConvDiffDataTupleType.this, "User Data Input", getMainCanvas());
+        }
+        return diffusionWindow;
+    }
+    
+    private UserVectorWindow getVelocityWindow() {
+        if (velocityWindow == null) {
+            velocityWindow = new UserVectorWindow(
+                    UserConvDiffDataTupleType.this, "User Data Input", getMainCanvas());
+        }
+        return velocityWindow;
+    }
+    
+    private UserNumberWindow getSourceWindow() {
+        if (sourceWindow == null) {
+            sourceWindow = new UserNumberWindow(
+                    UserConvDiffDataTupleType.this, "User Data Input", getMainCanvas());
+        }
+        return sourceWindow;
+    }
+    
     @Override
     public Object getViewValue() {
         
@@ -168,6 +192,9 @@ public class UserConvDiffDataTupleType extends TypeRepresentationBase implements
             sourceModel = sourceWindow.getModel();
         }
         if (sourceModel == null) {
+            getSourceWindow().updateModel();
+
+            sourceModel = getSourceWindow().getModel();
             System.err.println(" >> UserNumberType.getViewValue(): model == null");
         }
 
@@ -220,6 +247,9 @@ public class UserConvDiffDataTupleType extends TypeRepresentationBase implements
         }
         
         if (velocityModel == null) {
+            getVelocityWindow().updateModel();
+
+            velocityModel = getVelocityWindow().getModel();
             System.err.println(" >> UserVectorType.getViewValue(): model == null");
         }
 
@@ -270,6 +300,9 @@ public class UserConvDiffDataTupleType extends TypeRepresentationBase implements
         }
         
         if (diffusionModel == null) {
+            getDiffusionWindow().updateModel();
+
+            diffusionModel = getDiffusionWindow().getModel();
             System.err.println(" >> UserMatrixType.getViewValue(): model == null");
         }
 
