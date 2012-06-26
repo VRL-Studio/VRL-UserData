@@ -11,6 +11,7 @@ import edu.gcsc.vrl.userdata.UserMatrixModel;
 import edu.gcsc.vrl.userdata.UserMatrixWindow;
 import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
+import eu.mihosoft.vrl.visual.CanvasWindow;
 import eu.mihosoft.vrl.visual.VButton;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -62,10 +63,15 @@ public class UserMatrixType extends TypeRepresentationBase implements Serializab
             @Override
             public void actionPerformed(ActionEvent e) {
                 
+                
+                window = new UserMatrixWindow(
+                    UserMatrixType.this, "User Data Input", getMainCanvas());
+                
                 customParamData2Window();
+              
                 
                 //add InputWindow to canvas
-                getMainCanvas().addWindow(getWindow());
+                getMainCanvas().addWindow(window);
             }
         });
     }

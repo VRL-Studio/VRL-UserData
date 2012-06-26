@@ -72,20 +72,13 @@ public class UserConvDiffDataTupleType extends TypeRepresentationBase implements
             public void actionPerformed(ActionEvent e) {
 
                 sourceWindow = new UserNumberWindow(
-                        UserConvDiffDataTupleType.this, "User Data Input", getMainCanvas());
-
+                    UserConvDiffDataTupleType.this, "User Data Input", getMainCanvas());
+                
+                customParamDataSource2Window();
+              
+                
                 //add InputWindow to canvas
                 getMainCanvas().addWindow(sourceWindow);
-
-                if (getCustomData() != null) {
-                    Object o = getCustomData().get(UserNumberType.getMODEL_KEY());
-
-                    if (o instanceof UserNumberModel) {
-                        UserNumberModel model =
-                                (UserNumberModel) o;
-                        sourceWindow.setModel(model);
-                    }
-                }
             }
         });
 
@@ -93,21 +86,16 @@ public class UserConvDiffDataTupleType extends TypeRepresentationBase implements
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                
                 velocityWindow = new UserVectorWindow(
-                        UserConvDiffDataTupleType.this, "User Data Input", getMainCanvas());
-
+                    UserConvDiffDataTupleType.this, "User Data Input", getMainCanvas());
+                
+                customParamDataVelocity2Window();
+              
+                
                 //add InputWindow to canvas
                 getMainCanvas().addWindow(velocityWindow);
-
-                if (getCustomData() != null) {
-                    Object o = getCustomData().get(UserVectorType.getMODEL_KEY());
-
-                    if (o instanceof UserVectorModel) {
-                        UserVectorModel model =
-                                (UserVectorModel) o;
-                        velocityWindow.setModel(model);
-                    }
-                }
+                
             }
         });
 
@@ -116,21 +104,15 @@ public class UserConvDiffDataTupleType extends TypeRepresentationBase implements
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                
                 diffusionWindow = new UserMatrixWindow(
-                        UserConvDiffDataTupleType.this, "User Data Input", getMainCanvas());
-
+                    UserConvDiffDataTupleType.this, "User Data Input", getMainCanvas());
+                
+                customParamDataDiffusion2Window();
+              
                 //add InputWindow to canvas
                 getMainCanvas().addWindow(diffusionWindow);
-
-                if (getCustomData() != null) {
-                    Object o = getCustomData().get(UserMatrixType.MODEL_KEY);
-
-                    if (o instanceof UserMatrixModel) {
-                        UserMatrixModel model =
-                                (UserMatrixModel) o;
-                        diffusionWindow.setModel(model);
-                    }
-                }
+                
             }
         });
 
@@ -168,6 +150,39 @@ public class UserConvDiffDataTupleType extends TypeRepresentationBase implements
         return sourceWindow;
     }
     
+    private void customParamDataDiffusion2Window() {
+        if (getCustomData() != null) {
+            Object o = getCustomData().get(UserMatrixType.getMODEL_KEY());
+
+            if (o instanceof UserMatrixModel) {
+                UserMatrixModel model =  (UserMatrixModel) o;
+                getDiffusionWindow().setModel(model);
+            }
+        }
+    }
+    
+    private void customParamDataVelocity2Window() {
+        if (getCustomData() != null) {
+            Object o = getCustomData().get(UserVectorType.getMODEL_KEY());
+
+            if (o instanceof UserVectorModel) {
+                UserVectorModel model =  (UserVectorModel) o;
+                getVelocityWindow().setModel(model);
+            }
+        }
+    }
+    
+    private void customParamDataSource2Window() {
+        if (getCustomData() != null) {
+            Object o = getCustomData().get(UserNumberType.getMODEL_KEY());
+
+            if (o instanceof UserNumberModel) {
+                UserNumberModel model =  (UserNumberModel) o;
+                getSourceWindow().setModel(model);
+            }
+        }
+    }
+    
     @Override
     public Object getViewValue() {
         
@@ -179,24 +194,10 @@ public class UserConvDiffDataTupleType extends TypeRepresentationBase implements
 
         UserNumberModel sourceModel = null;
 
-        if (sourceWindow == null && getCustomData() != null) {
-            Object o = getCustomData().get(UserNumberType.getMODEL_KEY());
-
-            if (o instanceof UserNumberModel) {
-                sourceModel = (UserNumberModel) o;
-
-            }
-        }
-
-        if (sourceWindow != null) {
-            sourceModel = sourceWindow.getModel();
-        }
-        if (sourceModel == null) {
-            getSourceWindow().updateModel();
-
-            sourceModel = getSourceWindow().getModel();
-            System.err.println(" >> UserNumberType.getViewValue(): model == null");
-        }
+        
+        customParamDataSource2Window();
+        sourceModel = getSourceWindow().getModel();
+        
 
         try {
             boolean isConst = sourceModel.isConstData();
@@ -233,26 +234,11 @@ public class UserConvDiffDataTupleType extends TypeRepresentationBase implements
 
         UserVectorModel velocityModel = null;
 
-        if (velocityWindow == null && getCustomData() != null) {
-            Object o = getCustomData().get(UserVectorType.getMODEL_KEY());
-
-            if (o instanceof UserVectorModel) {
-                velocityModel = (UserVectorModel) o;
-
-            }
-        }
-
-        if (velocityWindow != null) {
-            velocityModel = velocityWindow.getModel();
-        }
         
-        if (velocityModel == null) {
-            getVelocityWindow().updateModel();
-
-            velocityModel = getVelocityWindow().getModel();
-            System.err.println(" >> UserVectorType.getViewValue(): model == null");
-        }
-
+        customParamDataVelocity2Window();
+        velocityModel = getVelocityWindow().getModel();
+        
+        
         try {
             boolean isConst = velocityModel.isConstData();
 
@@ -286,25 +272,10 @@ public class UserConvDiffDataTupleType extends TypeRepresentationBase implements
         
         UserMatrixModel diffusionModel = null;
 
-        if (diffusionWindow == null && getCustomData() != null) {
-            Object o = getCustomData().get(UserMatrixType.MODEL_KEY);
-
-            if (o instanceof UserMatrixModel) {
-                diffusionModel = (UserMatrixModel) o;
-
-            }
-        }
-
-        if (diffusionWindow != null) {
-            diffusionModel = diffusionWindow.getModel();
-        }
         
-        if (diffusionModel == null) {
-            getDiffusionWindow().updateModel();
-
-            diffusionModel = getDiffusionWindow().getModel();
-            System.err.println(" >> UserMatrixType.getViewValue(): model == null");
-        }
+        customParamDataDiffusion2Window();
+        diffusionModel = getDiffusionWindow().getModel();
+        
 
         try {
             boolean isConst = diffusionModel.isConstData();

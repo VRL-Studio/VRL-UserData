@@ -56,11 +56,14 @@ public class CondUserNumberType extends TypeRepresentationBase implements Serial
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                window = new CondUserNumberWindow(
+                    CondUserNumberType.this, "User Data Input", getMainCanvas());
+                
                 customParamData2Window();
+              
                 
                 //add InputWindow to canvas
-                getMainCanvas().addWindow(getWindow());
-                              
+                getMainCanvas().addWindow(window);          
             }
         });
 

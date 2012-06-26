@@ -62,58 +62,16 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                window = new UserNumberWindow(
+                    UserNumberType.this, "User Data Input", getMainCanvas());
+                
                 customParamData2Window();
+              
                 
                 //add InputWindow to canvas
-                getMainCanvas().addWindow(getWindow());
+                getMainCanvas().addWindow(window);
             }
         });
-
-//        addMouseListener(new MouseListener() {
-//
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//
-//                if (e.getButton() == MouseEvent.BUTTON1) {
-//
-//                    window = new UserNumberWindow(
-//                            UserNumberType.this, "User Data Input", getMainCanvas());
-//
-//                    //add InputWindow to canvas
-//                    getMainCanvas().addWindow(window);
-//
-//                    if (getCustomData() != null) {
-//                        Object o = getCustomData().get(getMODEL_KEY());
-//
-//                        if (o instanceof UserNumberModel) {
-//                            UserNumberModel model =
-//                                    (UserNumberModel) o;
-//                            window.setModel(model);
-//                        }
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void mousePressed(MouseEvent e) {
-//                //throw new UnsupportedOperationException("Not supported yet.");
-//            }
-//
-//            @Override
-//            public void mouseReleased(MouseEvent e) {
-//                //throw new UnsupportedOperationException("Not supported yet.");
-//            }
-//
-//            @Override
-//            public void mouseEntered(MouseEvent e) {
-////                throw new UnsupportedOperationException("Not supported yet.");
-//            }
-//
-//            @Override
-//            public void mouseExited(MouseEvent e) {
-////                throw new UnsupportedOperationException("Not supported yet.");
-//            }
-//        });
 
     }
 
