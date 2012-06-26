@@ -7,6 +7,7 @@ package edu.gcsc.vrl.userdata.types;
 import edu.gcsc.vrl.ug.CondUserDataCompiler;
 import edu.gcsc.vrl.ug.api.*;
 import edu.gcsc.vrl.userdata.CondUserNumberWindow;
+import edu.gcsc.vrl.userdata.UserDataModel;
 import edu.gcsc.vrl.userdata.UserNumberModel;
 import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
  * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
-@TypeInfo(type=I_CondUserNumber.class, input=true, output=false, style="default")
+@TypeInfo(type = I_CondUserNumber.class, input = true, output = false, style = "default")
 public class CondUserNumberType extends TypeRepresentationBase implements Serializable {
 
     private static final long serialVersionUID = 1;
@@ -54,31 +55,34 @@ public class CondUserNumberType extends TypeRepresentationBase implements Serial
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                window = new CondUserNumberWindow(
-                        CondUserNumberType.this, "User Data Input", getMainCanvas());
 
+                customParamData2Window();
+                
                 //add InputWindow to canvas
-                getMainCanvas().addWindow(window);
-
-                if (getCustomData() != null) {
-                    Object o = getCustomData().get(getMODEL_KEY());
-
-                    if (o instanceof UserNumberModel) {
-                        UserNumberModel model =
-                                (UserNumberModel) o;
-                        window.setModel(model);
-                    }
-                }
+                getMainCanvas().addWindow(getWindow());
+                              
             }
         });
 
     }
+
     private CondUserNumberWindow getWindow() {
         if (window == null) {
             window = new CondUserNumberWindow(
                     CondUserNumberType.this, "User Data Input", getMainCanvas());
         }
         return window;
+    }
+    
+    private void customParamData2Window() {
+        if (getCustomData() != null) {
+            Object o = getCustomData().get(getMODEL_KEY());
+
+            if (o instanceof UserNumberModel) {
+                UserNumberModel model = (UserNumberModel) o;
+                getWindow().setModel(model);
+            }
+        }
     }
 
     @Override
@@ -88,26 +92,9 @@ public class CondUserNumberType extends TypeRepresentationBase implements Serial
 
         UserNumberModel model = null;
 
-        if (window == null && getCustomData() != null) {
-            Object o = getCustomData().get(getMODEL_KEY());
+        customParamData2Window();
+        model = getWindow().getModel();
 
-            if (o instanceof UserNumberModel) {
-                model = (UserNumberModel) o;
-
-            }
-        }
-
-        if (window != null) {
-            model = window.getModel();
-        }
-
-        if (model == null) {
-            getWindow().updateModel();
-
-            model = getWindow().getModel();
-            System.err.println(" >> CondUserNumberrType.getViewValue(): model == null");
-        }
-        
         try {
             switch (model.getDimension()) {
                 case 1:
@@ -131,21 +118,21 @@ public class CondUserNumberType extends TypeRepresentationBase implements Serial
         } catch (Exception ex) {
             //
         }
-        
+
         Object finalResult = createFinalUserData(result);
 
         return finalResult;
     }
-    
+
     /**
      * May be used to create the final userdata object such as UserNumberPair.
+     *
      * @param data
-     * @return 
+     * @return
      */
     protected Object createFinalUserData(I_CondUserNumber data) {
         return data;
     }
-
 
     private String create1dCode(String code) {
 
@@ -191,7 +178,7 @@ public class CondUserNumberType extends TypeRepresentationBase implements Serial
 
         return code;
     }
-    
+
     @Override
     public String getValueAsCode() {
         // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)

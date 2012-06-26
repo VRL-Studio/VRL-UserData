@@ -58,21 +58,11 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                window = new UserVectorWindow(
-                        UserVectorType.this, "User Data Input", getMainCanvas());
-
+              
+                customParamData2Window();
+                
                 //add InputWindow to canvas
-                getMainCanvas().addWindow(window);
-
-                if (getCustomData() != null) {
-                    Object o = getCustomData().get(getMODEL_KEY());
-
-                    if (o instanceof UserVectorModel) {
-                        UserVectorModel model =
-                                (UserVectorModel) o;
-                        window.setModel(model);
-                    }
-                }
+                getMainCanvas().addWindow(getWindow());
             }
         });
     }
@@ -84,6 +74,17 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
         }
         return window;
     }
+     
+     private void customParamData2Window() {
+        if (getCustomData() != null) {
+            Object o = getCustomData().get(getMODEL_KEY());
+
+            if (o instanceof UserVectorModel) {
+                UserVectorModel model =  (UserVectorModel) o;
+                getWindow().setModel(model);
+            }
+        }
+    }
     
     @Override
     public Object getViewValue() {
@@ -92,27 +93,9 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
 
         UserVectorModel model = null;
 
-        if (window == null && getCustomData() != null) {
-            Object o = getCustomData().get(getMODEL_KEY());
-
-            if (o instanceof UserVectorModel) {
-                model = (UserVectorModel) o;
-
-            }
-        }
-
-        if (window != null) {
-            model = window.getModel();
-        }
         
-        if (model == null) {
-
-            getWindow().updateModel();
-
-            model = getWindow().getModel();
-
-            System.err.println(" >> UserVectorType.getViewValue(): model == null");
-        }
+        customParamData2Window();
+        model = getWindow().getModel();
 
         try {
             boolean isConst = model.isConstData();
