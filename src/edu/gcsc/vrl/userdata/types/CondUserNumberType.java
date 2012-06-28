@@ -47,6 +47,9 @@ public class CondUserNumberType extends TypeRepresentationBase implements Serial
         add(btn);
 
         add(nameLabel);
+        
+//        // a little trick to have default values if parameter of this type is used
+//        getWindow().close();
 
 //        setStyleName("default");
 //        addSupportedRepresentationType(RepresentationType.INPUT);

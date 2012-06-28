@@ -54,6 +54,13 @@ public class UserConvDiffDataTupleType extends TypeRepresentationBase implements
         setInputComponent(subsetInput);
 
         add(subsetInput);
+        
+        
+//        // a little trick to have default values if parameter of this type is used
+//        getSourceWindow().close();
+//        getDiffusionWindow().close();
+//        getVelocityWindow().close();
+        
 
        Box b= Box.createVerticalBox();
        add(b);

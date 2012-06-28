@@ -53,7 +53,9 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
 
         add(btn);
 
-
+//        // a little trick to have default values if parameter of this type is used
+//        getWindow().close();
+        
 //        setStyleName("default");
 //        addSupportedRepresentationType(RepresentationType.INPUT);
 
