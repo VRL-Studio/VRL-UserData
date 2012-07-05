@@ -53,6 +53,7 @@ public class CondUserNumberWindow extends CanvasWindow implements Serializable {
     private void init() {
         
         int startDim = Dimensions.TWO;
+        //NO defaultdata like {0.0,0.0} because only code is allowed
         
         outter = Box.createVerticalBox();
         add(outter);

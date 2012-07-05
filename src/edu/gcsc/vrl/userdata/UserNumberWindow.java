@@ -57,7 +57,9 @@ public class UserNumberWindow extends CanvasWindow implements Serializable {
     private void init() {
         
         int startDim = Dimensions.TWO;
-
+        Double defaultdata = 0.0;
+        model.setData(defaultdata);
+        
         outter = Box.createVerticalBox();
         add(outter);
 
