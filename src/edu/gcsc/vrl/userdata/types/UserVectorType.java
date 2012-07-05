@@ -62,10 +62,10 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
             public void actionPerformed(ActionEvent e) {
               
                 window = new UserVectorWindow(
-                    UserVectorType.this, "User Data Input", getMainCanvas());
-                
+                        UserVectorType.this, "User Data Input", getMainCanvas());
+
                 customParamData2Window();
-              
+
                 
                 //add InputWindow to canvas
                 getMainCanvas().addWindow(window);
@@ -99,7 +99,7 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
 
         UserVectorModel model = null;
 
-        
+
         customParamData2Window();
         model = getWindow().getModel();
 

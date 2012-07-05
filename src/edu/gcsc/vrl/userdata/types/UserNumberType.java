@@ -10,13 +10,10 @@ import edu.gcsc.vrl.ug.api.*;
 import edu.gcsc.vrl.userdata.UserNumberModel;
 import edu.gcsc.vrl.userdata.UserNumberWindow;
 import eu.mihosoft.vrl.annotation.TypeInfo;
-import eu.mihosoft.vrl.reflection.RepresentationType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.visual.VButton;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -65,10 +62,11 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
             public void actionPerformed(ActionEvent e) {
 
                 window = new UserNumberWindow(
-                    UserNumberType.this, "User Data Input", getMainCanvas());
-                
+
+                        UserNumberType.this, "User Data Input", getMainCanvas());
+
                 customParamData2Window();
-              
+
                 
                 //add InputWindow to canvas
                 getMainCanvas().addWindow(window);
@@ -84,7 +82,7 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
         }
         return window;
     }
-    
+
     private void customParamData2Window() {
         if (getCustomData() != null) {
             Object o = getCustomData().get(getMODEL_KEY());
