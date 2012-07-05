@@ -34,7 +34,7 @@ public class CondUserNumberWindow extends CanvasWindow implements Serializable {
     private transient VCodeEditor editor = null;
     private transient VContainer editorPane;
     private transient JComponent parent;
-    private transient UserNumberModel model = new UserNumberModel();
+    private transient CondUserNumberModel model = new CondUserNumberModel();
     private transient JComboBox dimsCoose;
     private transient TypeRepresentationBase tRep;
 
@@ -169,19 +169,16 @@ public class CondUserNumberWindow extends CanvasWindow implements Serializable {
     /**
      * @return the model
      */
-    public UserNumberModel getModel() {
+    public CondUserNumberModel getModel() {
         return model;
     }
 
     /**
      * @param model the model to set
      */
-    public void setModel(UserNumberModel model) {
+    public void setModel(CondUserNumberModel model) {
         this.model = model;
-
-        editor.getEditor().setText(model.getCode());
-
-        dimsCoose.setSelectedIndex(model.getDimension() - 1);
-
     }
+
+    
 }

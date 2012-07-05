@@ -26,8 +26,15 @@ import java.util.ArrayList;
 public class UserMatrixType extends TypeRepresentationBase implements Serializable {
 
     private static final long serialVersionUID = 1;
+
+    /**
+     * @return the MODEL_KEY
+     */
+    public static String getMODEL_KEY() {
+        return MODEL_KEY;
+    }
     private UserMatrixWindow window;
-    static final public String MODEL_KEY = "UserMatrixType:model";
+    private static final String MODEL_KEY = "UserMatrixType:model";
 
     public UserMatrixType() {
 
@@ -51,21 +58,15 @@ public class UserMatrixType extends TypeRepresentationBase implements Serializab
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                
                 window = new UserMatrixWindow(
                         UserMatrixType.this, "User Data Input", getMainCanvas());
 
+                 customParamData2Window();
+
+                
                 //add InputWindow to canvas
                 getMainCanvas().addWindow(window);
-
-                if (getCustomData() != null) {
-                    Object o = getCustomData().get(MODEL_KEY);
-
-                    if (o instanceof UserMatrixModel) {
-                        UserMatrixModel model =
-                                (UserMatrixModel) o;
-                        window.setModel(model);
-                    }
-                }
             }
         });
     }
@@ -78,6 +79,17 @@ public class UserMatrixType extends TypeRepresentationBase implements Serializab
         return window;
     }
 
+     private void customParamData2Window() {
+        if (getCustomData() != null) {
+            Object o = getCustomData().get(getMODEL_KEY());
+
+            if (o instanceof UserMatrixModel) {
+                UserMatrixModel model =  (UserMatrixModel) o;
+                getWindow().setModel(model);
+            }
+        }
+    }
+    
     @Override
     public Object getViewValue() {
 
@@ -85,27 +97,8 @@ public class UserMatrixType extends TypeRepresentationBase implements Serializab
 
         UserMatrixModel model = null;
 
-        if (window == null && getCustomData() != null) {
-            Object o = getCustomData().get(MODEL_KEY);
-
-            if (o instanceof UserMatrixModel) {
-                model = (UserMatrixModel) o;
-
-            }
-        }
-
-        if (window != null) {
-            model = window.getModel();
-        }
-        
-        if (model == null) {
-
-            getWindow().updateModel();
-
-            model = getWindow().getModel();
-
-            System.err.println(" >> UserMatrixType.getViewValue(): model == null");
-        }
+        customParamData2Window();
+        model = getWindow().getModel();
 
         try {
             boolean isConst = model.isConstData();

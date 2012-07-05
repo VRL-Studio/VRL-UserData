@@ -242,7 +242,7 @@ public class UserMatrixWindow extends CanvasWindow implements Serializable {
         if(pData == null)
             pData = new CustomParamData();
  //        CustomParamData pData = new CustomParamData();
-       pData.put(UserMatrixType.MODEL_KEY, getModel());
+       pData.put(UserMatrixType.getMODEL_KEY(), getModel());
         tRep.setCustomData(pData);
     }
 

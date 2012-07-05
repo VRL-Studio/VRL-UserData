@@ -6,6 +6,7 @@ package edu.gcsc.vrl.userdata.types;
 
 import edu.gcsc.vrl.ug.CondUserDataCompiler;
 import edu.gcsc.vrl.ug.api.*;
+import edu.gcsc.vrl.userdata.CondUserNumberModel;
 import edu.gcsc.vrl.userdata.CondUserNumberWindow;
 import edu.gcsc.vrl.userdata.UserNumberModel;
 import eu.mihosoft.vrl.annotation.TypeInfo;
@@ -54,21 +55,14 @@ public class CondUserNumberType extends TypeRepresentationBase implements Serial
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                
                 window = new CondUserNumberWindow(
                         CondUserNumberType.this, "User Data Input", getMainCanvas());
 
+                customParamData2Window();
+
                 //add InputWindow to canvas
                 getMainCanvas().addWindow(window);
-
-                if (getCustomData() != null) {
-                    Object o = getCustomData().get(getMODEL_KEY());
-
-                    if (o instanceof UserNumberModel) {
-                        UserNumberModel model =
-                                (UserNumberModel) o;
-                        window.setModel(model);
-                    }
-                }
             }
         });
 
@@ -80,33 +74,27 @@ public class CondUserNumberType extends TypeRepresentationBase implements Serial
         }
         return window;
     }
+    
+    private void customParamData2Window() {
+        if (getCustomData() != null) {
+            Object o = getCustomData().get(getMODEL_KEY());
+
+            if (o instanceof CondUserNumberModel) {
+                CondUserNumberModel model =  (CondUserNumberModel) o;
+                getWindow().setModel(model);
+            }
+        }
+    }
 
     @Override
     public Object getViewValue() {
 
         I_CondUserNumber result = null;
 
-        UserNumberModel model = null;
+        CondUserNumberModel model = null;
 
-        if (window == null && getCustomData() != null) {
-            Object o = getCustomData().get(getMODEL_KEY());
-
-            if (o instanceof UserNumberModel) {
-                model = (UserNumberModel) o;
-
-            }
-        }
-
-        if (window != null) {
-            model = window.getModel();
-        }
-
-        if (model == null) {
-            getWindow().updateModel();
-
-            model = getWindow().getModel();
-            System.err.println(" >> CondUserNumberrType.getViewValue(): model == null");
-        }
+        customParamData2Window();
+        model = getWindow().getModel();
         
         try {
             switch (model.getDimension()) {
