@@ -51,6 +51,9 @@ public class CondUserNumberWindow extends CanvasWindow implements Serializable {
     }
 
     private void init() {
+        
+        int startDim = Dimensions.TWO;
+        
         outter = Box.createVerticalBox();
         add(outter);
 
@@ -62,6 +65,7 @@ public class CondUserNumberWindow extends CanvasWindow implements Serializable {
 
         Integer[] dims = {Dimensions.ONE, Dimensions.TWO, Dimensions.THREE};
         dimsCoose = new JComboBox(dims);
+        dimsCoose.setSelectedItem(startDim);
 
         inner1.add(dimsCoose);
 
