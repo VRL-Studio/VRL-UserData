@@ -162,7 +162,9 @@ public class CondUserNumberWindow extends CanvasWindow implements Serializable {
 
         getModel().setDimension((Integer) dimsCoose.getSelectedItem());
 
-        CustomParamData pData = new CustomParamData();
+         CustomParamData pData = tRep.getCustomData();
+        if(pData == null)
+            pData = new CustomParamData();
         pData.put(CondUserNumberType.getMODEL_KEY(), getModel());
         tRep.setCustomData(pData);
     }
@@ -179,6 +181,8 @@ public class CondUserNumberWindow extends CanvasWindow implements Serializable {
      */
     public void setModel(CondUserNumberModel model) {
         this.model = model;
+        
+        editor.getEditor().setText(model.getCode());
     }
 
     
