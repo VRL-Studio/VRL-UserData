@@ -55,9 +55,6 @@ public class UserVectorWindow extends CanvasWindow implements Serializable {
     }
 
     private void init() {
-        
-        int startDim = Dimensions.TWO;
-        
         outter = Box.createVerticalBox();
         add(outter);
 
@@ -69,8 +66,7 @@ public class UserVectorWindow extends CanvasWindow implements Serializable {
 
         Integer[] dims = {Dimensions.ONE, Dimensions.TWO, Dimensions.THREE};
         dimsCoose = new JComboBox(dims);
-        dimsCoose.setSelectedItem(startDim);
-        
+
         inner1.add(dimsCoose);
 
         constant = new JRadioButton("Constant");
@@ -89,7 +85,7 @@ public class UserVectorWindow extends CanvasWindow implements Serializable {
         final Box inner2 = Box.createHorizontalBox();
         outter.add(inner2);
 
-        vectorPane = new VectorPane(startDim);
+        vectorPane = new VectorPane(Dimensions.ONE);
         inner2.add(vectorPane);
 
         Dimension prefDim = new Dimension(300, 200);
@@ -236,10 +232,7 @@ public class UserVectorWindow extends CanvasWindow implements Serializable {
         }
         getModel().setDimension((Integer) dimsCoose.getSelectedItem());
 
-        CustomParamData pData = tRep.getCustomData();
-        if(pData == null)
-            pData = new CustomParamData();
-//        CustomParamData pData = new CustomParamData();
+        CustomParamData pData = new CustomParamData();
         pData.put(UserVectorType.getMODEL_KEY(), getModel());
         tRep.setCustomData(pData);
     }

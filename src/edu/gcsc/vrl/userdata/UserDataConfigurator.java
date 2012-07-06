@@ -12,8 +12,6 @@ import edu.gcsc.vrl.userdata.types.UserMatrixPairType;
 import edu.gcsc.vrl.userdata.types.CondUserNumberType;
 import edu.gcsc.vrl.userdata.types.UserMatrixType;
 import edu.gcsc.vrl.userdata.types.CondUserNumberArrayType;
-import edu.gcsc.vrl.userdata.types.UserConvDiffDataTupleArrayType;
-import edu.gcsc.vrl.userdata.types.UserConvDiffDataTupleType;
 import edu.gcsc.vrl.userdata.types.UserNumberPairArrayType;
 import edu.gcsc.vrl.userdata.types.UserNumberType;
 import edu.gcsc.vrl.userdata.types.UserNumberArrayType;
@@ -85,10 +83,7 @@ public class UserDataConfigurator extends VPluginConfigurator {
             vapi.addTypeRepresentation( UserMatrixPairType.class);
             vapi.addTypeRepresentation( UserMatrixPairArrayType.class);
             vapi.addTypeRepresentation( UserMatrixArrayType.class);
-
-            vapi.addTypeRepresentation( UserConvDiffDataTupleType.class);
-            vapi.addTypeRepresentation( UserConvDiffDataTupleArrayType.class);
-
+            
              //
             /// BASICMATH Components
             //
