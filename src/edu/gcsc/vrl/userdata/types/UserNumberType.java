@@ -10,13 +10,10 @@ import edu.gcsc.vrl.ug.api.*;
 import edu.gcsc.vrl.userdata.UserNumberModel;
 import edu.gcsc.vrl.userdata.UserNumberWindow;
 import eu.mihosoft.vrl.annotation.TypeInfo;
-import eu.mihosoft.vrl.reflection.RepresentationType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.visual.VButton;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -25,7 +22,7 @@ import java.util.ArrayList;
  * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
-@TypeInfo(type=I_UserNumber.class, input=true, output=false, style="default")
+@TypeInfo(type = I_UserNumber.class, input = true, output = false, style = "default")
 public class UserNumberType extends TypeRepresentationBase implements Serializable {
 
     private static final long serialVersionUID = 1;
@@ -44,16 +41,18 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
 //        setType(I_UserNumber.class);
 
         setName("");
-        
+
         nameLabel.setAlignmentX(LEFT_ALIGNMENT);
-        
+
         add(nameLabel);
 
         VButton btn = new VButton("edit");
 
         add(btn);
 
-
+//        // a little trick to have default values if parameter of this type is used
+//        getWindow().close();
+        
 //        setStyleName("default");
 //        addSupportedRepresentationType(RepresentationType.INPUT);
 
@@ -63,69 +62,36 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
             public void actionPerformed(ActionEvent e) {
 
                 window = new UserNumberWindow(
+
                         UserNumberType.this, "User Data Input", getMainCanvas());
 
+                customParamData2Window();
+
+                
                 //add InputWindow to canvas
                 getMainCanvas().addWindow(window);
-
-                if (getCustomData() != null) {
-                    Object o = getCustomData().get(getMODEL_KEY());
-
-                    if (o instanceof UserNumberModel) {
-                        UserNumberModel model =
-                                (UserNumberModel) o;
-                        window.setModel(model);
-                    }
-                }
             }
         });
 
-        addMouseListener(new MouseListener() {
+    }
 
-            @Override
-            public void mouseClicked(MouseEvent e) {
+    private UserNumberWindow getWindow() {
+        if (window == null) {
+            window = new UserNumberWindow(
+                    UserNumberType.this, "User Data Input", getMainCanvas());
+        }
+        return window;
+    }
 
-                if (e.getButton() == MouseEvent.BUTTON1) {
+    private void customParamData2Window() {
+        if (getCustomData() != null) {
+            Object o = getCustomData().get(getMODEL_KEY());
 
-                    window = new UserNumberWindow(
-                            UserNumberType.this, "User Data Input", getMainCanvas());
-
-                    //add InputWindow to canvas
-                    getMainCanvas().addWindow(window);
-
-                    if (getCustomData() != null) {
-                        Object o = getCustomData().get(getMODEL_KEY());
-
-                        if (o instanceof UserNumberModel) {
-                            UserNumberModel model =
-                                    (UserNumberModel) o;
-                            window.setModel(model);
-                        }
-                    }
-                }
+            if (o instanceof UserNumberModel) {
+                UserNumberModel model =  (UserNumberModel) o;
+                getWindow().setModel(model);
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                //throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                //throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-//                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-//                throw new UnsupportedOperationException("Not supported yet.");
-            }
-        });
-
+        }
     }
 
     @Override
@@ -135,21 +101,8 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
 
         UserNumberModel model = null;
 
-        if (window == null && getCustomData() != null) {
-            Object o = getCustomData().get(getMODEL_KEY());
-
-            if (o instanceof UserNumberModel) {
-                model = (UserNumberModel) o;
-
-            }
-        }
-
-        if (window != null) {
-            model = window.getModel();
-        }
-        if (model == null) {
-            System.err.println(" >> UserNumberType.getViewValue(): model == null");
-        }
+        customParamData2Window();
+        model = getWindow().getModel();
 
         try {
             boolean isConst = model.isConstData();
@@ -241,7 +194,7 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
 
         return code;
     }
-    
+
     @Override
     public String getValueAsCode() {
         // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)

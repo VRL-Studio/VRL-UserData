@@ -34,7 +34,7 @@ public class CondUserNumberWindow extends CanvasWindow implements Serializable {
     private transient VCodeEditor editor = null;
     private transient VContainer editorPane;
     private transient JComponent parent;
-    private transient UserNumberModel model = new UserNumberModel();
+    private transient CondUserNumberModel model = new CondUserNumberModel();
     private transient JComboBox dimsCoose;
     private transient TypeRepresentationBase tRep;
 
@@ -51,6 +51,10 @@ public class CondUserNumberWindow extends CanvasWindow implements Serializable {
     }
 
     private void init() {
+        
+        int startDim = Dimensions.TWO;
+        //NO defaultdata like {0.0,0.0} because only code is allowed
+        
         outter = Box.createVerticalBox();
         add(outter);
 
@@ -62,6 +66,7 @@ public class CondUserNumberWindow extends CanvasWindow implements Serializable {
 
         Integer[] dims = {Dimensions.ONE, Dimensions.TWO, Dimensions.THREE};
         dimsCoose = new JComboBox(dims);
+        dimsCoose.setSelectedItem(startDim);
 
         inner1.add(dimsCoose);
 
@@ -157,7 +162,9 @@ public class CondUserNumberWindow extends CanvasWindow implements Serializable {
 
         getModel().setDimension((Integer) dimsCoose.getSelectedItem());
 
-        CustomParamData pData = new CustomParamData();
+         CustomParamData pData = tRep.getCustomData();
+        if(pData == null)
+            pData = new CustomParamData();
         pData.put(CondUserNumberType.getMODEL_KEY(), getModel());
         tRep.setCustomData(pData);
     }
@@ -165,19 +172,18 @@ public class CondUserNumberWindow extends CanvasWindow implements Serializable {
     /**
      * @return the model
      */
-    public UserNumberModel getModel() {
+    public CondUserNumberModel getModel() {
         return model;
     }
 
     /**
      * @param model the model to set
      */
-    public void setModel(UserNumberModel model) {
+    public void setModel(CondUserNumberModel model) {
         this.model = model;
-
+        
         editor.getEditor().setText(model.getCode());
-
-        dimsCoose.setSelectedIndex(model.getDimension() - 1);
-
     }
+
+    
 }
