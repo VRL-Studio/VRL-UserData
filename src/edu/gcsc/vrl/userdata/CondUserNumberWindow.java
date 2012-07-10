@@ -6,7 +6,6 @@ package edu.gcsc.vrl.userdata;
 
 import edu.gcsc.vrl.userdata.types.CondUserNumberType;
 import edu.gcsc.vrl.userdata.managers.DimensionManager;
-import edu.gcsc.vrl.userdata.helpers.VectorPane;
 import eu.mihosoft.vrl.lang.CompilerProvider;
 import eu.mihosoft.vrl.lang.visual.EditorProvider;
 import eu.mihosoft.vrl.reflection.CustomParamData;

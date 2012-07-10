@@ -4,8 +4,8 @@
  */
 package edu.gcsc.vrl.userdata;
 
+import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
 import edu.gcsc.vrl.userdata.managers.DimensionManager;
-import edu.gcsc.vrl.userdata.helpers.VectorPane;
 import edu.gcsc.vrl.userdata.types.UserVectorType;
 import eu.mihosoft.vrl.lang.CompilerProvider;
 import eu.mihosoft.vrl.lang.visual.EditorProvider;
@@ -32,7 +32,7 @@ public class UserVectorWindow extends CanvasWindow implements Serializable {
 
     private static final long serialVersionUID = 1;
     private transient Box outter = null;
-    private transient VectorPane vectorPane = null;
+    private transient UserDataWindowPane windowPane = null;
     private transient VCodeEditor editor = null;
     private transient VContainer editorPane;
     private transient JComponent parent;
@@ -91,8 +91,8 @@ public class UserVectorWindow extends CanvasWindow implements Serializable {
         final Box inner2 = Box.createHorizontalBox();
         outter.add(inner2);
 
-        vectorPane = new VectorPane(startDim);
-        inner2.add(vectorPane);
+        windowPane = new UserDataWindowPane(startDim, UserDataCategory.VECTOR);
+        inner2.add(windowPane);
 
         Dimension prefDim = new Dimension(300, 200);
         Dimension maxDim = new Dimension(680, 800);
@@ -154,25 +154,25 @@ public class UserVectorWindow extends CanvasWindow implements Serializable {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                inner2.remove(vectorPane);
+                inner2.remove(windowPane);
                 
                 if (dimsCoose.getSelectedItem().equals(DimensionManager.ONE)) {
-                    vectorPane = new VectorPane(DimensionManager.ONE);
+                    windowPane = new UserDataWindowPane(DimensionManager.ONE, UserDataCategory.VECTOR);
 
 
                 } else if (dimsCoose.getSelectedItem().equals(DimensionManager.TWO)) {
-                    vectorPane = new VectorPane(DimensionManager.TWO);
+                    windowPane = new UserDataWindowPane(DimensionManager.TWO, UserDataCategory.VECTOR);
 
 
                 } else if (dimsCoose.getSelectedItem().equals(DimensionManager.THREE)) {
-                    vectorPane = new VectorPane(DimensionManager.THREE);
+                    windowPane = new UserDataWindowPane(DimensionManager.THREE, UserDataCategory.VECTOR);
                 }
 
                 if (constant.isSelected()) {
                     parent.remove(editorPane);
-                    parent.add(vectorPane);
+                    parent.add(windowPane);
                 } else {
-                    parent.remove(vectorPane);
+                    parent.remove(windowPane);
                     parent.add(editorPane);
                 }
 
@@ -190,7 +190,7 @@ public class UserVectorWindow extends CanvasWindow implements Serializable {
             @Override
             public void stateChanged(ChangeEvent e) {
                 if (constant.isSelected()) {
-                    parent.add(vectorPane);
+                    parent.add(windowPane);
                     parent.remove(editorPane);
                     revalidate();
                     getModel().setConstData(true);
@@ -208,7 +208,7 @@ public class UserVectorWindow extends CanvasWindow implements Serializable {
             @Override
             public void stateChanged(ChangeEvent e) {
                 if (code.isSelected()) {
-                    parent.remove(vectorPane);
+                    parent.remove(windowPane);
                     parent.add(editorPane);
                     revalidate();
                     getModel().setConstData(false);
@@ -232,7 +232,9 @@ public class UserVectorWindow extends CanvasWindow implements Serializable {
 
     public void updateModel() {
         if (getModel().isConstData()) {
-            getModel().setData(modelToArray(vectorPane.getDataModel()));
+            getModel().setData(
+                    modelToArray(
+                    windowPane.getTableModel()));
         } else {
             getModel().setCode(editor.getEditor().getText());
         }
@@ -261,7 +263,7 @@ public class UserVectorWindow extends CanvasWindow implements Serializable {
         
         dimsCoose.setSelectedIndex(model.getDimension() - 1);
 
-        DefaultTableModel dataModel = vectorPane.getDataModel();
+        DefaultTableModel dataModel = windowPane.getTableModel();
         
         System.out.println("UserVectorWindow.setModel():");
         System.out.println("dataModel ="+dataModel);

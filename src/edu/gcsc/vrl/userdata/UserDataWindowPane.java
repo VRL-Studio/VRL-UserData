@@ -2,8 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.gcsc.vrl.userdata.helpers;
+package edu.gcsc.vrl.userdata;
 
+import edu.gcsc.vrl.userdata.helpers.NumberEditField;
+import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.DefaultCellEditor;
@@ -18,20 +20,19 @@ import javax.swing.table.DefaultTableModel;
  * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
-public class VectorPane extends JPanel{
-    
-    private JTable table;
-    private DefaultTableModel dataModel;
-    private int dim;
+public class UserDataWindowPane extends JPanel {
 
-    public VectorPane(int d) {
-        dim = d;
+    private JTable table;
+    private DefaultTableModel tableModel;
+
+    public UserDataWindowPane(int dim, UserDataCategory category) {
         
         setBackground(new Color(0, 0, 0, 0));
         setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        dataModel = new DefaultTableModel(d, 1);
-        table = new JTable(getDataModel());
+        createTableModel(dim, category);
+
+        table = new JTable(getTableModel());
 
         fillWithZero();
 
@@ -44,10 +45,42 @@ public class VectorPane extends JPanel{
         table.setFocusable(true);
         add(table);
     }
-    
+
     /**
-     * Writes zero in all entries of the used table
-     * for the to be displayed FormelEntry
+     * Method for creating the needed table model in constructur.
+     *
+     * @param category is the category of the underlying data structure.
+     *
+     * <br>e.g. </br> 
+     * <br>for Matrix a dim x dim table should be created, </br>
+     * <br>for Vector a dim x 1 table, </br>
+     * <br>for Number a 1 x 1 table. </br>
+     *
+     */
+    protected void createTableModel(int dim, UserDataCategory category) {
+
+        if (category.equals(UserDataCategory.NUMBER)
+                || category.equals(UserDataCategory.COND_NUMBER)) {
+            tableModel = new DefaultTableModel(1, 1);
+
+
+        } else if (category.equals(UserDataCategory.VECTOR)) {
+            tableModel = new DefaultTableModel(dim, 1);
+
+        } else if (category.equals(UserDataCategory.MATRIX)) {
+            tableModel = new DefaultTableModel(dim, dim);
+
+        } else {
+            throw new IllegalArgumentException("Error in "
+                    + UserDataWindowPane.class.getSimpleName() + ".createTableModel().\n"
+                    + "Category need to be (COND_)NUMBER, VECTOR or MATRIX");
+        }
+
+    }
+
+    /**
+     * Writes zero in all entries of the used table for the to be displayed
+     * FormelEntry
      */
     private void fillWithZero() {
         for (int i = 0; i < table.getRowCount(); i++) {
@@ -56,13 +89,15 @@ public class VectorPane extends JPanel{
             }
         }
     }
-    
-    /**<p>
-     * Uses the logic from the class <code>NumberEditField</code> to allow
-     * only accepted changings / manipulations on the values of a <code>FormelEntry</code>
-     * </p>
-     * @param table here are the several values of a FormelEntry displayed
-     *        and temporary stored
+
+    /**
+     * <p> Uses the logic from the class
+     * <code>NumberEditField</code> to allow only accepted changings /
+     * manipulations on the values of a
+     * <code>FormelEntry</code> </p>
+     *
+     * @param table here are the several values of a FormelEntry displayed and
+     * temporary stored
      */
     private void setUpNumberEditor(JTable table) {
         //Set up the editor for the integer cells.
@@ -97,15 +132,13 @@ public class VectorPane extends JPanel{
     /**
      * @return the datamodel
      */
-    public DefaultTableModel getDataModel() {
-        return dataModel;
-    }
-    
-    public void setDataModel(DefaultTableModel dataModel) {
-        remove(table);
-        table = new JTable(dataModel);
-        this.dataModel = dataModel;
+    public DefaultTableModel getTableModel() {
+        return tableModel;
     }
 
-    
+    public void setTableModel(DefaultTableModel tableModel) {
+        remove(table);
+        table = new JTable(tableModel);
+        this.tableModel = tableModel;
+    }
 }

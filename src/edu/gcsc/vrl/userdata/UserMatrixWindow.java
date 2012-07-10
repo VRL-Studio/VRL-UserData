@@ -4,11 +4,9 @@ package edu.gcsc.vrl.userdata;
  * To change this template, choose Tools | Templates and open the template in
  * the editor.
  */
-import edu.gcsc.vrl.userdata.types.UserMatrixType;
-import edu.gcsc.vrl.userdata.*;
+import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
 import edu.gcsc.vrl.userdata.managers.DimensionManager;
-import edu.gcsc.vrl.userdata.helpers.MatrixPane;
-import edu.gcsc.vrl.userdata.helpers.VectorPane;
+import edu.gcsc.vrl.userdata.types.UserMatrixType;
 import eu.mihosoft.vrl.lang.CompilerProvider;
 import eu.mihosoft.vrl.lang.visual.EditorProvider;
 import eu.mihosoft.vrl.reflection.CustomParamData;
@@ -34,7 +32,7 @@ public class UserMatrixWindow extends CanvasWindow implements Serializable {
 
     private static final long serialVersionUID = 1;
     private transient Box outter = null;
-    private transient MatrixPane matrixPane = null;
+    private transient UserDataWindowPane windowPane = null;
     private transient VCodeEditor editor = null;
     private transient VContainer editorPane;
     private transient JComponent parent;
@@ -94,8 +92,8 @@ public class UserMatrixWindow extends CanvasWindow implements Serializable {
         final Box inner2 = Box.createHorizontalBox();
         outter.add(inner2);
 
-        matrixPane = new MatrixPane(startDim);
-        inner2.add(matrixPane);
+        windowPane = new UserDataWindowPane(startDim, UserDataCategory.MATRIX);
+        inner2.add(windowPane);
 
         Dimension prefDim = new Dimension(300, 200);
         Dimension maxDim = new Dimension(680, 800);
@@ -157,25 +155,25 @@ public class UserMatrixWindow extends CanvasWindow implements Serializable {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                inner2.remove(matrixPane);
+                inner2.remove(windowPane);
 
                 if (dimsCoose.getSelectedItem().equals(DimensionManager.ONE)) {
-                    matrixPane = new MatrixPane(DimensionManager.ONE);
+                    windowPane = new UserDataWindowPane(DimensionManager.ONE, UserDataCategory.MATRIX);
 
 
                 } else if (dimsCoose.getSelectedItem().equals(DimensionManager.TWO)) {
-                    matrixPane = new MatrixPane(DimensionManager.TWO);
+                    windowPane = new UserDataWindowPane(DimensionManager.TWO, UserDataCategory.MATRIX);
 
 
                 } else if (dimsCoose.getSelectedItem().equals(DimensionManager.THREE)) {
-                    matrixPane = new MatrixPane(DimensionManager.THREE);
+                    windowPane = new UserDataWindowPane(DimensionManager.THREE, UserDataCategory.MATRIX);
                 }
 
                 if (constant.isSelected()) {
                     parent.remove(editorPane);
-                    parent.add(matrixPane);
+                    parent.add(windowPane);
                 } else {
-                    parent.remove(matrixPane);
+                    parent.remove(windowPane);
                     parent.add(editorPane);
                 }
 
@@ -193,7 +191,7 @@ public class UserMatrixWindow extends CanvasWindow implements Serializable {
             @Override
             public void stateChanged(ChangeEvent e) {
                 if (constant.isSelected()) {
-                    parent.add(matrixPane);
+                    parent.add(windowPane);
                     parent.remove(editorPane);
                     revalidate();
                     getModel().setConstData(true);
@@ -211,7 +209,7 @@ public class UserMatrixWindow extends CanvasWindow implements Serializable {
             @Override
             public void stateChanged(ChangeEvent e) {
                 if (code.isSelected()) {
-                    parent.remove(matrixPane);
+                    parent.remove(windowPane);
                     parent.add(editorPane);
                     revalidate();
                     getModel().setConstData(false);
@@ -235,7 +233,9 @@ public class UserMatrixWindow extends CanvasWindow implements Serializable {
 
     public void updateModel() {
         if (getModel().isConstData()) {
-            getModel().setData(modelToMatrix(matrixPane.getDataModel()));
+            getModel().setData(
+                    modelToMatrix(
+                    windowPane.getTableModel()));
         } else {
             getModel().setCode(editor.getEditor().getText());
         }
@@ -264,7 +264,7 @@ public class UserMatrixWindow extends CanvasWindow implements Serializable {
 
         dimsCoose.setSelectedIndex(model.getDimension() - 1);
 
-        DefaultTableModel dataModel = matrixPane.getDataModel();
+        DefaultTableModel dataModel = windowPane.getTableModel();
         matrixToModel(dataModel, model.getData());
 
         editor.getEditor().setText(model.getCode());

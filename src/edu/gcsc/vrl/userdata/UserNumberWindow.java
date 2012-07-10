@@ -4,8 +4,8 @@
  */
 package edu.gcsc.vrl.userdata;
 
+import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
 import edu.gcsc.vrl.userdata.managers.DimensionManager;
-import edu.gcsc.vrl.userdata.helpers.VectorPane;
 import edu.gcsc.vrl.userdata.types.UserNumberType;
 import eu.mihosoft.vrl.lang.CompilerProvider;
 import eu.mihosoft.vrl.lang.visual.EditorProvider;
@@ -32,7 +32,7 @@ public class UserNumberWindow extends CanvasWindow implements Serializable {
 
     private static final long serialVersionUID = 1;
     private transient Box outter = null;
-    private transient VectorPane vectorPane = null;
+    private transient UserDataWindowPane windowPane = null;
     private transient VCodeEditor editor = null;
     private transient VContainer editorPane;
     private transient JComponent parent;
@@ -91,8 +91,8 @@ public class UserNumberWindow extends CanvasWindow implements Serializable {
         final Box inner2 = Box.createHorizontalBox();
         outter.add(inner2);
 
-        vectorPane = new VectorPane(DimensionManager.ONE);
-        inner2.add(vectorPane);
+        windowPane = new UserDataWindowPane(DimensionManager.ONE, UserDataCategory.NUMBER);
+        inner2.add(windowPane);
 
         Dimension prefDim = new Dimension(300, 200);
         Dimension maxDim = new Dimension(680, 800);
@@ -154,13 +154,13 @@ public class UserNumberWindow extends CanvasWindow implements Serializable {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                inner2.remove(vectorPane);
+                inner2.remove(windowPane);
 
                 if (constant.isSelected()) {
                     parent.remove(editorPane);
-                    parent.add(vectorPane);
+                    parent.add(windowPane);
                 } else {
-                    parent.remove(vectorPane);
+                    parent.remove(windowPane);
                     parent.add(editorPane);
                 }
 
@@ -178,7 +178,7 @@ public class UserNumberWindow extends CanvasWindow implements Serializable {
             @Override
             public void stateChanged(ChangeEvent e) {
                 if (constant.isSelected()) {
-                    parent.add(vectorPane);
+                    parent.add(windowPane);
                     parent.remove(editorPane);
                     revalidate();
                     getModel().setConstData(true);
@@ -196,7 +196,7 @@ public class UserNumberWindow extends CanvasWindow implements Serializable {
             @Override
             public void stateChanged(ChangeEvent e) {
                 if (code.isSelected()) {
-                    parent.remove(vectorPane);
+                    parent.remove(windowPane);
                     parent.add(editorPane);
                     revalidate();
                     getModel().setConstData(false);
@@ -220,7 +220,7 @@ public class UserNumberWindow extends CanvasWindow implements Serializable {
 
     public void updateModel() {
         if (getModel().isConstData()) {
-            getModel().setData((Double) vectorPane.getDataModel().getValueAt(0, 0));
+            getModel().setData((Double) windowPane.getTableModel().getValueAt(0, 0));
         } else {
             getModel().setCode(editor.getEditor().getText());
         }
@@ -247,7 +247,7 @@ public class UserNumberWindow extends CanvasWindow implements Serializable {
     public void setModel(UserNumberModel model) {
         this.model = model;
 
-        DefaultTableModel dataModel = vectorPane.getDataModel();
+        DefaultTableModel dataModel = windowPane.getTableModel();
         dataModel.setValueAt(model.getData(), 0, 0);
 
         editor.getEditor().setText(model.getCode());

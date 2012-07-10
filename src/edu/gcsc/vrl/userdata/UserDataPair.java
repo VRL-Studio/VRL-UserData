@@ -10,6 +10,7 @@ import java.io.Serializable;
 /**
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
+ * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
 public class UserDataPair implements Serializable {
     private static final long serialVersionUID = 1L;
