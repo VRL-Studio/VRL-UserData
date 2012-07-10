@@ -11,10 +11,8 @@ import java.io.Serializable;
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
-public class UserVectorPair implements Serializable {
+public class UserVectorPair extends UserDataPair implements Serializable{
     private static final long serialVersionUID = 1L;
-    private String subset;
-    private I_UserVector data;
 
     public UserVectorPair() {
         //
@@ -25,32 +23,12 @@ public class UserVectorPair implements Serializable {
         this.data = data;
     }
     
-
-    /**
-     * @return the subset
-     */
-    public String getSubset() {
-        return subset;
-    }
-
-    /**
-     * @param subset the subset to set
-     */
-    public void setSubset(String subset) {
-        this.subset = subset;
-    }
-
     /**
      * @return the cond
      */
+    @Override
     public I_UserVector getData() {
-        return data;
+        return (I_UserVector) data;
     }
 
-    /**
-     * @param cond the cond to set
-     */
-    public void setData(I_UserVector cond) {
-        this.data = cond;
-    }
 }

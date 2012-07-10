@@ -10,12 +10,11 @@ import java.io.Serializable;
 /**
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
+ * 
  */
-public class CondUserNumberPair implements Serializable {
+public class CondUserNumberPair extends UserDataPair implements Serializable{
     private static final long serialVersionUID = 1L;
-    private String subset;
-    private I_CondUserNumber data;
-
+    
     public CondUserNumberPair() {
         //
     }
@@ -24,33 +23,13 @@ public class CondUserNumberPair implements Serializable {
         this.subset = subset;
         this.data = cond;
     }
-    
-
-    /**
-     * @return the subset
-     */
-    public String getSubset() {
-        return subset;
-    }
-
-    /**
-     * @param subset the subset to set
-     */
-    public void setSubset(String subset) {
-        this.subset = subset;
-    }
 
     /**
      * @return the cond
      */
+    @Override
     public I_CondUserNumber getData() {
-        return data;
+        return (I_CondUserNumber) data;
     }
 
-    /**
-     * @param data the cond to set
-     */
-    public void setData(I_CondUserNumber data) {
-        this.data = data;
-    }
 }
