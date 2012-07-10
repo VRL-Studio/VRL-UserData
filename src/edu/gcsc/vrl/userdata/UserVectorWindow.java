@@ -4,7 +4,7 @@
  */
 package edu.gcsc.vrl.userdata;
 
-import edu.gcsc.vrl.userdata.helpers.Dimensions;
+import edu.gcsc.vrl.userdata.managers.DimensionManager;
 import edu.gcsc.vrl.userdata.helpers.VectorPane;
 import edu.gcsc.vrl.userdata.types.UserVectorType;
 import eu.mihosoft.vrl.lang.CompilerProvider;
@@ -56,7 +56,7 @@ public class UserVectorWindow extends CanvasWindow implements Serializable {
 
     private void init() {
         
-        int startDim = Dimensions.TWO;
+        int startDim = DimensionManager.TWO;
         Double[] defaultdata = {0.0,0.0};
         model.setData(defaultdata);
         
@@ -69,7 +69,7 @@ public class UserVectorWindow extends CanvasWindow implements Serializable {
         inner1.setBorder(border1);
         outter.add(inner1);
 
-        Integer[] dims = {Dimensions.ONE, Dimensions.TWO, Dimensions.THREE};
+        Integer[] dims = {DimensionManager.ONE, DimensionManager.TWO, DimensionManager.THREE};
         dimsCoose = new JComboBox(dims);
         dimsCoose.setSelectedItem(startDim);
         
@@ -156,16 +156,16 @@ public class UserVectorWindow extends CanvasWindow implements Serializable {
 
                 inner2.remove(vectorPane);
                 
-                if (dimsCoose.getSelectedItem().equals(Dimensions.ONE)) {
-                    vectorPane = new VectorPane(Dimensions.ONE);
+                if (dimsCoose.getSelectedItem().equals(DimensionManager.ONE)) {
+                    vectorPane = new VectorPane(DimensionManager.ONE);
 
 
-                } else if (dimsCoose.getSelectedItem().equals(Dimensions.TWO)) {
-                    vectorPane = new VectorPane(Dimensions.TWO);
+                } else if (dimsCoose.getSelectedItem().equals(DimensionManager.TWO)) {
+                    vectorPane = new VectorPane(DimensionManager.TWO);
 
 
-                } else if (dimsCoose.getSelectedItem().equals(Dimensions.THREE)) {
-                    vectorPane = new VectorPane(Dimensions.THREE);
+                } else if (dimsCoose.getSelectedItem().equals(DimensionManager.THREE)) {
+                    vectorPane = new VectorPane(DimensionManager.THREE);
                 }
 
                 if (constant.isSelected()) {

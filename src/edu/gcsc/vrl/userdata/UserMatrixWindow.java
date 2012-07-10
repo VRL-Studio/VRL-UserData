@@ -6,7 +6,7 @@ package edu.gcsc.vrl.userdata;
  */
 import edu.gcsc.vrl.userdata.types.UserMatrixType;
 import edu.gcsc.vrl.userdata.*;
-import edu.gcsc.vrl.userdata.helpers.Dimensions;
+import edu.gcsc.vrl.userdata.managers.DimensionManager;
 import edu.gcsc.vrl.userdata.helpers.MatrixPane;
 import edu.gcsc.vrl.userdata.helpers.VectorPane;
 import eu.mihosoft.vrl.lang.CompilerProvider;
@@ -58,7 +58,7 @@ public class UserMatrixWindow extends CanvasWindow implements Serializable {
 
     private void init() {
         
-        int startDim = Dimensions.TWO;
+        int startDim = DimensionManager.TWO;
         Double[][] defaultdata = {{0.0,0.0},{0.0,0.0}};
         model.setData(defaultdata);
         
@@ -72,7 +72,7 @@ public class UserMatrixWindow extends CanvasWindow implements Serializable {
         inner1.setBorder(border1);
         outter.add(inner1);
 
-        Integer[] dims = {Dimensions.ONE, Dimensions.TWO, Dimensions.THREE};
+        Integer[] dims = {DimensionManager.ONE, DimensionManager.TWO, DimensionManager.THREE};
         dimsCoose = new JComboBox(dims);
         dimsCoose.setSelectedItem(startDim);
         
@@ -159,16 +159,16 @@ public class UserMatrixWindow extends CanvasWindow implements Serializable {
 
                 inner2.remove(matrixPane);
 
-                if (dimsCoose.getSelectedItem().equals(Dimensions.ONE)) {
-                    matrixPane = new MatrixPane(Dimensions.ONE);
+                if (dimsCoose.getSelectedItem().equals(DimensionManager.ONE)) {
+                    matrixPane = new MatrixPane(DimensionManager.ONE);
 
 
-                } else if (dimsCoose.getSelectedItem().equals(Dimensions.TWO)) {
-                    matrixPane = new MatrixPane(Dimensions.TWO);
+                } else if (dimsCoose.getSelectedItem().equals(DimensionManager.TWO)) {
+                    matrixPane = new MatrixPane(DimensionManager.TWO);
 
 
-                } else if (dimsCoose.getSelectedItem().equals(Dimensions.THREE)) {
-                    matrixPane = new MatrixPane(Dimensions.THREE);
+                } else if (dimsCoose.getSelectedItem().equals(DimensionManager.THREE)) {
+                    matrixPane = new MatrixPane(DimensionManager.THREE);
                 }
 
                 if (constant.isSelected()) {

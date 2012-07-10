@@ -5,7 +5,7 @@
 package edu.gcsc.vrl.userdata;
 
 import edu.gcsc.vrl.userdata.types.CondUserNumberType;
-import edu.gcsc.vrl.userdata.helpers.Dimensions;
+import edu.gcsc.vrl.userdata.managers.DimensionManager;
 import edu.gcsc.vrl.userdata.helpers.VectorPane;
 import eu.mihosoft.vrl.lang.CompilerProvider;
 import eu.mihosoft.vrl.lang.visual.EditorProvider;
@@ -52,7 +52,7 @@ public class CondUserNumberWindow extends CanvasWindow implements Serializable {
 
     private void init() {
         
-        int startDim = Dimensions.TWO;
+        int startDim = DimensionManager.TWO;
         //NO defaultdata like {0.0,0.0} because only code is allowed
         
         outter = Box.createVerticalBox();
@@ -64,7 +64,7 @@ public class CondUserNumberWindow extends CanvasWindow implements Serializable {
         inner1.setBorder(border1);
         outter.add(inner1);
 
-        Integer[] dims = {Dimensions.ONE, Dimensions.TWO, Dimensions.THREE};
+        Integer[] dims = {DimensionManager.ONE, DimensionManager.TWO, DimensionManager.THREE};
         dimsCoose = new JComboBox(dims);
         dimsCoose.setSelectedItem(startDim);
 

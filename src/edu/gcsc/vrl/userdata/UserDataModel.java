@@ -4,18 +4,20 @@
  */
 package edu.gcsc.vrl.userdata;
 
+import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
 import java.io.Serializable;
 
 /**
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
-public class UserDataModel implements Serializable{
+public abstract class UserDataModel implements Serializable{
     private static final long serialVersionUID=1L;
     
     private boolean constData;
     private String code;
     private int dimension;
+    protected UserDataCategory category;
 
     /**
      * @return the constData
@@ -57,5 +59,22 @@ public class UserDataModel implements Serializable{
      */
     public void setDimension(int dimension) {
         this.dimension = dimension;
+    }
+    
+    /**
+     * @return the data
+     */
+    public abstract Object getData() ;
+
+    /**
+     * @param data the data to set
+     */
+    public abstract void setData(Object data) ;
+
+    /**
+     * @return the category
+     */
+    public UserDataCategory getCategory() {
+        return category;
     }
 }

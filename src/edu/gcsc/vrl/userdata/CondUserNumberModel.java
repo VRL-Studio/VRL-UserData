@@ -4,27 +4,37 @@
  */
 package edu.gcsc.vrl.userdata;
 
+import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
+
 /**
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
-public class CondUserNumberModel extends UserDataModel{
+public class CondUserNumberModel extends UserDataModel {
+
+    private static final long serialVersionUID = 1L;
+
+    public CondUserNumberModel() {
+        category = UserDataCategory.COND_NUMBER;
+    }
+
     
-    private static final long serialVersionUID=1L;
-    
-//    private Double data;
-//
-//    /**
-//     * @return the data
-//     */
-//    public Double getData() {
-//        return data;
-//    }
-//
-//    /**
-//     * @param data the data to set
-//     */
-//    public void setData(Double data) {
-//        this.data = data;
-//    }
+    /**
+     * Dummy methode. DO NOTHING.
+     *
+     * @return null
+     */
+    @Override
+    public Object getData() {
+        return null;
+    }
+
+    /**
+     * Dummy methode. DO NOTHING.
+     *
+     * @param data Dummy parameter. DO NOTHING.
+     */
+    @Override
+    public void setData(Object data) {
+    }
 }

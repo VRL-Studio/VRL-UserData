@@ -6,13 +6,13 @@ package edu.gcsc.vrl.userdata.helpers;
 
 /**
  *
- * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
-public class Dimensions {
+public enum UserDataCategory {
     
-    public static final int ONE = 1;
-    public static final int TWO = 2;
-    public static final int THREE = 3;
+    COND_NUMBER,
+    NUMBER,
+    VECTOR,
+    MATRIX
     
 }
