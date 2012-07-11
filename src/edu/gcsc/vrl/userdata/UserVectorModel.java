@@ -18,6 +18,8 @@ public class UserVectorModel extends UserDataModel {
     public UserVectorModel() {
 
         category = UserDataCategory.VECTOR;
+        modelKey = category + ":model";
+        createDefaultData();
     }
 
     /**
@@ -39,12 +41,19 @@ public class UserVectorModel extends UserDataModel {
     public void setData(Object data) {
 
         if (DimensionManager.getArrayDimension(data) == 1) {
-            setData(data);
+            setData((Double[]) data);
 
         } else {
             System.err.println("UserVectorModel.setData(Object data): "
                     + "data has wrong size.");
         }
 
+    }
+
+    @Override
+    protected void createDefaultData() {
+        setConstData(true);
+        Double[] defaultdata = {0.0, 0.0};
+        data = defaultdata;
     }
 }

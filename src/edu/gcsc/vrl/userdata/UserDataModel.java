@@ -5,6 +5,7 @@
 package edu.gcsc.vrl.userdata;
 
 import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
+import edu.gcsc.vrl.userdata.managers.DimensionManager;
 import java.io.Serializable;
 
 /**
@@ -17,8 +18,9 @@ public abstract class UserDataModel implements Serializable{
     
     private boolean constData;
     private String code;
-    private int dimension;
+    private int dimension ;//= DimensionManager.TWO; // default value
     protected UserDataCategory category;
+    protected String modelKey;
 
     /**
      * @return the constData
@@ -63,6 +65,20 @@ public abstract class UserDataModel implements Serializable{
     }
     
     /**
+     * @return the category
+     */
+    public UserDataCategory getCategory() {
+        return category;
+    }
+
+    /**
+     * @return the modelKey
+     */
+    public String getModelKey() {
+        return modelKey;
+    }
+    
+    /**
      * @return the data
      */
     public abstract Object getData() ;
@@ -72,10 +88,14 @@ public abstract class UserDataModel implements Serializable{
      */
     public abstract void setData(Object data) ;
 
+    
+    
     /**
-     * @return the category
+     * Create the concrete default data that should be used for initialization.
+     * Specific means NUMBER-, VECTOR- or MATRIXmodel.
+     * 
+     * @return the default data to set
      */
-    public UserDataCategory getCategory() {
-        return category;
-    }
+    protected abstract void createDefaultData();
+    
 }

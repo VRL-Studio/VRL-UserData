@@ -27,18 +27,19 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
 
     private static final long serialVersionUID = 1;
 
-    /**
-     * @return the MODEL_KEY
-     */
-    public static String getMODEL_KEY() {
-        return MODEL_KEY;
-    }
+//    /**
+//     * @return the MODEL_KEY
+//     */
+//    public static String getMODEL_KEY() {
+//        return MODEL_KEY;
+//    }
     private UserNumberWindow window;
-    private static final String MODEL_KEY = "UserNumberType:model";
+    private UserNumberModel model;
+//    private static final String MODEL_KEY = "UserNumberType:model";
 
     public UserNumberType() {
 
-//        setType(I_UserNumber.class);
+        model = new UserNumberModel();
 
         setName("");
 
@@ -61,12 +62,11 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                window = new UserNumberWindow(
-
+                window = new UserNumberWindow(model,
                         UserNumberType.this, "User Data Input", getMainCanvas());
 
-                customParamData2Window();
-
+//                customParamData2Window();
+                window.modelData2WindowData(model, window);
                 
                 //add InputWindow to canvas
                 getMainCanvas().addWindow(window);
@@ -75,34 +75,34 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
 
     }
 
-    private UserNumberWindow getWindow() {
-        if (window == null) {
-            window = new UserNumberWindow(
-                    UserNumberType.this, "User Data Input", getMainCanvas());
-        }
-        return window;
-    }
+//    private UserNumberWindow getWindow() {
+//        if (window == null) {
+//            window = new UserNumberWindow(model,
+//                    UserNumberType.this, "User Data Input", getMainCanvas());
+//        }
+//        return window;
+//    }
 
-    private void customParamData2Window() {
-        if (getCustomData() != null) {
-            Object o = getCustomData().get(getMODEL_KEY());
-
-            if (o instanceof UserNumberModel) {
-                UserNumberModel model =  (UserNumberModel) o;
-                getWindow().setModel(model);
-            }
-        }
-    }
+//    private void customParamData2Window() {
+//        if (getCustomData() != null) {
+//            Object o = getCustomData().get(model.getModelKey());
+//
+//            if (o instanceof UserNumberModel) {
+//                UserNumberModel model =  (UserNumberModel) o;
+//                getWindow().setModel(model);
+//            }
+//        }
+//    }
 
     @Override
     public Object getViewValue() {
 
         I_UserNumber result = null;
 
-        UserNumberModel model = null;
+//        UserNumberModel model = null;
 
-        customParamData2Window();
-        model = getWindow().getModel();
+//        customParamData2Window();
+//        model = getWindow().getModel();
 
         try {
             boolean isConst = model.isConstData();

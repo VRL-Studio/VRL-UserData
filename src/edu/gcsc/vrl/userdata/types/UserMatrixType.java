@@ -7,6 +7,7 @@ package edu.gcsc.vrl.userdata.types;
 import edu.gcsc.vrl.ug.UserData;
 import edu.gcsc.vrl.ug.UserDataCompiler;
 import edu.gcsc.vrl.ug.api.*;
+import edu.gcsc.vrl.userdata.UserDataModel;
 import edu.gcsc.vrl.userdata.UserMatrixModel;
 import edu.gcsc.vrl.userdata.UserMatrixWindow;
 import eu.mihosoft.vrl.annotation.TypeInfo;
@@ -22,30 +23,30 @@ import java.util.ArrayList;
  * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
-@TypeInfo(type=I_UserMatrix.class, input=true, output=false, style="default")
+@TypeInfo(type = I_UserMatrix.class, input = true, output = false, style = "default")
 public class UserMatrixType extends TypeRepresentationBase implements Serializable {
 
     private static final long serialVersionUID = 1;
-
-    /**
-     * @return the MODEL_KEY
-     */
-    public static String getMODEL_KEY() {
-        return MODEL_KEY;
-    }
+//    /**
+//     * @return the MODEL_KEY
+//     */
+//    public static String getMODEL_KEY() {
+//        return MODEL_KEY;
+//    }
     private UserMatrixWindow window;
+    private UserMatrixModel model;
 
-    private static final String MODEL_KEY = "UserMatrixType:model";
-
-    
+//    private static final String MODEL_KEY = "UserMatrixType:model";
     public UserMatrixType() {
 
-//        setType(I_UserMatrix.class);
+        model = new UserMatrixModel();
+
+        evaluateCustomParamData();
 
         setName("");
-        
+
         nameLabel.setAlignmentX(LEFT_ALIGNMENT);
-        
+
         add(nameLabel);
 
         VButton btn = new VButton("edit");
@@ -62,56 +63,60 @@ public class UserMatrixType extends TypeRepresentationBase implements Serializab
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                
 
-                window = new UserMatrixWindow(
+
+                window = new UserMatrixWindow(model,
                         UserMatrixType.this, "User Data Input", getMainCanvas());
 
-                 customParamData2Window();
-                
+//                 customParamData2Window();
+//                window.modelData2WindowData(model, window);
+                window.updateWindow(model);
+
                 //add InputWindow to canvas
                 getMainCanvas().addWindow(window);
             }
         });
     }
-    
-    private UserMatrixWindow getWindow() {
-        if (window == null) {
-            window = new UserMatrixWindow(
-                    UserMatrixType.this, "User Data Input", getMainCanvas());
-        }
-        return window;
-    }
 
-
-     private void customParamData2Window() {
-
-        if (getCustomData() != null) {
-            Object o = getCustomData().get(getMODEL_KEY());
-
-            if (o instanceof UserMatrixModel) {
-                UserMatrixModel model =  (UserMatrixModel) o;
-                getWindow().setModel(model);
-            }
-        }
-    }
-
-    
+//    private UserMatrixWindow getWindow() {
+//        if (window == null) {
+//            window = new UserMatrixWindow(model,
+//                    UserMatrixType.this, "User Data Input", getMainCanvas());
+//        }
+//        return window;
+//    }
+//     private void customParamData2Window() {
+//
+//        if (getCustomData() != null) {
+//            Object o = getCustomData().get(model.getModelKey());
+//
+//            if (o instanceof UserMatrixModel) {
+//                UserMatrixModel model =  (UserMatrixModel) o;
+//                getWindow().setModel(model);
+//            }
+//        }
+//    }
     @Override
     public Object getViewValue() {
 
         I_UserMatrix result = null;
 
-        UserMatrixModel model = null;
+//        UserMatrixModel model = null;
 
-        customParamData2Window();
-        model = getWindow().getModel();
+//        customParamData2Window();
+//        model = getWindow().getModel();
 
         try {
             boolean isConst = model.isConstData();
 
             if (isConst) {
+                
+                System.out.println("UserMatrixType.getViewValue(): "
+                        + "model.getData() = "+ model.getData());
+                
                 result = arrayToUserMatrix(model.getData());
+                
+                System.out.println("result = " + result);
             } else {
 
                 switch (model.getDimension()) {
@@ -131,11 +136,12 @@ public class UserMatrixType extends TypeRepresentationBase implements Serializab
                         result = vector3d;
                         break;
                     default:
+                        System.out.println(">> UserMatrixType: UserData has invalid dimension!");
                         break;
                 }
             }
         } catch (Exception ex) {
-//            ex.printStackTrace(System.err);
+            ex.printStackTrace(System.err);
         }
 
 
@@ -205,7 +211,7 @@ public class UserMatrixType extends TypeRepresentationBase implements Serializab
         } else if (dim == 3) {
             return new ConstUserMatrix3d();
         }
-        
+
         return null;
     }
 
@@ -221,10 +227,41 @@ public class UserMatrixType extends TypeRepresentationBase implements Serializab
 
         return result;
     }
-    
+
     @Override
     public String getValueAsCode() {
         // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
         return "null as " + getType().getName();
+    }
+
+    @Override
+    public void evaluateCustomParamData() {
+        super.evaluateCustomParamData();
+
+        System.out.println("UserMatrixType.evaluateCustomParamData():");
+
+        UserDataModel tmp = (UserDataModel) this.getCustomData().get(model.getModelKey());
+
+        if (tmp != null) {
+            Double[][] data = (Double[][]) tmp.getData();
+
+            for (int i = 0; i < data.length; i++) {
+                for (int j = 0; j < data[i].length; j++) {
+                    System.out.println("data[" + i + "][" + j + "] = " + data[i][j]);
+                }
+            }
+
+            if (data != null) {
+                model.setData(data);
+            }
+
+            String code = tmp.getCode();
+            
+            System.out.println("code = "+ code);
+
+            if (code != null) {
+                model.setCode(code);
+            }
+        }
     }
 }

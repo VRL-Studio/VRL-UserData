@@ -25,12 +25,12 @@ public class UserDataWindowPane extends JPanel {
     private JTable table;
     private DefaultTableModel tableModel;
 
-    public UserDataWindowPane(int dim, UserDataCategory category) {
+    public UserDataWindowPane( int dim, UserDataModel model) {
         
         setBackground(new Color(0, 0, 0, 0));
         setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        createTableModel(dim, category);
+        createTableModel(dim, model.getCategory());
 
         table = new JTable(getTableModel());
 

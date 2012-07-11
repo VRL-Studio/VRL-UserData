@@ -37,7 +37,7 @@ public class UserMatrixWindow extends UserDataWindow implements Serializable {
             String title,
             Canvas canvas) {
 
-        super(model,tRep, title, canvas);
+        super(model, tRep, title, canvas);
 
     }
 
@@ -217,7 +217,6 @@ public class UserMatrixWindow extends UserDataWindow implements Serializable {
 //        });
 //
 //    }
-
 //    public void updateModel() {
 //        if (getModel().isConstData()) {
 //            getModel().setData(
@@ -235,18 +234,16 @@ public class UserMatrixWindow extends UserDataWindow implements Serializable {
 //       pData.put(UserMatrixType.getMODEL_KEY(), getModel());
 //        tRep.setCustomData(pData);
 //    }
-
 //    /**
 //     * @return the model
 //     */
 //    public UserMatrixModel getModel() {
 //        return model;
 //    }
-
 //    /**
 //     * @param model the model to set
 //     */
-//    public void setModel(UserMatrixModel model) {
+//    public void updateWindow(UserMatrixModel model) {
 //        this.model = model;
 //
 //        dimsCoose.setSelectedIndex(model.getDimension() - 1);
@@ -262,13 +259,7 @@ public class UserMatrixWindow extends UserDataWindow implements Serializable {
 //            code.setSelected(true);
 //        }
 //    }
-
-    @Override
-    protected Object createDefaultData() {
-        Double[][] defaultdata = {{0.0,0.0},{0.0,0.0}};
-        
-        return defaultdata;
-    }
+    
 
 //    private static void matrixToModel(DefaultTableModel dataModel, Double[][] data) {
 //        dataModel.setRowCount(data.length);
@@ -279,11 +270,15 @@ public class UserMatrixWindow extends UserDataWindow implements Serializable {
 //            }
 //        }
 //    }
-    
     @Override
-    protected void modelData2TableData(UserDataModel model, DefaultTableModel tableModel) {
-       
+    public void modelData2WindowData(UserDataModel model, UserDataWindow window) {
+
+        DefaultTableModel tableModel = window.getTableModel();
         Double[][] data = (Double[][]) model.getData();
+
+        System.out.println("UserMatrixWindow.modelData2WindowData():");
+        System.out.println("tableModel = "+ tableModel);
+        System.out.println("data = "+ data);
         
         tableModel.setRowCount(data.length);
 
@@ -293,7 +288,7 @@ public class UserMatrixWindow extends UserDataWindow implements Serializable {
             }
         }
     }
-    
+
 //    private static Double[][] modelToMatrix(DefaultTableModel dataModel) {
 //        Double[][] data = new Double[dataModel.getRowCount()][dataModel.getColumnCount()];
 //
@@ -304,11 +299,10 @@ public class UserMatrixWindow extends UserDataWindow implements Serializable {
 //        }
 //        return data;
 //    }
-
-
     @Override
-    protected void tableData2ModelData(DefaultTableModel tableModel, UserDataModel model) {
+    public void windoData2ModelData(UserDataWindow window, UserDataModel model) {
         
+        DefaultTableModel tableModel = window.getTableModel();
         Double[][] data = new Double[tableModel.getRowCount()][tableModel.getColumnCount()];
 
         for (int j = 0; j < tableModel.getColumnCount(); j++) {
@@ -316,7 +310,7 @@ public class UserMatrixWindow extends UserDataWindow implements Serializable {
                 data[i][j] = (Double) tableModel.getValueAt(i, j);
             }
         }
-        
+
         model.setData(data);
     }
 }

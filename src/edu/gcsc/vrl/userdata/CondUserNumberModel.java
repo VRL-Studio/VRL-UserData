@@ -16,6 +16,7 @@ public class CondUserNumberModel extends UserDataModel {
 
     public CondUserNumberModel() {
         category = UserDataCategory.COND_NUMBER;
+        modelKey = category+":model";
     }
 
     
@@ -36,5 +37,14 @@ public class CondUserNumberModel extends UserDataModel {
      */
     @Override
     public void setData(Object data) {
+    }
+
+    /**
+     * set ConstData false
+     *
+     */
+    @Override
+    protected void createDefaultData() {
+        setConstData(false);
     }
 }

@@ -17,6 +17,10 @@ public class UserMatrixModel extends UserDataModel{
 
     public UserMatrixModel() {
         category = UserDataCategory.MATRIX;
+        modelKey = category+":model";
+        createDefaultData();
+        
+        System.out.println("UserMatrixModel: dim = "+ getDimension());
     }
 
     
@@ -39,12 +43,20 @@ public class UserMatrixModel extends UserDataModel{
     public void setData(Object data) {
         
         if (DimensionManager.getArrayDimension(data) == 2){
-            setData(data);
+            setData((Double[][])data);
             
         }else{
             System.err.println("UserMatrixModel.setData(Object data): "
                     + "data has wrong size.");
         }
         
+    }
+    
+    @Override
+    protected void createDefaultData() {
+        setConstData(true);
+        Double[][] defaultdata = {{0.0, 0.0}, {0.0, 0.0}};
+
+        data = defaultdata;
     }
 }

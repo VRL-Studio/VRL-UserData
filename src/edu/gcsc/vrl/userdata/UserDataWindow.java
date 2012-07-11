@@ -37,7 +37,7 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
     private transient VContainer editorPane;
     private transient JComponent parent;
     private transient UserDataModel model = null;//new UserMatrixModel();
-    private transient JComboBox dimsCoose;
+    private transient JComboBox dimsChoose;
     private transient TypeRepresentationBase tRep;
     private transient JRadioButton constant;
     private transient JRadioButton code;
@@ -50,7 +50,7 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
         super(title, canvas);
 
         this.tRep = tRep;
-        
+
         this.model = model;
 
         init();
@@ -58,23 +58,15 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
         setVisible(true);
 
     }
-    
-    /**
-     * Create the concrete default data that should be used for initialization.
-     * Specific means NUMBER-, VECTOR- or MATRIXmodel.
-     * 
-     * @return the default data to set
-     */
-    protected abstract Object createDefaultData();
-    
-    
+
     private void init() {
-        
-        int startDim = DimensionManager.TWO;
-        
-        model.setData(createDefaultData());
-        
-        
+
+        int startdim = DimensionManager.TWO;//model.getDimension();
+        System.out.println("UserDataWindow.init(): startdim = "+startdim);
+//        model.setData(createDefaultData());
+////        updateModel();
+//        checkCustomData();
+
         outter = Box.createVerticalBox();
         add(outter);
 
@@ -85,10 +77,10 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
         outter.add(inner1);
 
         Integer[] dims = {DimensionManager.ONE, DimensionManager.TWO, DimensionManager.THREE};
-        dimsCoose = new JComboBox(dims);
-        dimsCoose.setSelectedItem(startDim);
-        
-        inner1.add(dimsCoose);
+        dimsChoose = new JComboBox(dims);
+        dimsChoose.setSelectedItem(startdim);
+
+        inner1.add(dimsChoose);
 
         constant = new JRadioButton("Constant");
 
@@ -106,7 +98,7 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
         final Box inner2 = Box.createHorizontalBox();
         outter.add(inner2);
 
-        windowPane = new UserDataWindowPane(startDim, model.getCategory());
+        windowPane = new UserDataWindowPane(startdim, model);
         inner2.add(windowPane);
 
         Dimension prefDim = new Dimension(300, 200);
@@ -164,23 +156,23 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
         //
         // WHICH DIM CHOOSEN
         //
-        dimsCoose.addActionListener(new ActionListener() {
+        dimsChoose.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
 
                 inner2.remove(windowPane);
 
-                if (dimsCoose.getSelectedItem().equals(DimensionManager.ONE)) {
-                    windowPane = new UserDataWindowPane(DimensionManager.ONE, model.getCategory());
+                if (dimsChoose.getSelectedItem().equals(DimensionManager.ONE)) {
+                    windowPane = new UserDataWindowPane(DimensionManager.ONE, model);
 
 
-                } else if (dimsCoose.getSelectedItem().equals(DimensionManager.TWO)) {
-                    windowPane = new UserDataWindowPane(DimensionManager.TWO, model.getCategory());
+                } else if (dimsChoose.getSelectedItem().equals(DimensionManager.TWO)) {
+                    windowPane = new UserDataWindowPane(DimensionManager.TWO, model);
 
 
-                } else if (dimsCoose.getSelectedItem().equals(DimensionManager.THREE)) {
-                    windowPane = new UserDataWindowPane(DimensionManager.THREE, model.getCategory());
+                } else if (dimsChoose.getSelectedItem().equals(DimensionManager.THREE)) {
+                    windowPane = new UserDataWindowPane(DimensionManager.THREE, model);
                 }
 
                 if (constant.isSelected()) {
@@ -246,24 +238,30 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
     }
 
     public void updateModel() {
-        
+
         if (getModel().isConstData()) {
 //            getModel().setData(
 //                    modelToMatrix(
 //                    windowPane.getTableModel()));
-            tableData2ModelData(windowPane.getTableModel(), getModel());
+            windoData2ModelData(this, getModel());
         } else {
-            getModel().setCode(editor.getEditor().getText());
+//            getModel().setCode(editor.getEditor().getText());
+            windowCode2ModelCode(this, model);
         }
-        getModel().setDimension((Integer) dimsCoose.getSelectedItem());
+        getModel().setDimension((Integer) dimsChoose.getSelectedItem());
 
+        checkCustomData();
+    }
+
+    public void checkCustomData() {
         CustomParamData pData = tRep.getCustomData();
-        
-        if(pData == null)
+
+        if (pData == null) {
             pData = new CustomParamData();
-        
-       pData.put(model.getCategory().toString()+":model", getModel());
-       
+        }
+
+        pData.put(model.getModelKey(), getModel());
+
         tRep.setCustomData(pData);
     }
 
@@ -277,21 +275,57 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
     /**
      * @param model the model to set
      */
-    public void setModel(UserDataModel model) {
-        this.model = model;
+    public void updateWindow(UserDataModel model) {
 
-        dimsCoose.setSelectedIndex(model.getDimension() - 1);
 
-        DefaultTableModel tableModel = windowPane.getTableModel();
-        modelData2TableData(model, tableModel);
+//        dimsChoose.setSelectedIndex(model.getDimension() - 1);
+        switch (model.getDimension()) {
 
-        editor.getEditor().setText(model.getCode());
+            case 1:
+                dimsChoose.setSelectedItem(DimensionManager.ONE);
+                break;
+            case 2:
+                dimsChoose.setSelectedItem(DimensionManager.TWO);
+                break;
+            case 3:
+                dimsChoose.setSelectedItem(DimensionManager.THREE);
+                break;
+
+            default:
+                System.out.println(">> UserDataWindow: UserDataModel has invalid dimension!");
+                break;
+        }
+
+        modelData2WindowData(model, this);
+
+//        editor.getEditor().setText(model.getCode());
+        modelCode2WindowCode(model, this);
 
         if (model.isConstData()) {
             constant.setSelected(true);
         } else {
             code.setSelected(true);
         }
+    }
+
+    protected DefaultTableModel getTableModel() {
+        return windowPane.getTableModel();
+    }
+
+    private String getCode() {
+        return editor.getEditor().getText();
+    }
+
+    private void setCode(String code) {
+        editor.getEditor().setText(code);
+    }
+
+    public void modelCode2WindowCode(UserDataModel model, UserDataWindow window) {
+        window.setCode(model.getCode());
+    }
+
+    public void windowCode2ModelCode(UserDataWindow window, UserDataModel model) {
+        model.setCode(window.getCode());
     }
 
 //    private static void matrixToModel(DefaultTableModel dataModel, Double[][] data) {
@@ -303,7 +337,6 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
 //            }
 //        }
 //    }
-
 //    private static Double[][] modelToMatrix(DefaultTableModel dataModel) {
 //        Double[][] data = new Double[dataModel.getRowCount()][dataModel.getColumnCount()];
 //
@@ -314,8 +347,7 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
 //        }
 //        return data;
 //    }
-    
-        protected abstract void modelData2TableData(UserDataModel model, DefaultTableModel tableModel);
+    public abstract void modelData2WindowData(UserDataModel model, UserDataWindow window);//DefaultTableModel tableModel); //TODO use window instead table
 //    {//Double[][] data
 //        Double[][] data = (Double[][]) model.getData();
 //                
@@ -328,7 +360,7 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
 //        }
 //    }
 
-    protected abstract void tableData2ModelData(DefaultTableModel tableModel, UserDataModel model);
+    public abstract void windoData2ModelData(UserDataWindow window, UserDataModel model); //TODO use window instead table
 //    {
 //        
 //        Double[][] data = new Double[tableModel.getRowCount()][tableModel.getColumnCount()];

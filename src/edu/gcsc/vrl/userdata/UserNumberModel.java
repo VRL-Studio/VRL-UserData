@@ -11,17 +11,16 @@ import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
-public class UserNumberModel extends UserDataModel{
-    
-    private static final long serialVersionUID=1L;
-    
+public class UserNumberModel extends UserDataModel {
+
+    private static final long serialVersionUID = 1L;
     private Double data;
 
     public UserNumberModel() {
         category = UserDataCategory.NUMBER;
+        modelKey = category + ":model";
+        createDefaultData();
     }
-    
-    
 
     /**
      * @return the data
@@ -37,17 +36,24 @@ public class UserNumberModel extends UserDataModel{
     public void setData(Double data) {
         this.data = data;
     }
-    
+
     @Override
     public void setData(Object data) {
-        
-        if (DimensionManager.getArrayDimension(data) == 0){
-            setData(data);
-            
-        }else{
+
+        if (DimensionManager.getArrayDimension(data) == 0) {
+            setData((Double) data);
+
+        } else {
             System.err.println("UserNumberModel.setData(Object data): "
                     + "data has wrong size.");
         }
-        
+
+    }
+
+    @Override
+    protected void createDefaultData() {
+        setConstData(true);
+        Double defaultdata = 0.0;
+        data = defaultdata;
     }
 }

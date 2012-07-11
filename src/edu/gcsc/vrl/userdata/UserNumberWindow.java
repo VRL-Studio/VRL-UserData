@@ -232,7 +232,7 @@ public class UserNumberWindow extends UserDataWindow implements Serializable {
 //    /**
 //     * @param model the model to set
 //     */
-//    public void setModel(UserNumberModel model) {
+//    public void updateWindow(UserNumberModel model) {
 //        this.model = model;
 //
 //        DefaultTableModel dataModel = windowPane.getTableModel();
@@ -250,19 +250,14 @@ public class UserNumberWindow extends UserDataWindow implements Serializable {
 //
 //    }
 
+
     @Override
-    protected Object createDefaultData() {
-        Double defaultdata = 0.0;
-        return defaultdata;
+    public void modelData2WindowData(UserDataModel model, UserDataWindow window) {
+        window.getTableModel().setValueAt(model.getData(), 0, 0);
     }
 
     @Override
-    protected void modelData2TableData(UserDataModel model, DefaultTableModel tableModel) {
-        tableModel.setValueAt(model.getData(), 0, 0);
-    }
-
-    @Override
-    protected void tableData2ModelData(DefaultTableModel tableModel, UserDataModel model) {
-        getModel().setData((Double) tableModel.getValueAt(0, 0));
+    public void windoData2ModelData(UserDataWindow window, UserDataModel model) {
+        getModel().setData((Double) window.getTableModel().getValueAt(0, 0));
     }
 }

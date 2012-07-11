@@ -27,18 +27,19 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
 
     private static final long serialVersionUID = 1;
 
-    /**
-     * @return the MODEL_KEY
-     */
-    public static String getMODEL_KEY() {
-        return MODEL_KEY;
-    }
+//    /**
+//     * @return the MODEL_KEY
+//     */
+//    public static String getMODEL_KEY() {
+//        return MODEL_KEY;
+//    }
     private UserVectorWindow window;
-    private static final String MODEL_KEY = "UserVectorType:model";
+    private UserVectorModel model;
+//    private static final String MODEL_KEY = "UserVectorType:model";
 
     public UserVectorType() {
 
-//        setType(I_UserVector.class);
+        model = new UserVectorModel();
 
         setName("");
         
@@ -61,11 +62,11 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
             @Override
             public void actionPerformed(ActionEvent e) {
               
-                window = new UserVectorWindow(
+                window = new UserVectorWindow(model,
                         UserVectorType.this, "User Data Input", getMainCanvas());
 
-                customParamData2Window();
-
+//                customParamData2Window();
+                window.modelData2WindowData(model, window);
                 
                 //add InputWindow to canvas
                 getMainCanvas().addWindow(window);
@@ -73,35 +74,35 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
         });
     }
 
-     private UserVectorWindow getWindow() {
-        if (window == null) {
-            window = new UserVectorWindow(
-                    UserVectorType.this, "User Data Input", getMainCanvas());
-        }
-        return window;
-    }
+//     private UserVectorWindow getWindow() {
+//        if (window == null) {
+//            window = new UserVectorWindow(model,
+//                    UserVectorType.this, "User Data Input", getMainCanvas());
+//        }
+//        return window;
+//    }
      
-     private void customParamData2Window() {
-        if (getCustomData() != null) {
-            Object o = getCustomData().get(getMODEL_KEY());
-
-            if (o instanceof UserVectorModel) {
-                UserVectorModel model =  (UserVectorModel) o;
-                getWindow().setModel(model);
-            }
-        }
-    }
+//     private void customParamData2Window() {
+//        if (getCustomData() != null) {
+//            Object o = getCustomData().get(model.getModelKey());
+//
+//            if (o instanceof UserVectorModel) {
+//                UserVectorModel model =  (UserVectorModel) o;
+//                getWindow().setModel(model);
+//            }
+//        }
+//    }
     
     @Override
     public Object getViewValue() {
 
         I_UserVector result = null;
 
-        UserVectorModel model = null;
+//        UserVectorModel model = null;
 
 
-        customParamData2Window();
-        model = getWindow().getModel();
+//        customParamData2Window();
+//        model = getWindow().getModel();
 
         try {
             boolean isConst = model.isConstData();

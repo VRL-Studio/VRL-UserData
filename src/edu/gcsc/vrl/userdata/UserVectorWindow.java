@@ -245,14 +245,14 @@ public class UserVectorWindow extends UserDataWindow implements Serializable {
 //    /**
 //     * @param model the model to set
 //     */
-//    public void setModel(UserVectorModel model) {
+//    public void updateWindow(UserVectorModel model) {
 //        this.model = model;
 //        
 //        dimsCoose.setSelectedIndex(model.getDimension() - 1);
 //
 //        DefaultTableModel dataModel = windowPane.getTableModel();
 //        
-//        System.out.println("UserVectorWindow.setModel():");
+//        System.out.println("UserVectorWindow.updateWindow():");
 //        System.out.println("dataModel ="+dataModel);
 //        System.out.println("model.getData() ="+model.getData());
 //        
@@ -267,11 +267,6 @@ public class UserVectorWindow extends UserDataWindow implements Serializable {
 //        }
 //    }
 
-    @Override
-    protected Object createDefaultData() {
-        Double[] defaultdata = {0.0,0.0};
-        return defaultdata;
-    }
 
 //    private static void arrayToModel(DefaultTableModel dataModel, Double[] data) {
 //        dataModel.setRowCount(data.length);
@@ -281,8 +276,9 @@ public class UserVectorWindow extends UserDataWindow implements Serializable {
 //        }
 //    }
     @Override
-    protected void modelData2TableData(UserDataModel model, DefaultTableModel tableModel) {
+    public void modelData2WindowData(UserDataModel model, UserDataWindow window) {
         
+        DefaultTableModel tableModel = window.getTableModel();
         Double[] data = (Double[]) model.getData();
         
         tableModel.setRowCount(data.length);
@@ -303,8 +299,9 @@ public class UserVectorWindow extends UserDataWindow implements Serializable {
 //    }
     
     @Override
-    protected void tableData2ModelData(DefaultTableModel tableModel, UserDataModel model) {
+    public void windoData2ModelData(UserDataWindow window, UserDataModel model) {
         
+        DefaultTableModel tableModel = window.getTableModel();
         Double[] data = new Double[tableModel.getRowCount()];
         
         for (int i = 0; i < tableModel.getRowCount(); i++) {
