@@ -7,6 +7,7 @@ package edu.gcsc.vrl.userdata.types;
 import edu.gcsc.vrl.ug.UserData;
 import edu.gcsc.vrl.ug.UserDataCompiler;
 import edu.gcsc.vrl.ug.api.*;
+import edu.gcsc.vrl.userdata.UserDataModel;
 import edu.gcsc.vrl.userdata.UserVectorModel;
 import edu.gcsc.vrl.userdata.UserVectorWindow;
 import eu.mihosoft.vrl.annotation.TypeInfo;
@@ -40,6 +41,8 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
     public UserVectorType() {
 
         model = new UserVectorModel();
+        
+        evaluateCustomParamData();
 
         setName("");
         
@@ -66,7 +69,8 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
                         UserVectorType.this, "User Data Input", getMainCanvas());
 
 //                customParamData2Window();
-                window.modelData2WindowData(model, window);
+//                window.modelData2WindowData(model, window);
+                window.updateWindow(model);
                 
                 //add InputWindow to canvas
                 getMainCanvas().addWindow(window);
@@ -128,11 +132,12 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
                         result = vector3d;
                         break;
                     default:
+                        System.out.println(">> "+this.getClass().getSimpleName()+": UserData has invalid dimension!");
                         break;
                 }
             }
         } catch (Exception ex) {
-//            ex.printStackTrace(System.err);
+            ex.printStackTrace(System.err);
         }
 
 
@@ -221,5 +226,35 @@ public class UserVectorType extends TypeRepresentationBase implements Serializab
     public String getValueAsCode() {
         // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
         return "null as " + getType().getName();
+    }
+    
+    @Override
+    public void evaluateCustomParamData() {
+        super.evaluateCustomParamData();
+
+        System.out.println("UserVectorType.evaluateCustomParamData():");
+
+        UserDataModel tmp = (UserDataModel) this.getCustomData().get(model.getModelKey());
+
+        if (tmp != null) {
+            Double[] data = (Double[]) tmp.getData();
+
+            for (int i = 0; i < data.length; i++) {
+                    System.out.println("data[" + i + "] = " + data[i]);
+                
+            }
+
+            if (data != null) {
+                model.setData(data);
+            }
+
+            String code = tmp.getCode();
+            
+            System.out.println("code = "+ code);
+
+            if (code != null) {
+                model.setCode(code);
+            }
+        }
     }
 }

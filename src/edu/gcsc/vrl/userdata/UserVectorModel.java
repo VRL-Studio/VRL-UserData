@@ -16,10 +16,14 @@ public class UserVectorModel extends UserDataModel {
     private Double[] data;
 
     public UserVectorModel() {
+        super();
 
         category = UserDataCategory.VECTOR;
         modelKey = category + ":model";
-        createDefaultData();
+                
+        Double[] defaultdata = {0.0, 0.0};
+        data = defaultdata;
+        
     }
 
     /**
@@ -50,10 +54,4 @@ public class UserVectorModel extends UserDataModel {
 
     }
 
-    @Override
-    protected void createDefaultData() {
-        setConstData(true);
-        Double[] defaultdata = {0.0, 0.0};
-        data = defaultdata;
-    }
 }

@@ -11,19 +11,21 @@ import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
-public class UserMatrixModel extends UserDataModel{
-    
+public class UserMatrixModel extends UserDataModel {
+
     private Double[][] data;
 
     public UserMatrixModel() {
-        category = UserDataCategory.MATRIX;
-        modelKey = category+":model";
-        createDefaultData();
+        super();
         
-        System.out.println("UserMatrixModel: dim = "+ getDimension());
+        category = UserDataCategory.MATRIX;
+        modelKey = category + ":model";
+        
+        Double[][] defaultdata = {{0.0, 0.0}, {0.0, 0.0}};
+        data = defaultdata;
+
     }
 
-    
     /**
      * @return the data
      */
@@ -41,22 +43,15 @@ public class UserMatrixModel extends UserDataModel{
 
     @Override
     public void setData(Object data) {
-        
-        if (DimensionManager.getArrayDimension(data) == 2){
-            setData((Double[][])data);
-            
-        }else{
+
+        if (DimensionManager.getArrayDimension(data) == 2) {
+            setData((Double[][]) data);
+
+        } else {
             System.err.println("UserMatrixModel.setData(Object data): "
                     + "data has wrong size.");
         }
-        
-    }
-    
-    @Override
-    protected void createDefaultData() {
-        setConstData(true);
-        Double[][] defaultdata = {{0.0, 0.0}, {0.0, 0.0}};
 
-        data = defaultdata;
     }
+
 }

@@ -17,9 +17,14 @@ public class UserNumberModel extends UserDataModel {
     private Double data;
 
     public UserNumberModel() {
+        super();
+        
         category = UserDataCategory.NUMBER;
         modelKey = category + ":model";
-        createDefaultData();
+        
+        Double defaultdata = 0.0;
+        data = defaultdata;
+        
     }
 
     /**
@@ -50,10 +55,4 @@ public class UserNumberModel extends UserDataModel {
 
     }
 
-    @Override
-    protected void createDefaultData() {
-        setConstData(true);
-        Double defaultdata = 0.0;
-        data = defaultdata;
-    }
 }

@@ -7,6 +7,7 @@ package edu.gcsc.vrl.userdata.types;
 import edu.gcsc.vrl.ug.UserData;
 import edu.gcsc.vrl.ug.UserDataCompiler;
 import edu.gcsc.vrl.ug.api.*;
+import edu.gcsc.vrl.userdata.UserDataModel;
 import edu.gcsc.vrl.userdata.UserNumberModel;
 import edu.gcsc.vrl.userdata.UserNumberWindow;
 import eu.mihosoft.vrl.annotation.TypeInfo;
@@ -26,7 +27,6 @@ import java.util.ArrayList;
 public class UserNumberType extends TypeRepresentationBase implements Serializable {
 
     private static final long serialVersionUID = 1;
-
 //    /**
 //     * @return the MODEL_KEY
 //     */
@@ -41,6 +41,8 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
 
         model = new UserNumberModel();
 
+        evaluateCustomParamData();
+
         setName("");
 
         nameLabel.setAlignmentX(LEFT_ALIGNMENT);
@@ -53,7 +55,7 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
 
 //        // a little trick to have default values if parameter of this type is used
 //        getWindow().close();
-        
+
 //        setStyleName("default");
 //        addSupportedRepresentationType(RepresentationType.INPUT);
 
@@ -66,8 +68,9 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
                         UserNumberType.this, "User Data Input", getMainCanvas());
 
 //                customParamData2Window();
-                window.modelData2WindowData(model, window);
-                
+//                window.modelData2WindowData(model, window);
+                window.updateWindow(model);
+
                 //add InputWindow to canvas
                 getMainCanvas().addWindow(window);
             }
@@ -82,7 +85,6 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
 //        }
 //        return window;
 //    }
-
 //    private void customParamData2Window() {
 //        if (getCustomData() != null) {
 //            Object o = getCustomData().get(model.getModelKey());
@@ -93,7 +95,6 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
 //            }
 //        }
 //    }
-
     @Override
     public Object getViewValue() {
 
@@ -134,7 +135,7 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
                 }
             }
         } catch (Exception ex) {
-            //
+            ex.printStackTrace(System.err);
         }
 
         return createFinalUserData(result);
@@ -199,5 +200,32 @@ public class UserNumberType extends TypeRepresentationBase implements Serializab
     public String getValueAsCode() {
         // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
         return "null as " + getType().getName();
+    }
+
+    @Override
+    public void evaluateCustomParamData() {
+        super.evaluateCustomParamData();
+
+        System.out.println("UserVectorType.evaluateCustomParamData():");
+
+        UserDataModel tmp = (UserDataModel) this.getCustomData().get(model.getModelKey());
+
+        if (tmp != null) {
+            Double data = (Double) tmp.getData();
+
+            System.out.println("data = " + data);
+
+            if (data != null) {
+                model.setData(data);
+            }
+
+            String code = tmp.getCode();
+
+            System.out.println("code = " + code);
+
+            if (code != null) {
+                model.setCode(code);
+            }
+        }
     }
 }

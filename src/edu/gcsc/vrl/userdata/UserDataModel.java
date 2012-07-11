@@ -13,14 +13,24 @@ import java.io.Serializable;
  * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
-public abstract class UserDataModel implements Serializable{
-    private static final long serialVersionUID=1L;
-    
+public abstract class UserDataModel implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private boolean constData;
     private String code;
-    private int dimension ;//= DimensionManager.TWO; // default value
+    private int dimension;
     protected UserDataCategory category;
     protected String modelKey;
+
+    public UserDataModel() {
+
+        constData = true;
+
+        dimension = DimensionManager.TWO; // default value);
+
+        code = "//Available Parameters are: t, si \n"
+                + "//and depending on dimension: x, y, z \n";
+    }
 
     /**
      * @return the constData
@@ -63,7 +73,7 @@ public abstract class UserDataModel implements Serializable{
     public void setDimension(int dimension) {
         this.dimension = dimension;
     }
-    
+
     /**
      * @return the category
      */
@@ -77,25 +87,14 @@ public abstract class UserDataModel implements Serializable{
     public String getModelKey() {
         return modelKey;
     }
-    
+
     /**
      * @return the data
      */
-    public abstract Object getData() ;
+    public abstract Object getData();
 
     /**
      * @param data the data to set
      */
-    public abstract void setData(Object data) ;
-
-    
-    
-    /**
-     * Create the concrete default data that should be used for initialization.
-     * Specific means NUMBER-, VECTOR- or MATRIXmodel.
-     * 
-     * @return the default data to set
-     */
-    protected abstract void createDefaultData();
-    
+    public abstract void setData(Object data);
 }
