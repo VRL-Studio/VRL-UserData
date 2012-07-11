@@ -39,8 +39,8 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
     private transient UserDataModel model = null;//new UserMatrixModel();
     private transient JComboBox dimsChoose;
     private transient TypeRepresentationBase tRep;
-    private transient JRadioButton constant;
-    private transient JRadioButton code;
+    protected transient JRadioButton constant;
+    protected transient JRadioButton code;
 
     public UserDataWindow(UserDataModel model,
             TypeRepresentationBase tRep,

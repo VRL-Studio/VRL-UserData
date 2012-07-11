@@ -23,7 +23,7 @@ public class CondUserNumberModel extends UserDataModel {
         
         setConstData(false);
         
-        setCode("return 0.0;");
+        setCode("return new Cond(true, 0.0);");
         
     }
 
