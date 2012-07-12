@@ -8,6 +8,7 @@ import edu.gcsc.vrl.ug.CondUserDataCompiler;
 import edu.gcsc.vrl.ug.api.*;
 import edu.gcsc.vrl.userdata.CondUserNumberModel;
 import edu.gcsc.vrl.userdata.CondUserNumberWindow;
+import edu.gcsc.vrl.userdata.UserDataModel;
 import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.visual.VButton;
@@ -26,18 +27,23 @@ public class CondUserNumberType extends TypeRepresentationBase implements Serial
 
     private static final long serialVersionUID = 1;
 
-    /**
-     * @return the MODEL_KEY
-     */
-    public static String getMODEL_KEY() {
-        return MODEL_KEY;
-    }
+//    /**
+//     * @return the MODEL_KEY
+//     */
+//    public static String getMODEL_KEY() {
+//        return MODEL_KEY;
+//    }
+    
     private CondUserNumberWindow window;
-    private static final String MODEL_KEY = "CondUserType:model";
+    private CondUserNumberModel model;
+//    private static final String MODEL_KEY = "CondUserType:model";
 
     public CondUserNumberType() {
 
-//        setType(I_CondUserNumber.class);
+        
+        model = new CondUserNumberModel();
+
+        evaluateCustomParamData();
 
         setName("");
 
@@ -59,49 +65,48 @@ public class CondUserNumberType extends TypeRepresentationBase implements Serial
             public void actionPerformed(ActionEvent e) {
 
                 
-                window = new CondUserNumberWindow(
+                window = new CondUserNumberWindow(model,
                         CondUserNumberType.this, "User Data Input", getMainCanvas());
 
-                customParamData2Window();
+//                customParamData2Window();
+                window.updateWindow(model);
 
                 //add InputWindow to canvas
                 getMainCanvas().addWindow(window);
-
             }
         });
-
     }
 
-    private CondUserNumberWindow getWindow() {
-        if (window == null) {
-            window = new CondUserNumberWindow(
-                    CondUserNumberType.this, "User Data Input", getMainCanvas());
-        }
-        return window;
-    }
+//    private CondUserNumberWindow getWindow() {
+//        if (window == null) {
+//            window = new CondUserNumberWindow(
+//                    CondUserNumberType.this, "User Data Input", getMainCanvas());
+//        }
+//        return window;
+//    }
     
-    private void customParamData2Window() {
-        if (getCustomData() != null) {
-            Object o = getCustomData().get(getMODEL_KEY());
-
-
-            if (o instanceof CondUserNumberModel) {
-                CondUserNumberModel model =  (CondUserNumberModel) o;
-
-                getWindow().setModel(model);
-            }
-        }
-    }
+//    private void customParamData2Window() {
+//        if (getCustomData() != null) {
+//            Object o = getCustomData().get(getMODEL_KEY());
+//
+//
+//            if (o instanceof CondUserNumberModel) {
+//                CondUserNumberModel model =  (CondUserNumberModel) o;
+//
+//                getWindow().setModel(model);
+//            }
+//        }
+//    }
 
     @Override
     public Object getViewValue() {
 
         I_CondUserNumber result = null;
 
-        CondUserNumberModel model = null;
-
-        customParamData2Window();
-        model = getWindow().getModel();
+//        CondUserNumberModel model = null;
+//
+//        customParamData2Window();
+//        model = getWindow().getModel();
 
         try {
             switch (model.getDimension()) {
@@ -124,7 +129,7 @@ public class CondUserNumberType extends TypeRepresentationBase implements Serial
                     break;
             }
         } catch (Exception ex) {
-            //
+            ex.printStackTrace(System.err);
         }
 
         Object finalResult = createFinalUserData(result);
@@ -191,5 +196,25 @@ public class CondUserNumberType extends TypeRepresentationBase implements Serial
     public String getValueAsCode() {
         // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
         return "null as " + getType().getName();
+    }
+    
+    @Override
+    public void evaluateCustomParamData() {
+        super.evaluateCustomParamData();
+
+        System.out.println("UserMatrixType.evaluateCustomParamData():");
+
+        UserDataModel tmp = (UserDataModel) this.getCustomData().get(model.getModelKey());
+
+        if (tmp != null) {
+            
+            String code = tmp.getCode();
+            
+            System.out.println("code = "+ code);
+
+            if (code != null) {
+                model.setCode(code);
+            }
+        }
     }
 }
