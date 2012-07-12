@@ -189,7 +189,7 @@ public class CondUserNumberWindow extends UserDataWindow implements Serializable
     }
 
     @Override
-    public void windoData2ModelData(UserDataWindow window, UserDataModel model) {
+    public void windowData2ModelData(UserDataWindow window, UserDataModel model) {
 //        nothing to do
     }
 

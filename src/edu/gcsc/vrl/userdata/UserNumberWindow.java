@@ -257,7 +257,7 @@ public class UserNumberWindow extends UserDataWindow implements Serializable {
     }
 
     @Override
-    public void windoData2ModelData(UserDataWindow window, UserDataModel model) {
+    public void windowData2ModelData(UserDataWindow window, UserDataModel model) {
         getModel().setData((Double) window.getTableModel().getValueAt(0, 0));
     }
 }

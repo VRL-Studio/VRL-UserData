@@ -299,7 +299,7 @@ public class UserVectorWindow extends UserDataWindow implements Serializable {
 //    }
     
     @Override
-    public void windoData2ModelData(UserDataWindow window, UserDataModel model) {
+    public void windowData2ModelData(UserDataWindow window, UserDataModel model) {
         
         DefaultTableModel tableModel = window.getTableModel();
         Double[] data = new Double[tableModel.getRowCount()];
