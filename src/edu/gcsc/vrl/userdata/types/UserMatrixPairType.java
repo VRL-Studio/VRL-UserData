@@ -20,18 +20,15 @@ import java.io.Serializable;
  * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
-@TypeInfo(type=UserMatrixPair.class, input=true, output=false, style="default")
+@TypeInfo(type = UserMatrixPair.class, input = true, output = false, style = "default")
 public class UserMatrixPairType extends UserMatrixType implements Serializable {
 
     private static final long serialVersionUID = 1;
-    private UserMatrixWindow window;
     private VTextField input = new VTextField("");
 
     public UserMatrixPairType() {
-        
-        super();
 
-//        setType(UserMatrixPair.class);
+        super();
 
         input.setMinimumSize(new Dimension(80, input.getHeight()));
         input.setPreferredSize(new Dimension(80, input.getHeight()));
@@ -42,19 +39,14 @@ public class UserMatrixPairType extends UserMatrixType implements Serializable {
         add(input);
     }
 
-    @Override
-    protected Object createFinalUserData(I_UserMatrix vector) {
-         // additional
-        UserMatrixPair finalResult =
-                new UserMatrixPair(
-                input.getText(), vector);
-        return finalResult;
+    protected Object createFinalUserData(I_UserMatrix matrix) {
+
+        return new UserMatrixPair(input.getText(), matrix);
     }
-    
 
     @Override
     public void setValue(Object o) {
-        
+
         // custom convert method (we allow  I_UserMatrix as input)
         if (o instanceof I_UserMatrix) {
             o = new UserMatrixPair(input.getText(), (I_UserMatrix) o);
@@ -86,7 +78,7 @@ public class UserMatrixPairType extends UserMatrixType implements Serializable {
 
         return result;
     }
-    
+
     @Override
     public String getValueAsCode() {
         // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)

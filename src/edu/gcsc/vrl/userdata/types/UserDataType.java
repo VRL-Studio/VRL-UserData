@@ -29,8 +29,8 @@ import java.util.ArrayList;
 public abstract class UserDataType extends TypeRepresentationBase implements Serializable {
 
     private static final long serialVersionUID = 1;
-    private UserDataWindow window;
-    private UserDataModel model;
+    protected UserDataWindow window;
+    protected UserDataModel model;
 
     public UserDataType() {
 
@@ -54,7 +54,7 @@ public abstract class UserDataType extends TypeRepresentationBase implements Ser
             public void actionPerformed(ActionEvent e) {
 
 
-                window = createUserMatrixWindow(model,
+                window = createUserDataWindow(model,
                         UserDataType.this, "User Data Input", getMainCanvas());
 
                 window.updateWindow(model);
@@ -117,19 +117,26 @@ public abstract class UserDataType extends TypeRepresentationBase implements Ser
         paramNames.add("t");
         paramNames.add("si");
 
-        if (!cond) {
+        if (cond) {
+            
+            code = CondUserDataCompiler.getUserDataImplCode(code, paramNames);
 
+        } else {         
             code = UserDataCompiler.getUserDataImplCode(code, type,
                     paramNames, UserData.returnTypes[type]);
-
-        } else {
-            code = CondUserDataCompiler.getUserDataImplCode(code, paramNames);
         }
         return code;
     }
 
     /**
-     *  bla bla
+     * Check if there is CustomData in this Typerepresentation and if so update
+     * the corresponding UserDataModel.
+     * 
+     * <p>
+     * <b>See Also</b> {@see TypeRepresentationBase#evaluateCustomParamData()} <br>
+     * 
+     *  {@inheritDoc}
+     * </p>
      */
     @Override
     public void evaluateCustomParamData() {
@@ -174,31 +181,49 @@ public abstract class UserDataType extends TypeRepresentationBase implements Ser
      *
      * @return a new specific instance of UserDataWindow
      */
-    protected abstract UserDataWindow createUserMatrixWindow(
+    protected abstract UserDataWindow createUserDataWindow(
             UserDataModel userDataModel,
             UserDataType userDataType,
             String title,
             Canvas mainCanvas);
 
     /**
+     * Creates an UserData like e.g UserNumber from the code that is stored in
+     * corresponding UserDataModel.
+     * Throw a NullPointerException if No UserData could be created from an 
+     * UserDataModel.
      *
-     *
-     * @param model
-     * @return
+     * @param model that should be used to create the UserData
+     * 
+     * @return the created UserData
      */
     protected abstract I_IIPData createVRLUserDataFromModel(UserDataModel model);
 
     /**
+     * Creates an UserData like e.g UserNumber from the table data that is stored
+     * in corresponding UserDataModel.
+     * Throw a NullPointerException if No UserData could be created from an 
+     * UserDataModel.
      *
-     * @param model
-     * @return
+     * @param model that should be used to create the UserData
+     * 
+     * @return the created UserData
      */
     protected abstract I_IIPData createConstUserDataFromModel(UserDataModel model);
 
     /**
+     * Creates an UserData like e.g UserNumber from the corresponding UserDataModel.
+     * Throw a NullPointerException if No UserData could be created from an 
+     * UserDataModel.
+     * 
+     * The creation is done by delegating the creation to one of the following
+     * abstract methods:
+     * @see #createConstUserDataFromModel(UserDataModel) 
+     * @see #createVRLUserDataFromModel(UserDataModel) 
      *
-     * @param model
-     * @return
+     * @param model that should be used to create the UserData
+     * 
+     * @return the created UserData or null
      */
     protected I_IIPData createUserDataFromModel(UserDataModel model) {
 
