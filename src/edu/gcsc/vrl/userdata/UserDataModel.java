@@ -24,9 +24,11 @@ public abstract class UserDataModel implements Serializable {
 
     public UserDataModel() {
 
+        // default values
+        
         constData = true;
 
-        dimension = DimensionManager.TWO; // default value);
+        dimension = DimensionManager.TWO; 
 
         code = "//Available Parameters are: t, si \n"
                 + "//and depending on dimension: x, y, z \n";

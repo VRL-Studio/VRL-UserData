@@ -152,7 +152,7 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
         // SHOW the last information in window
         // that the user views/choose before closing
         // previous window for the corresponding UserData
-        if (model.isConstData()) {
+        if (getModel().isConstData()) {
             constant.setSelected(true);
         } else {
             code.setSelected(true);
@@ -260,13 +260,13 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
         // that the user views/choose before closing
         // previous window for the corresponding UserData
         if (constant.isSelected()) {
-            model.setConstData(true);
+            getModel().setConstData(true);
         } else {
-            model.setConstData(false);
+            getModel().setConstData(false);
         }
 
         windowData2ModelData(this, getModel());
-        windowCode2ModelCode(this, model);
+        windowCode2ModelCode(this, getModel());
 
         getModel().setDimension((Integer) dimsChoose.getSelectedItem());
 
@@ -285,7 +285,7 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
             pData = new CustomParamData();
         }
 
-        pData.put(model.getModelKey(), getModel());
+        pData.put(getModel().getModelKey(), getModel());
 
         tRep.setCustomData(pData);
     }

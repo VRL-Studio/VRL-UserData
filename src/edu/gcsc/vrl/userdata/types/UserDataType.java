@@ -130,7 +130,7 @@ public abstract class UserDataType extends TypeRepresentationBase implements Ser
 
     /**
      * Check if there is CustomData in this Typerepresentation and if so update
-     * the corresponding UserDataModel.
+     * the corresponding UserDataModel to the values in the custom data.
      * 
      * <p>
      * <b>See Also</b> {@see TypeRepresentationBase#evaluateCustomParamData()} <br>
@@ -159,6 +159,9 @@ public abstract class UserDataType extends TypeRepresentationBase implements Ser
             if (code != null) {
                 model.setCode(code);
             }
+            
+            model.setDimension(tmp.getDimension());
+            model.setConstData(tmp.isConstData());
         }
     }
 
