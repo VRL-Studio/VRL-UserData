@@ -249,6 +249,11 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
 
     }
 
+    /**
+     * Stores all informations which are visualized in the UserDataWindow
+     * in a corresponding UserDataModel and calls <code>checkCustomData()</code>.
+     * @see #checkCustomData() 
+     */
     public void updateModel() {
 
         // SAVE the last information in window
@@ -268,6 +273,11 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
         checkCustomData();
     }
 
+    /**
+     * Checks if there is custom parameter data in the corresponding TypRepresentation
+     * and the corresponding UserDataModel is stored there.
+     * If no custom paramater data exist a new one will be created.
+     */
     public void checkCustomData() {
         CustomParamData pData = tRep.getCustomData();
 
@@ -288,26 +298,30 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
     }
 
     /**
-     * @param model the model to set
+     * Get all informations which value should be visualized in the UserDataWindow
+     * from the corresponding UserDataModel and sets the values in the window.
+     * 
+     * @param model that stores the informations that should be visualized
      */
     public void updateWindow(UserDataModel model) {
 
-        // SHOW the last information in window
+        // get the last information in window of model
         // that the user views/choose before closing
         // previous window for the corresponding UserData
         if (model.isConstData()) {
             constant.setSelected(true);
             parent.add(windowPane);
             parent.remove(editorPane);
-            revalidate();
+            
         } else {
             code.setSelected(true);
             parent.remove(windowPane);
             parent.add(editorPane);
-            revalidate();
+            
         }
 
-//        dimsChoose.setSelectedIndex(model.getDimension() - 1);
+        revalidate();
+        
         switch (model.getDimension()) {
 
             case 1:
@@ -327,27 +341,50 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
 
         modelData2WindowData(model, this);
 
-//        editor.getEditor().setText(model.getCode());
         modelCode2WindowCode(model, this);
 
     }
 
+    /**
+     * 
+     * @return the TableModel that contains the const data of the window.
+     */
     protected DefaultTableModel getTableModel() {
         return windowPane.getTableModel();
     }
 
+    /**
+     * 
+     * @return the current code in the editor of the window
+     */
     private String getCode() {
         return editor.getEditor().getText();
     }
 
+    /**
+     * 
+     * @param code that should be set into the editor of the window
+     */
     private void setCode(String code) {
         editor.getEditor().setText(code);
     }
 
+    /**
+     * Updates / replaces the code in the window by the code from model.
+     * 
+     * @param model that is used as source
+     * @param window that should be updated
+     */
     public void modelCode2WindowCode(UserDataModel model, UserDataWindow window) {
         window.setCode(model.getCode());
     }
 
+    /**
+     * Updates / replaces the code in the model by the code from window.
+     * 
+     * @param window that is used as source
+     * @param model that should be updated
+     */
     public void windowCode2ModelCode(UserDataWindow window, UserDataModel model) {
         model.setCode(window.getCode());
     }
