@@ -4,257 +4,168 @@
  */
 package edu.gcsc.vrl.userdata.types;
 
-import edu.gcsc.vrl.ug.UserData;
-import edu.gcsc.vrl.ug.UserDataCompiler;
 import edu.gcsc.vrl.ug.api.*;
 import edu.gcsc.vrl.userdata.UserDataModel;
+import edu.gcsc.vrl.userdata.UserDataWindow;
 import edu.gcsc.vrl.userdata.UserVectorModel;
 import edu.gcsc.vrl.userdata.UserVectorWindow;
 import eu.mihosoft.vrl.annotation.TypeInfo;
-import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
-import eu.mihosoft.vrl.visual.VButton;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import eu.mihosoft.vrl.visual.Canvas;
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
-@TypeInfo(type=I_UserVector.class, input=true, output=false, style="default")
-public class UserVectorType extends TypeRepresentationBase implements Serializable {
+@TypeInfo(type = I_UserVector.class, input = true, output = false, style = "default")
+public class UserVectorType extends UserDataType implements Serializable {
 
     private static final long serialVersionUID = 1;
 
-//    /**
-//     * @return the MODEL_KEY
-//     */
-//    public static String getMODEL_KEY() {
-//        return MODEL_KEY;
-//    }
-    private UserVectorWindow window;
-    private UserVectorModel model;
-//    private static final String MODEL_KEY = "UserVectorType:model";
-
     public UserVectorType() {
-
-        model = new UserVectorModel();
-        
-        evaluateCustomParamData();
-
-        setName("");
-        
-        nameLabel.setAlignmentX(LEFT_ALIGNMENT);
-        
-        add(nameLabel);
-
-        VButton btn = new VButton("edit");
-
-        add(btn);
-
-//        // a little trick to have default values if parameter of this type is used
-//        getWindow().close();
-
-//        setStyleName("default");
-//        addSupportedRepresentationType(RepresentationType.INPUT);
-
-        btn.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              
-                window = new UserVectorWindow(model,
-                        UserVectorType.this, "User Data Input", getMainCanvas());
-
-//                customParamData2Window();
-//                window.modelData2WindowData(model, window);
-                window.updateWindow(model);
-                
-                //add InputWindow to canvas
-                getMainCanvas().addWindow(window);
-            }
-        });
+        super();
     }
 
-//     private UserVectorWindow getWindow() {
-//        if (window == null) {
-//            window = new UserVectorWindow(model,
-//                    UserVectorType.this, "User Data Input", getMainCanvas());
-//        }
-//        return window;
-//    }
-     
-//     private void customParamData2Window() {
-//        if (getCustomData() != null) {
-//            Object o = getCustomData().get(model.getModelKey());
+//    @Override
+//    public Object getViewValue() {
 //
-//            if (o instanceof UserVectorModel) {
-//                UserVectorModel model =  (UserVectorModel) o;
-//                getWindow().setModel(model);
+//        I_UserVector result = null;
+//
+//        try {
+//            boolean isConst = model.isConstData();
+//
+//            if (isConst) {
+//                result = arrayToUserVector(model.getData());
+//            } else {
+//
+//                switch (model.getDimension()) {
+//                    case 1:
+//                        I_VRLUserVector1d vector1d = new VRLUserVector1d();
+//                        vector1d.data(create1dCode(model.getCode()));
+//                        result = vector1d;
+//                        break;
+//                    case 2:
+//                        I_VRLUserVector2d vector2d = new VRLUserVector2d();
+//                        vector2d.data(create2dCode(model.getCode()));
+//                        result = vector2d;
+//                        break;
+//                    case 3:
+//                        I_VRLUserVector3d vector3d = new VRLUserVector3d();
+//                        vector3d.data(create3dCode(model.getCode()));
+//                        result = vector3d;
+//                        break;
+//                    default:
+//                        System.out.println(">> " + this.getClass().getSimpleName() + ": UserData has invalid dimension!");
+//                        break;
+//                }
 //            }
+//        } catch (Exception ex) {
+//            ex.printStackTrace(System.err);
 //        }
+//
+//
+//        return createFinalUserData(result);
 //    }
-    
-    @Override
-    public Object getViewValue() {
 
+//    private static I_ConstUserVector createVector(int dim) {
+//        if (dim == 1) {
+//            return new ConstUserVector1d();
+//        } else if (dim == 2) {
+//            return new ConstUserVector2d();
+//        } else if (dim == 3) {
+//            return new ConstUserVector3d();
+//        }
+//
+//        return null;
+//    }
+//    private static I_ConstUserVector arrayToUserVector(Double[] data) {
+//
+//        I_ConstUserVector result = createVector(data.length);
+//
+//        for (int i = 0; i < data.length; i++) {
+//            result.set_entry(i, data[i]);
+//        }
+//
+//        return result;
+//    }
+    @Override
+    public String getValueAsCode() {
+        // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
+        return "null as " + getType().getName();
+    }
+
+    @Override
+    protected UserDataModel createUserDataModel() {
+        return new UserVectorModel();
+    }
+
+    @Override
+    protected UserDataWindow createUserDataWindow(UserDataModel userDataModel,
+            UserDataType userDataType, String title, Canvas mainCanvas) {
+        return new UserVectorWindow(model, this, title, mainCanvas);
+    }
+
+    @Override
+    protected I_IIPData createVRLUserDataFromModel(UserDataModel model) {
+
+        /* TODO: Ask why there is no I_VRLUserVector which has also access to
+         *       the method data(String).
+        */
         I_UserVector result = null;
 
-//        UserVectorModel model = null;
+        int dim = model.getDimension();
+        int type = 1; //means Vector, see docu of createCode()
 
 
-//        customParamData2Window();
-//        model = getWindow().getModel();
-
-        try {
-            boolean isConst = model.isConstData();
-
-            if (isConst) {
-                result = arrayToUserVector(model.getData());
-            } else {
-
-                switch (model.getDimension()) {
-                    case 1:
-                        I_VRLUserVector1d vector1d = new VRLUserVector1d();
-                        vector1d.data(create1dCode(model.getCode()));
-                        result = vector1d;
-                        break;
-                    case 2:
-                        I_VRLUserVector2d vector2d = new VRLUserVector2d();
-                        vector2d.data(create2dCode(model.getCode()));
-                        result = vector2d;
-                        break;
-                    case 3:
-                        I_VRLUserVector3d vector3d = new VRLUserVector3d();
-                        vector3d.data(create3dCode(model.getCode()));
-                        result = vector3d;
-                        break;
-                    default:
-                        System.out.println(">> "+this.getClass().getSimpleName()+": UserData has invalid dimension!");
-                        break;
-                }
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace(System.err);
+        switch (dim) {
+            case 1:
+                I_VRLUserVector1d vector1d = new VRLUserVector1d();
+                vector1d.data(createCode(model.getCode(), dim, type, false));
+                result = vector1d;
+                break;
+            case 2:
+                I_VRLUserVector2d vector2d = new VRLUserVector2d();
+                vector2d.data(createCode(model.getCode(), dim, type, false));
+                result = vector2d;
+                break;
+            case 3:
+                I_VRLUserVector3d vector3d = new VRLUserVector3d();
+                vector3d.data(createCode(model.getCode(), dim, type, false));
+                result = vector3d;
+                break;
+            default:
+                System.out.println(">> " + this.getClass().getSimpleName() 
+                        + ": UserData has invalid dimension!");
+                break;
         }
 
+        return result;
 
-        return createFinalUserData(result);
-    }
-    
-    /**
-     * May be used to create the final userdata object such as UserNumberPair.
-     *
-     * @param data
-     * @return
-     */
-    protected Object createFinalUserData(I_UserVector data) {
-        return data;
     }
 
-    private String create1dCode(String code) {
+    @Override
+    protected I_IIPData createConstUserDataFromModel(UserDataModel model) {
 
-        ArrayList<String> paramNames = new ArrayList<String>();
+        I_ConstUserVector result = null;
 
-        paramNames.add("x");
-        paramNames.add("t");
-        paramNames.add("si");
+        int dim = model.getDimension();
+        int type = 2; //means Matrix, see docu of createCode()
 
-        code = UserDataCompiler.getUserDataImplCode(code, 1,
-                paramNames, UserData.returnTypes[1]);
-
-        return code;
-    }
-
-    private String create2dCode(String code) {
-
-        ArrayList<String> paramNames = new ArrayList<String>();
-
-        paramNames.add("x");
-        paramNames.add("y");
-        paramNames.add("t");
-        paramNames.add("si");
-
-        code = UserDataCompiler.getUserDataImplCode(code, 1,
-                paramNames, UserData.returnTypes[1]);
-
-        return code;
-    }
-
-    private String create3dCode(String code) {
-
-        ArrayList<String> paramNames = new ArrayList<String>();
-
-        paramNames.add("x");
-        paramNames.add("y");
-        paramNames.add("z");
-        paramNames.add("t");
-        paramNames.add("si");
-
-        code = UserDataCompiler.getUserDataImplCode(code, 1,
-                paramNames, UserData.returnTypes[1]);
-
-        return code;
-    }
-
-    private static I_ConstUserVector createVector(int dim) {
         if (dim == 1) {
-            return new ConstUserVector1d();
+            result = new ConstUserVector1d();
         } else if (dim == 2) {
-            return new ConstUserVector2d();
+            result = new ConstUserVector2d();
         } else if (dim == 3) {
-            return new ConstUserVector3d();
+            result = new ConstUserVector3d();
         }
 
-        return null;
-    }
-
-    private static I_ConstUserVector arrayToUserVector(Double[] data) {
-
-        I_ConstUserVector result = createVector(data.length);
+        Double[] data = (Double[]) model.getData();
 
         for (int i = 0; i < data.length; i++) {
             result.set_entry(i, data[i]);
         }
 
         return result;
-    }
-    
-    @Override
-    public String getValueAsCode() {
-        // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
-        return "null as " + getType().getName();
-    }
-    
-    @Override
-    public void evaluateCustomParamData() {
-        super.evaluateCustomParamData();
-
-        System.out.println("UserVectorType.evaluateCustomParamData():");
-
-        UserDataModel tmp = (UserDataModel) this.getCustomData().get(model.getModelKey());
-
-        if (tmp != null) {
-            Double[] data = (Double[]) tmp.getData();
-
-            for (int i = 0; i < data.length; i++) {
-                    System.out.println("data[" + i + "] = " + data[i]);
-                
-            }
-
-            if (data != null) {
-                model.setData(data);
-            }
-
-            String code = tmp.getCode();
-            
-            System.out.println("code = "+ code);
-
-            if (code != null) {
-                model.setCode(code);
-            }
-        }
     }
 }

@@ -24,7 +24,7 @@ import java.io.Serializable;
 public class UserNumberPairType extends UserNumberType implements Serializable {
 
     private static final long serialVersionUID = 1;
-    private UserNumberWindow window;
+    
     private VTextField input = new VTextField("");
 
     public UserNumberPairType() {
@@ -42,7 +42,6 @@ public class UserNumberPairType extends UserNumberType implements Serializable {
         add(input);
     }
 
-    @Override
     protected Object createFinalUserData(I_UserNumber number) {
          // additional
         UserNumberPair finalResult =

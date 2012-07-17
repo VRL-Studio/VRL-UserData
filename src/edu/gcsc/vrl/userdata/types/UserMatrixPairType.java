@@ -24,6 +24,7 @@ import java.io.Serializable;
 public class UserMatrixPairType extends UserMatrixType implements Serializable {
 
     private static final long serialVersionUID = 1;
+    
     private VTextField input = new VTextField("");
 
     public UserMatrixPairType() {

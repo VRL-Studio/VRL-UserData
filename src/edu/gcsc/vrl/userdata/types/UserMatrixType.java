@@ -4,21 +4,14 @@
  */
 package edu.gcsc.vrl.userdata.types;
 
-import edu.gcsc.vrl.ug.UserData;
-import edu.gcsc.vrl.ug.UserDataCompiler;
 import edu.gcsc.vrl.ug.api.*;
 import edu.gcsc.vrl.userdata.UserDataModel;
 import edu.gcsc.vrl.userdata.UserDataWindow;
 import edu.gcsc.vrl.userdata.UserMatrixModel;
 import edu.gcsc.vrl.userdata.UserMatrixWindow;
 import eu.mihosoft.vrl.annotation.TypeInfo;
-import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.visual.Canvas;
-import eu.mihosoft.vrl.visual.VButton;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  *

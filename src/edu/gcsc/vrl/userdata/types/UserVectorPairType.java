@@ -24,7 +24,7 @@ import java.io.Serializable;
 public class UserVectorPairType extends UserVectorType implements Serializable {
 
     private static final long serialVersionUID = 1;
-    private UserVectorWindow window;
+
     private VTextField input = new VTextField("");
 
     public UserVectorPairType() {
@@ -42,7 +42,6 @@ public class UserVectorPairType extends UserVectorType implements Serializable {
         add(input);
     }
 
-    @Override
     protected Object createFinalUserData(I_UserVector vector) {
          // additional
         UserVectorPair finalResult =

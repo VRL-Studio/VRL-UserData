@@ -24,9 +24,8 @@ import java.io.Serializable;
 public class CondUserNumberPairType extends CondUserNumberType implements Serializable {
 
     private static final long serialVersionUID = 1;
-    private CondUserNumberWindow window;
+    
     private VTextField input = new VTextField("");
-    static final String MODEL_KEY = "CondUserType:model";
 
     public CondUserNumberPairType() {
         
@@ -46,7 +45,6 @@ public class CondUserNumberPairType extends CondUserNumberType implements Serial
 
     }
     
-    @Override
     protected Object createFinalUserData(I_CondUserNumber data) {
         // additional
         CondUserNumberPair finalResult =

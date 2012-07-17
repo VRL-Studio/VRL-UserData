@@ -4,18 +4,14 @@
  */
 package edu.gcsc.vrl.userdata.types;
 
-import edu.gcsc.vrl.ug.CondUserDataCompiler;
 import edu.gcsc.vrl.ug.api.*;
 import edu.gcsc.vrl.userdata.CondUserNumberModel;
 import edu.gcsc.vrl.userdata.CondUserNumberWindow;
 import edu.gcsc.vrl.userdata.UserDataModel;
+import edu.gcsc.vrl.userdata.UserDataWindow;
 import eu.mihosoft.vrl.annotation.TypeInfo;
-import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
-import eu.mihosoft.vrl.visual.VButton;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import eu.mihosoft.vrl.visual.Canvas;
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  *
@@ -23,198 +19,105 @@ import java.util.ArrayList;
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
 @TypeInfo(type = I_CondUserNumber.class, input = true, output = false, style = "default")
-public class CondUserNumberType extends TypeRepresentationBase implements Serializable {
+public class CondUserNumberType extends UserDataType implements Serializable {
 
     private static final long serialVersionUID = 1;
 
-//    /**
-//     * @return the MODEL_KEY
-//     */
-//    public static String getMODEL_KEY() {
-//        return MODEL_KEY;
-//    }
-    
-    private CondUserNumberWindow window;
-    private CondUserNumberModel model;
-//    private static final String MODEL_KEY = "CondUserType:model";
-
     public CondUserNumberType() {
-
-        
-        model = new CondUserNumberModel();
-
-        evaluateCustomParamData();
-
-        setName("");
-
-        VButton btn = new VButton("edit");
-
-        add(btn);
-
-        add(nameLabel);
-        
-//        // a little trick to have default values if parameter of this type is used
-//        getWindow().close();
-
-//        setStyleName("default");
-//        addSupportedRepresentationType(RepresentationType.INPUT);
-
-        btn.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                
-                window = new CondUserNumberWindow(model,
-                        CondUserNumberType.this, "User Data Input", getMainCanvas());
-
-//                customParamData2Window();
-                window.updateWindow(model);
-
-                //add InputWindow to canvas
-                getMainCanvas().addWindow(window);
-            }
-        });
+        super();
     }
 
-//    private CondUserNumberWindow getWindow() {
-//        if (window == null) {
-//            window = new CondUserNumberWindow(
-//                    CondUserNumberType.this, "User Data Input", getMainCanvas());
-//        }
-//        return window;
-//    }
-    
-//    private void customParamData2Window() {
-//        if (getCustomData() != null) {
-//            Object o = getCustomData().get(getMODEL_KEY());
+//    @Override
+//    public Object getViewValue() {
 //
+//        I_CondUserNumber result = null;
 //
-//            if (o instanceof CondUserNumberModel) {
-//                CondUserNumberModel model =  (CondUserNumberModel) o;
-//
-//                getWindow().setModel(model);
+//        try {
+//            switch (model.getDimension()) {
+//                case 1:
+//                    I_VRLCondUserNumber1d vector1d = new VRLCondUserNumber1d();
+//                    vector1d.data(create1dCode(model.getCode()));
+//                    result = vector1d;
+//                    break;
+//                case 2:
+//                    I_VRLCondUserNumber2d vector2d = new VRLCondUserNumber2d();
+//                    vector2d.data(create2dCode(model.getCode()));
+//                    result = vector2d;
+//                    break;
+//                case 3:
+//                    I_VRLCondUserNumber3d vector3d = new VRLCondUserNumber3d();
+//                    vector3d.data(create3dCode(model.getCode()));
+//                    result = vector3d;
+//                    break;
+//                default:
+//                    break;
 //            }
+//        } catch (Exception ex) {
+//            ex.printStackTrace(System.err);
 //        }
-//    }
-
-    @Override
-    public Object getViewValue() {
-
-        I_CondUserNumber result = null;
-
-//        CondUserNumberModel model = null;
 //
-//        customParamData2Window();
-//        model = getWindow().getModel();
-
-        try {
-            switch (model.getDimension()) {
-                case 1:
-                    I_VRLCondUserNumber1d vector1d = new VRLCondUserNumber1d();
-                    vector1d.data(create1dCode(model.getCode()));
-                    result = vector1d;
-                    break;
-                case 2:
-                    I_VRLCondUserNumber2d vector2d = new VRLCondUserNumber2d();
-                    vector2d.data(create2dCode(model.getCode()));
-                    result = vector2d;
-                    break;
-                case 3:
-                    I_VRLCondUserNumber3d vector3d = new VRLCondUserNumber3d();
-                    vector3d.data(create3dCode(model.getCode()));
-                    result = vector3d;
-                    break;
-                default:
-                    break;
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace(System.err);
-        }
-
-        Object finalResult = createFinalUserData(result);
-
-        return finalResult;
-    }
-
-    /**
-     * May be used to create the final userdata object such as UserNumberPair.
-     *
-     * @param data
-     * @return
-     */
-    protected Object createFinalUserData(I_CondUserNumber data) {
-        return data;
-    }
-
-    private String create1dCode(String code) {
-
-        ArrayList<String> paramNames = new ArrayList<String>();
-
-        paramNames.add("x");
-        paramNames.add("t");
-        paramNames.add("si");
-
-        code = CondUserDataCompiler.getUserDataImplCode(code,
-                paramNames);
-
-        return code;
-    }
-
-    private String create2dCode(String code) {
-
-        ArrayList<String> paramNames = new ArrayList<String>();
-
-        paramNames.add("x");
-        paramNames.add("y");
-        paramNames.add("t");
-        paramNames.add("si");
-
-        code = CondUserDataCompiler.getUserDataImplCode(code,
-                paramNames);
-
-        return code;
-    }
-
-    private String create3dCode(String code) {
-
-        ArrayList<String> paramNames = new ArrayList<String>();
-
-        paramNames.add("x");
-        paramNames.add("y");
-        paramNames.add("z");
-        paramNames.add("t");
-        paramNames.add("si");
-
-        code = CondUserDataCompiler.getUserDataImplCode(code,
-                paramNames);
-
-        return code;
-    }
+//        Object finalResult = createFinalUserData(result);
+//
+//        return finalResult;
+//    }
 
     @Override
     public String getValueAsCode() {
         // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
         return "null as " + getType().getName();
     }
+
+    @Override
+    protected UserDataModel createUserDataModel() {
+        return new CondUserNumberModel();
+    }
+
+    @Override
+    protected UserDataWindow createUserDataWindow(UserDataModel userDataModel,
+            UserDataType userDataType, String title, Canvas mainCanvas) {
+        return new CondUserNumberWindow(model, this, title, mainCanvas);
+    }
+
+    @Override
+    protected I_IIPData createVRLUserDataFromModel(UserDataModel model) {
+
+        /*
+         * TODO: Ask why there is no I_VRLCondUserNumber which has also access
+         * to the method data(String).
+         */
+        I_CondUserNumber result = null;
+
+        int dim = model.getDimension();
+        int type = 0; //means Number, see docu of createCode()
+
+        switch (dim) {
+            case 1:
+                I_VRLCondUserNumber1d number1d = new VRLCondUserNumber1d();
+                number1d.data(createCode(model.getCode(), dim, type, false));
+                result = number1d;
+                break;
+            case 2:
+                I_VRLCondUserNumber2d number2d = new VRLCondUserNumber2d();
+                number2d.data(createCode(model.getCode(), dim, type, false));
+                result = number2d;
+                break;
+            case 3:
+                I_VRLCondUserNumber3d number3d = new VRLCondUserNumber3d();
+                number3d.data(createCode(model.getCode(), dim, type, false));
+                result = number3d;
+                break;
+            default:
+                System.out.println(">> " + this.getClass().getSimpleName()
+                        + ": UserData has invalid dimension!");
+                break;
+        }
+
+        return result;
+    }
+
     
     @Override
-    public void evaluateCustomParamData() {
-        super.evaluateCustomParamData();
-
-        System.out.println("UserMatrixType.evaluateCustomParamData():");
-
-        UserDataModel tmp = (UserDataModel) this.getCustomData().get(model.getModelKey());
-
-        if (tmp != null) {
-            
-            String code = tmp.getCode();
-            
-            System.out.println("code = "+ code);
-
-            if (code != null) {
-                model.setCode(code);
-            }
-        }
+    protected I_IIPData createConstUserDataFromModel(UserDataModel model) {
+        return new ConstUserNumber((Double) model.getData());
     }
 }
