@@ -4,6 +4,7 @@
  */
 package edu.gcsc.vrl.userdata;
 
+import edu.gcsc.vrl.ug.api.I_IIPData;
 import edu.gcsc.vrl.ug.api.I_UserMatrix;
 import java.io.Serializable;
 
@@ -19,7 +20,7 @@ public class UserMatrixPair extends UserDataPair implements Serializable{
         //
     }
 
-    public UserMatrixPair(String subset, I_UserMatrix data) {
+    public UserMatrixPair(String subset, I_IIPData data) {
         this.subset = subset;
         this.data = data;
     }

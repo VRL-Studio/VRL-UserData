@@ -40,9 +40,10 @@ public class UserMatrixPairType extends UserMatrixType implements Serializable {
         add(input);
     }
 
-    protected Object createFinalUserData(I_UserMatrix matrix) {
+    @Override
+    protected Object createFinalUserData(I_IIPData userData) {
 
-        return new UserMatrixPair(input.getText(), matrix);
+        return new UserMatrixPair(input.getText(), userData);
     }
 
     @Override

@@ -20,15 +20,14 @@ import java.io.Serializable;
  * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
-@TypeInfo(type=UserVectorPair.class, input=true, output=false, style="default")
+@TypeInfo(type = UserVectorPair.class, input = true, output = false, style = "default")
 public class UserVectorPairType extends UserVectorType implements Serializable {
 
     private static final long serialVersionUID = 1;
-
     private VTextField input = new VTextField("");
 
     public UserVectorPairType() {
-        
+
         super();
 
 //        setType(UserVectorPair.class);
@@ -42,18 +41,14 @@ public class UserVectorPairType extends UserVectorType implements Serializable {
         add(input);
     }
 
-    protected Object createFinalUserData(I_UserVector vector) {
-         // additional
-        UserVectorPair finalResult =
-                new UserVectorPair(
-                input.getText(), vector);
-        return finalResult;
+    @Override
+    protected Object createFinalUserData(I_IIPData userData) {
+        return new UserVectorPair(input.getText(), userData);
     }
-    
 
     @Override
     public void setValue(Object o) {
-        
+
         // custom convert method (we allow  I_UserVector as input)
         if (o instanceof I_UserVector) {
             o = new UserVectorPair(input.getText(), (I_UserVector) o);
@@ -85,7 +80,7 @@ public class UserVectorPairType extends UserVectorType implements Serializable {
 
         return result;
     }
-    
+
     @Override
     public String getValueAsCode() {
         // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)

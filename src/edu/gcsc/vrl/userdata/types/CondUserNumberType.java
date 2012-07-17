@@ -93,17 +93,17 @@ public class CondUserNumberType extends UserDataType implements Serializable {
         switch (dim) {
             case 1:
                 I_VRLCondUserNumber1d number1d = new VRLCondUserNumber1d();
-                number1d.data(createCode(model.getCode(), dim, type, false));
+                number1d.data(createCode(model.getCode(), dim, type, true));
                 result = number1d;
                 break;
             case 2:
                 I_VRLCondUserNumber2d number2d = new VRLCondUserNumber2d();
-                number2d.data(createCode(model.getCode(), dim, type, false));
+                number2d.data(createCode(model.getCode(), dim, type, true));
                 result = number2d;
                 break;
             case 3:
                 I_VRLCondUserNumber3d number3d = new VRLCondUserNumber3d();
-                number3d.data(createCode(model.getCode(), dim, type, false));
+                number3d.data(createCode(model.getCode(), dim, type, true));
                 result = number3d;
                 break;
             default:

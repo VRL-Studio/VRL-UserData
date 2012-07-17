@@ -20,15 +20,14 @@ import java.io.Serializable;
  * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
-@TypeInfo(type=UserNumberPair.class, input=true, output=false, style="default")
+@TypeInfo(type = UserNumberPair.class, input = true, output = false, style = "default")
 public class UserNumberPairType extends UserNumberType implements Serializable {
 
     private static final long serialVersionUID = 1;
-    
     private VTextField input = new VTextField("");
 
     public UserNumberPairType() {
-        
+
         super();
 
 //        setType(UserNumberPair.class);
@@ -42,18 +41,15 @@ public class UserNumberPairType extends UserNumberType implements Serializable {
         add(input);
     }
 
-    protected Object createFinalUserData(I_UserNumber number) {
-         // additional
-        UserNumberPair finalResult =
-                new UserNumberPair(
-                input.getText(), number);
-        return finalResult;
+    @Override
+    protected Object createFinalUserData(I_IIPData userData) {
+
+        return new UserNumberPair(input.getText(), userData);
     }
-    
 
     @Override
     public void setValue(Object o) {
-        
+
         // custom convert method (we allow  I_UserNumber as input)
         if (o instanceof I_UserNumber) {
             o = new UserNumberPair(input.getText(), (I_UserNumber) o);
@@ -85,7 +81,7 @@ public class UserNumberPairType extends UserNumberType implements Serializable {
 
         return result;
     }
-    
+
     @Override
     public String getValueAsCode() {
         // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)

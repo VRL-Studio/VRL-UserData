@@ -4,6 +4,7 @@
  */
 package edu.gcsc.vrl.userdata;
 
+import edu.gcsc.vrl.ug.api.I_IIPData;
 import edu.gcsc.vrl.ug.api.I_UserVector;
 import java.io.Serializable;
 
@@ -18,7 +19,7 @@ public class UserVectorPair extends UserDataPair implements Serializable{
         //
     }
 
-    public UserVectorPair(String subset, I_UserVector data) {
+    public UserVectorPair(String subset, I_IIPData data) {
         this.subset = subset;
         this.data = data;
     }

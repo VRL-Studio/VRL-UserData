@@ -5,6 +5,7 @@
 package edu.gcsc.vrl.userdata.types;
 
 import edu.gcsc.vrl.ug.api.I_CondUserNumber;
+import edu.gcsc.vrl.ug.api.I_IIPData;
 import edu.gcsc.vrl.userdata.CondUserNumberPair;
 import edu.gcsc.vrl.userdata.CondUserNumberWindow;
 import eu.mihosoft.vrl.annotation.TypeInfo;
@@ -26,12 +27,10 @@ public class CondUserNumberPairType extends CondUserNumberType implements Serial
     private static final long serialVersionUID = 1;
     
     private VTextField input = new VTextField("");
-
+    
     public CondUserNumberPairType() {
         
         super();
-
-//        setType(CondUserNumberPair.class);
 
         input.setMinimumSize(new Dimension(80, input.getHeight()));
         input.setPreferredSize(new Dimension(80, input.getHeight()));
@@ -41,17 +40,12 @@ public class CondUserNumberPairType extends CondUserNumberType implements Serial
 
         add(input);
 
-
-
     }
     
-    protected Object createFinalUserData(I_CondUserNumber data) {
-        // additional
-        CondUserNumberPair finalResult =
-                new CondUserNumberPair(
-                input.getText(), (I_CondUserNumber) data);
+    @Override
+    protected Object createFinalUserData(I_IIPData userData) {
         
-        return finalResult;
+        return new CondUserNumberPair( input.getText(), (I_CondUserNumber) userData);
     }
 
     @Override
@@ -78,6 +72,8 @@ public class CondUserNumberPairType extends CondUserNumberType implements Serial
             input.setText(pair.getSubset());
         }
     }
+    
+    
 
     @Override
     public ConnectionResult compatible(TypeRepresentationBase tRep) {
