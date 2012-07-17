@@ -21,6 +21,12 @@ public abstract class UserDataModel implements Serializable {
     private int dimension;
     protected UserDataCategory category;
     protected String modelKey;
+    /**
+     * Boolean to differ between normal UserDataModel and an UserDataModel which
+     * should represent a Condition, which has no const data and therefore no
+     * visualization for const data will be available in an UserDataWindow.
+     */
+    protected boolean condition;
 
     public UserDataModel() {
 
@@ -32,6 +38,8 @@ public abstract class UserDataModel implements Serializable {
 
         code = "//Available Parameters are: t, si \n"
                 + "//and depending on dimension: x, y, z \n";
+        
+        condition = false;
     }
 
     /**
@@ -99,4 +107,11 @@ public abstract class UserDataModel implements Serializable {
      * @param data the data to set
      */
     public abstract void setData(Object data);
+
+    /**
+     * @return the condition
+     */
+    public boolean isCondition() {
+        return condition;
+    }
 }

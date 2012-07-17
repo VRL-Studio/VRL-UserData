@@ -27,9 +27,9 @@ import javax.swing.Box;
 public class UserConvDiffDataTupleType extends TypeRepresentationBase implements Serializable {
 
     private static final long serialVersionUID = 1;
-    private UserNumberWindow sourceWindow;
-    private UserVectorWindow velocityWindow;
-    private UserMatrixWindow diffusionWindow;
+    private UserDataWindow sourceWindow;
+    private UserDataWindow velocityWindow;
+    private UserDataWindow diffusionWindow;
     private UserNumberModel sourceModel;
     private UserVectorModel velocityModel;
     private UserMatrixModel diffusionModel;
@@ -78,7 +78,7 @@ public class UserConvDiffDataTupleType extends TypeRepresentationBase implements
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                sourceWindow = new UserNumberWindow(sourceModel,
+                sourceWindow = new UserDataWindow(sourceModel,
                         UserConvDiffDataTupleType.this, "User Data Input", getMainCanvas());
 
                 customParamData2SourceWindow();
@@ -94,7 +94,7 @@ public class UserConvDiffDataTupleType extends TypeRepresentationBase implements
             @Override
             public void actionPerformed(ActionEvent e) {
                 
-                velocityWindow = new UserVectorWindow(velocityModel,
+                velocityWindow = new UserDataWindow(velocityModel,
                         UserConvDiffDataTupleType.this, "User Data Input", getMainCanvas());
 
                  customParamData2VelocityWindow();
@@ -111,7 +111,7 @@ public class UserConvDiffDataTupleType extends TypeRepresentationBase implements
             @Override
             public void actionPerformed(ActionEvent e) {
                 
-                diffusionWindow = new UserMatrixWindow(diffusionModel,
+                diffusionWindow = new UserDataWindow(diffusionModel,
                         UserConvDiffDataTupleType.this, "User Data Input", getMainCanvas());
 
                  customParamData2DiffusionWindow();
@@ -132,25 +132,25 @@ public class UserConvDiffDataTupleType extends TypeRepresentationBase implements
         }
     }
 
-    private UserMatrixWindow getDiffusionWindow() {
+    private UserDataWindow getDiffusionWindow() {
         if (diffusionWindow == null) {
-            diffusionWindow = new UserMatrixWindow(diffusionModel,
+            diffusionWindow = new UserDataWindow(diffusionModel,
                     UserConvDiffDataTupleType.this, "User Data Input", getMainCanvas());
         }
         return diffusionWindow;
     }
     
-    private UserVectorWindow getVelocityWindow() {
+    private UserDataWindow getVelocityWindow() {
         if (velocityWindow == null) {
-            velocityWindow = new UserVectorWindow(velocityModel,
+            velocityWindow = new UserDataWindow(velocityModel,
                     UserConvDiffDataTupleType.this, "User Data Input", getMainCanvas());
         }
         return velocityWindow;
     }
     
-    private UserNumberWindow getSourceWindow() {
+    private UserDataWindow getSourceWindow() {
         if (sourceWindow == null) {
-            sourceWindow = new UserNumberWindow(sourceModel,
+            sourceWindow = new UserDataWindow(sourceModel,
                     UserConvDiffDataTupleType.this, "User Data Input", getMainCanvas());
         }
         return sourceWindow;

@@ -6,11 +6,8 @@ package edu.gcsc.vrl.userdata.types;
 
 import edu.gcsc.vrl.ug.api.*;
 import edu.gcsc.vrl.userdata.UserDataModel;
-import edu.gcsc.vrl.userdata.UserDataWindow;
 import edu.gcsc.vrl.userdata.UserMatrixModel;
-import edu.gcsc.vrl.userdata.UserMatrixWindow;
 import eu.mihosoft.vrl.annotation.TypeInfo;
-import eu.mihosoft.vrl.visual.Canvas;
 import java.io.Serializable;
 
 /**
@@ -109,12 +106,12 @@ public class UserMatrixType extends UserDataType implements Serializable {
         return new UserMatrixModel();
     }
 
-    @Override
-    protected UserDataWindow createUserDataWindow(UserDataModel userDataModel,
-            UserDataType userDataType, String title, Canvas mainCanvas) {
-
-        return new UserMatrixWindow(model, this, title, mainCanvas);
-    }
+//    @Override
+//    protected UserDataWindow createUserDataWindow(UserDataModel userDataModel,
+//            UserDataType userDataType, String title, Canvas mainCanvas) {
+//
+//        return new UserMatrixWindow(model, this, title, mainCanvas);
+//    }
 
     @Override
     protected I_IIPData createVRLUserDataFromModel(UserDataModel model) {

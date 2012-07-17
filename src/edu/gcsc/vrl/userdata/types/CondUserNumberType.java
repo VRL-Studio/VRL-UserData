@@ -6,11 +6,8 @@ package edu.gcsc.vrl.userdata.types;
 
 import edu.gcsc.vrl.ug.api.*;
 import edu.gcsc.vrl.userdata.CondUserNumberModel;
-import edu.gcsc.vrl.userdata.CondUserNumberWindow;
 import edu.gcsc.vrl.userdata.UserDataModel;
-import edu.gcsc.vrl.userdata.UserDataWindow;
 import eu.mihosoft.vrl.annotation.TypeInfo;
-import eu.mihosoft.vrl.visual.Canvas;
 import java.io.Serializable;
 
 /**
@@ -72,11 +69,11 @@ public class CondUserNumberType extends UserDataType implements Serializable {
         return new CondUserNumberModel();
     }
 
-    @Override
-    protected UserDataWindow createUserDataWindow(UserDataModel userDataModel,
-            UserDataType userDataType, String title, Canvas mainCanvas) {
-        return new CondUserNumberWindow(model, this, title, mainCanvas);
-    }
+//    @Override
+//    protected UserDataWindow createUserDataWindow(UserDataModel userDataModel,
+//            UserDataType userDataType, String title, Canvas mainCanvas) {
+//        return new CondUserNumberWindow(model, this, title, mainCanvas);
+//    }
 
     @Override
     protected I_IIPData createVRLUserDataFromModel(UserDataModel model) {

@@ -4,9 +4,7 @@ package edu.gcsc.vrl.userdata;
  * To change this template, choose Tools | Templates and open the template in
  * the editor.
  */
-import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
 import edu.gcsc.vrl.userdata.managers.DimensionManager;
-import edu.gcsc.vrl.userdata.types.UserMatrixType;
 import eu.mihosoft.vrl.lang.CompilerProvider;
 import eu.mihosoft.vrl.lang.visual.EditorProvider;
 import eu.mihosoft.vrl.reflection.CustomParamData;
@@ -28,7 +26,7 @@ import javax.swing.table.DefaultTableModel;
  * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
-public abstract class UserDataWindow extends CanvasWindow implements Serializable {
+public class UserDataWindow extends CanvasWindow implements Serializable {
 
     private static final long serialVersionUID = 1;
     private transient Box outter = null;
@@ -62,10 +60,6 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
     private void init() {
 
         int startdim = DimensionManager.TWO;//model.getDimension();
-        System.out.println("UserDataWindow.init(): startdim = " + startdim);
-//        model.setData(createDefaultData());
-////        updateModel();
-//        checkCustomData();
 
         outter = Box.createVerticalBox();
         add(outter);
@@ -148,6 +142,16 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
                 updateModel();
             }
         });
+
+        if (getModel().isCondition()) {
+            // START Conditions have no constant data, only code
+            constant.setEnabled(false);
+            constant.setVisible(false);
+
+            code.setSelected(true);
+            code.setVisible(false);
+            // END Conditions have no constant data, only code
+        }
 
         // SHOW the last information in window
         // that the user views/choose before closing
@@ -251,8 +255,10 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
 
     /**
      * Stores all informations which are visualized in the UserDataWindow
-     * in a corresponding UserDataModel and calls <code>checkCustomData()</code>.
-     * @see #checkCustomData() 
+     * in a corresponding UserDataModel and calls
+     * <code>checkCustomData()</code>.
+     *
+     * @see #checkCustomData()
      */
     public void updateModel() {
 
@@ -264,8 +270,13 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
         } else {
             getModel().setConstData(false);
         }
-
-        windowData2ModelData(this, getModel());
+        /*
+         * Conditions has no const Data,
+         * therefore check, if is no condition
+         */
+        if (!model.isCondition()) {
+            windowData2ModelData(this, getModel());
+        }
         windowCode2ModelCode(this, getModel());
 
         getModel().setDimension((Integer) dimsChoose.getSelectedItem());
@@ -274,7 +285,8 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
     }
 
     /**
-     * Checks if there is custom parameter data in the corresponding TypRepresentation
+     * Checks if there is custom parameter data in the corresponding
+     * TypRepresentation
      * and the corresponding UserDataModel is stored there.
      * If no custom paramater data exist a new one will be created.
      */
@@ -298,9 +310,10 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
     }
 
     /**
-     * Get all informations which value should be visualized in the UserDataWindow
+     * Get all informations which value should be visualized in the
+     * UserDataWindow
      * from the corresponding UserDataModel and sets the values in the window.
-     * 
+     *
      * @param model that stores the informations that should be visualized
      */
     public void updateWindow(UserDataModel model) {
@@ -312,16 +325,16 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
             constant.setSelected(true);
             parent.add(windowPane);
             parent.remove(editorPane);
-            
+
         } else {
             code.setSelected(true);
             parent.remove(windowPane);
             parent.add(editorPane);
-            
+
         }
 
         revalidate();
-        
+
         switch (model.getDimension()) {
 
             case 1:
@@ -339,14 +352,21 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
                 break;
         }
 
-        modelData2WindowData(model, this);
+        /*
+         * Conditions has no const Data,
+         * therefore check, if is no condition
+         */
+        if (!model.isCondition()) {
+
+            modelData2WindowData(model, this);
+        }
 
         modelCode2WindowCode(model, this);
 
     }
 
     /**
-     * 
+     *
      * @return the TableModel that contains the const data of the window.
      */
     protected DefaultTableModel getTableModel() {
@@ -354,7 +374,7 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
     }
 
     /**
-     * 
+     *
      * @return the current code in the editor of the window
      */
     private String getCode() {
@@ -362,7 +382,7 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
     }
 
     /**
-     * 
+     *
      * @param code that should be set into the editor of the window
      */
     private void setCode(String code) {
@@ -371,7 +391,7 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
 
     /**
      * Updates / replaces the code in the window by the code from model.
-     * 
+     *
      * @param model that is used as source
      * @param window that should be updated
      */
@@ -381,7 +401,7 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
 
     /**
      * Updates / replaces the code in the model by the code from window.
-     * 
+     *
      * @param window that is used as source
      * @param model that should be updated
      */
@@ -408,29 +428,84 @@ public abstract class UserDataWindow extends CanvasWindow implements Serializabl
 //        }
 //        return data;
 //    }
-    public abstract void modelData2WindowData(UserDataModel model, UserDataWindow window);//DefaultTableModel tableModel); //TODO use window instead table
-//    {//Double[][] data
-//        Double[][] data = (Double[][]) model.getData();
-//                
-//        tableModel.setRowCount(data.length);
-//
-//        for (int j = 0; j < data.length; j++) {
-//            for (int i = 0; i < data[j].length; i++) {
-//                tableModel.setValueAt(data[i][j], i, j);
-//            }
-//        }
-//    }
+    public void modelData2WindowData(UserDataModel model, UserDataWindow window) {
 
-    public abstract void windowData2ModelData(UserDataWindow window, UserDataModel model); //TODO use window instead table
-//    {
-//        
-//        Double[][] data = new Double[tableModel.getRowCount()][tableModel.getColumnCount()];
-//
-//        for (int j = 0; j < tableModel.getColumnCount(); j++) {
-//            for (int i = 0; i < tableModel.getRowCount(); i++) {
-//                data[i][j] = (Double) tableModel.getValueAt(i, j);
-//            }
-//        }
-//        return data;
-//    }
+        DefaultTableModel tableModel = window.getTableModel();
+
+        // see docu to know which number stands for which UserDataModel type
+        int type = DimensionManager.getArrayDimension(model.getData());
+
+
+        if (type == 2) {
+            Double[][] data2 = (Double[][]) model.getData();
+
+            for (int j = 0; j < data2.length; j++) {
+                for (int i = 0; i < data2[j].length; i++) {
+                    tableModel.setValueAt(data2[i][j], i, j);
+                }
+            }
+
+        } else if (type == 1) {
+
+            Double[] data1 = (Double[]) model.getData();
+
+            tableModel.setRowCount(data1.length);
+
+            for (int i = 0; i < data1.length; i++) {
+                tableModel.setValueAt(data1[i], i, 0);
+            }
+
+        } else if (type == 0) {
+
+            window.getTableModel().setValueAt(model.getData(), 0, 0);
+
+        } else {
+            throw new IllegalStateException(" >> " + this.getClass().getSimpleName()
+                    + ".modelData2WindowData() have no implementation for the "
+                    + "required data structure.");
+        }
+
+
+    }
+
+    public void windowData2ModelData(UserDataWindow window, UserDataModel model) {
+
+        DefaultTableModel tableModel = window.getTableModel();
+
+        // see docu to know which number stands for which UserDataModel type
+        int type = DimensionManager.getArrayDimension(model.getData());
+
+
+        if (type == 2) {
+
+            Double[][] data2 = new Double[tableModel.getRowCount()][tableModel.getColumnCount()];
+
+            for (int j = 0; j < tableModel.getColumnCount(); j++) {
+                for (int i = 0; i < tableModel.getRowCount(); i++) {
+                    data2[i][j] = (Double) tableModel.getValueAt(i, j);
+                }
+            }
+
+            model.setData(data2);
+
+        } else if (type == 1) {
+
+            Double[] data1 = new Double[tableModel.getRowCount()];
+
+            for (int i = 0; i < tableModel.getRowCount(); i++) {
+                data1[i] = (Double) tableModel.getValueAt(i, 0);
+            }
+
+            model.setData(data1);
+
+        } else if (type == 0) {
+
+            getModel().setData((Double) window.getTableModel().getValueAt(0, 0));
+
+        } else {
+            throw new IllegalStateException(" >> " + this.getClass().getSimpleName()
+                    + ".windowData2ModelData() have no implementation for the "
+                    + "required data structure.");
+        }
+    }
 }

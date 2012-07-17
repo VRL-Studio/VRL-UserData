@@ -6,11 +6,8 @@ package edu.gcsc.vrl.userdata.types;
 
 import edu.gcsc.vrl.ug.api.*;
 import edu.gcsc.vrl.userdata.UserDataModel;
-import edu.gcsc.vrl.userdata.UserDataWindow;
 import edu.gcsc.vrl.userdata.UserVectorModel;
-import edu.gcsc.vrl.userdata.UserVectorWindow;
 import eu.mihosoft.vrl.annotation.TypeInfo;
-import eu.mihosoft.vrl.visual.Canvas;
 import java.io.Serializable;
 
 /**
@@ -100,11 +97,11 @@ public class UserVectorType extends UserDataType implements Serializable {
         return new UserVectorModel();
     }
 
-    @Override
-    protected UserDataWindow createUserDataWindow(UserDataModel userDataModel,
-            UserDataType userDataType, String title, Canvas mainCanvas) {
-        return new UserVectorWindow(model, this, title, mainCanvas);
-    }
+//    @Override
+//    protected UserDataWindow createUserDataWindow(UserDataModel userDataModel,
+//            UserDataType userDataType, String title, Canvas mainCanvas) {
+//        return new UserVectorWindow(model, this, title, mainCanvas);
+//    }
 
     @Override
     protected I_IIPData createVRLUserDataFromModel(UserDataModel model) {

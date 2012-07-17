@@ -7,7 +7,6 @@ package edu.gcsc.vrl.userdata.types;
 import edu.gcsc.vrl.ug.api.I_CondUserNumber;
 import edu.gcsc.vrl.ug.api.I_IIPData;
 import edu.gcsc.vrl.userdata.CondUserNumberPair;
-import edu.gcsc.vrl.userdata.CondUserNumberWindow;
 import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.visual.ConnectionResult;

@@ -5,7 +5,6 @@
 package edu.gcsc.vrl.userdata;
 
 import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
-import edu.gcsc.vrl.userdata.managers.DimensionManager;
 
 /**
  *
@@ -21,10 +20,10 @@ public class CondUserNumberModel extends UserDataModel {
         category = UserDataCategory.COND_NUMBER;
         modelKey = category+":model";
         
-        setConstData(false);
-        
         setCode("return new Cond(true, 0.0);");
         
+        setConstData(false);
+        condition = true;
     }
 
     

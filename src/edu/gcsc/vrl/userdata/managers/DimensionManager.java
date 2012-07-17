@@ -40,7 +40,7 @@ public class DimensionManager {
             //data.getClass()
             //NULLPOINTER do not throw
             
-            e.printStackTrace(System.err);
+            //e.printStackTrace(System.err);
         }
         
         while(tmp !=null){

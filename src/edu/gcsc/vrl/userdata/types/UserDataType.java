@@ -54,7 +54,7 @@ public abstract class UserDataType extends TypeRepresentationBase implements Ser
             public void actionPerformed(ActionEvent e) {
 
 
-                window = createUserDataWindow(model,
+                window = new UserDataWindow(model,
                         UserDataType.this, "User Data Input", getMainCanvas());
 
                 window.updateWindow(model);
@@ -173,22 +173,22 @@ public abstract class UserDataType extends TypeRepresentationBase implements Ser
      */
     protected abstract UserDataModel createUserDataModel();
 
-    /**
-     * Creates a new specific instance of an UserDataWindow.
-     * Specific means (Cond-)UserNumber-, UserVector-, UserMatrix-Window.
-     *
-     * @param userDataModel which contains the data to fill the window with
-     * @param userDataType for that the window should be created
-     * @param title of the window
-     * @param mainCanvas to which the window should be added
-     *
-     * @return a new specific instance of UserDataWindow
-     */
-    protected abstract UserDataWindow createUserDataWindow(
-            UserDataModel userDataModel,
-            UserDataType userDataType,
-            String title,
-            Canvas mainCanvas);
+//    /**
+//     * Creates a new specific instance of an UserDataWindow.
+//     * Specific means (Cond-)UserNumber-, UserVector-, UserMatrix-Window.
+//     *
+//     * @param userDataModel which contains the data to fill the window with
+//     * @param userDataType for that the window should be created
+//     * @param title of the window
+//     * @param mainCanvas to which the window should be added
+//     *
+//     * @return a new specific instance of UserDataWindow
+//     */
+//    protected abstract UserDataWindow createUserDataWindow(
+//            UserDataModel userDataModel,
+//            UserDataType userDataType,
+//            String title,
+//            Canvas mainCanvas);
 
     /**
      * Creates an UserData like e.g UserNumber from the code that is stored in

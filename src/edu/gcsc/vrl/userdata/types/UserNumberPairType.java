@@ -4,9 +4,9 @@
  */
 package edu.gcsc.vrl.userdata.types;
 
-import edu.gcsc.vrl.ug.api.*;
+import edu.gcsc.vrl.ug.api.I_IIPData;
+import edu.gcsc.vrl.ug.api.I_UserNumber;
 import edu.gcsc.vrl.userdata.UserNumberPair;
-import edu.gcsc.vrl.userdata.UserNumberWindow;
 import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.visual.ConnectionResult;
