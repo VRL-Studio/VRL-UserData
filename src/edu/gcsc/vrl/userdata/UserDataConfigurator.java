@@ -47,8 +47,8 @@ public class UserDataConfigurator extends VPluginConfigurator {
         addDependency(new PluginDependency("VRL", "0.4.2", VersionInfo.UNDEFINED));
 
         // specify dependencies
-        addDependency(new PluginDependency("VRL-UG4", "0.2", VersionInfo.UNDEFINED));
-        addDependency(new PluginDependency("VRL-UG4-API", "0.2", VersionInfo.UNDEFINED));
+        addDependency(new PluginDependency("VRL-UG", "0.2", VersionInfo.UNDEFINED));
+        addDependency(new PluginDependency("VRL-UG-API", "0.2", VersionInfo.UNDEFINED));
         
     }
 
