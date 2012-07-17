@@ -4,7 +4,7 @@
  */
 package edu.gcsc.vrl.userdata;
 
-import edu.gcsc.vrl.ug.api.I_IIPData;
+import edu.gcsc.vrl.ug.api.I_IUserData;
 import java.io.Serializable;
 
 /**
@@ -15,13 +15,13 @@ import java.io.Serializable;
 public class UserDataPair implements Serializable {
     private static final long serialVersionUID = 1L;
     protected String subset;
-    protected I_IIPData data;
+    protected I_IUserData data;
 
     public UserDataPair() {
         //
     }
 
-    public UserDataPair(String subset, I_IIPData data) {
+    public UserDataPair(String subset, I_IUserData data) {
         this.subset = subset;
         this.data = data;
     }
@@ -44,14 +44,14 @@ public class UserDataPair implements Serializable {
     /**
      * @return the cond
      */
-    public I_IIPData getData() {
+    public I_IUserData getData() {
         return data;
     }
 
     /**
      * @param cond the cond to set
      */
-    public void setData(I_IIPData cond) {
+    public void setData(I_IUserData cond) {
         this.data = cond;
     }
 }

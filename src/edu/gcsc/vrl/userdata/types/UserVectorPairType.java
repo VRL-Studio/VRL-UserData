@@ -4,7 +4,7 @@
  */
 package edu.gcsc.vrl.userdata.types;
 
-import edu.gcsc.vrl.ug.api.I_IIPData;
+import edu.gcsc.vrl.ug.api.I_IUserData;
 import edu.gcsc.vrl.ug.api.I_UserVector;
 import edu.gcsc.vrl.userdata.UserVectorPair;
 import eu.mihosoft.vrl.annotation.TypeInfo;
@@ -42,7 +42,7 @@ public class UserVectorPairType extends UserVectorType implements Serializable {
     }
 
     @Override
-    protected Object createFinalUserData(I_IIPData userData) {
+    protected Object createFinalUserData(I_IUserData userData) {
         return new UserVectorPair(input.getText(), userData);
     }
 

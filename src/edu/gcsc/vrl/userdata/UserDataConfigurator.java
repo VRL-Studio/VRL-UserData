@@ -35,7 +35,7 @@ public class UserDataConfigurator extends VPluginConfigurator {
     public UserDataConfigurator() {
 
         //specify the plugin name and version
-        setIdentifier(new PluginIdentifier("VRL-UserData", "0.1"));
+        setIdentifier(new PluginIdentifier("VRL-UserData", "0.2"));
 
         // allow other plugins to use the api of this plugin
         exportPackage("edu.gcsc.vrl.userdata");
@@ -44,7 +44,7 @@ public class UserDataConfigurator extends VPluginConfigurator {
         setDescription("VRL Plugin for UG4-UserData visualization.");
 
         // specify dependencies
-        addDependency(new PluginDependency("VRL", "0.4.1", VersionInfo.UNDEFINED));
+        addDependency(new PluginDependency("VRL", "0.4.2", VersionInfo.UNDEFINED));
 
         // specify dependencies
         addDependency(new PluginDependency("VRL-UG4", "0.2", VersionInfo.UNDEFINED));
@@ -89,6 +89,10 @@ public class UserDataConfigurator extends VPluginConfigurator {
             vapi.addTypeRepresentation( UserConvDiffDataTupleType.class);
             vapi.addTypeRepresentation( UserConvDiffDataTupleArrayType.class);
 
+            vapi.addTypeRepresentation( StringSubsetSelectionInputType.class);
+            vapi.addTypeRepresentation( LoadUGXFileStringType.class);
+
+            
              //
             /// BASICMATH Components
             //

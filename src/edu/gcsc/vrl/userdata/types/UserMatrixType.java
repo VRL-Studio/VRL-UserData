@@ -114,7 +114,7 @@ public class UserMatrixType extends UserDataType implements Serializable {
 //    }
 
     @Override
-    protected I_IIPData createVRLUserDataFromModel(UserDataModel model) {
+    protected I_IUserData createVRLUserDataFromModel(UserDataModel model) {
 
         /* TODO: Ask why there is no I_VRLUserMatrix which has also access to
          *       the method data(String).
@@ -150,7 +150,7 @@ public class UserMatrixType extends UserDataType implements Serializable {
     }
 
     @Override
-    protected I_IIPData createConstUserDataFromModel(UserDataModel model) {
+    protected I_IUserData createConstUserDataFromModel(UserDataModel model) {
 
         I_ConstUserMatrix result = null;
         int dim = model.getDimension();

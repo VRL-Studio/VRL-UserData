@@ -5,7 +5,7 @@
 package edu.gcsc.vrl.userdata.types;
 
 import edu.gcsc.vrl.ug.api.I_CondUserNumber;
-import edu.gcsc.vrl.ug.api.I_IIPData;
+import edu.gcsc.vrl.ug.api.I_IUserData;
 import edu.gcsc.vrl.userdata.CondUserNumberPair;
 import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
@@ -42,7 +42,7 @@ public class CondUserNumberPairType extends CondUserNumberType implements Serial
     }
     
     @Override
-    protected Object createFinalUserData(I_IIPData userData) {
+    protected Object createFinalUserData(I_IUserData userData) {
         
         return new CondUserNumberPair( input.getText(), (I_CondUserNumber) userData);
     }

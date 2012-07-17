@@ -83,7 +83,7 @@ public class UserNumberType extends UserDataType implements Serializable {
 //    }
 
     @Override
-    protected I_IIPData createVRLUserDataFromModel(UserDataModel model) {
+    protected I_IUserData createVRLUserDataFromModel(UserDataModel model) {
 
         /*
          * TODO: Ask why there is no I_VRLUserNumber which has also access to
@@ -121,7 +121,7 @@ public class UserNumberType extends UserDataType implements Serializable {
     }
 
     @Override
-    protected I_IIPData createConstUserDataFromModel(UserDataModel model) {
+    protected I_IUserData createConstUserDataFromModel(UserDataModel model) {
         return new ConstUserNumber((Double) model.getData());
     }
 }

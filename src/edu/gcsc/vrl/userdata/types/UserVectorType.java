@@ -104,7 +104,7 @@ public class UserVectorType extends UserDataType implements Serializable {
 //    }
 
     @Override
-    protected I_IIPData createVRLUserDataFromModel(UserDataModel model) {
+    protected I_IUserData createVRLUserDataFromModel(UserDataModel model) {
 
         /* TODO: Ask why there is no I_VRLUserVector which has also access to
          *       the method data(String).
@@ -114,7 +114,7 @@ public class UserVectorType extends UserDataType implements Serializable {
         int dim = model.getDimension();
         int type = 1; //means Vector, see docu of createCode()
 
-
+        
         switch (dim) {
             case 1:
                 I_VRLUserVector1d vector1d = new VRLUserVector1d();
@@ -142,7 +142,7 @@ public class UserVectorType extends UserDataType implements Serializable {
     }
 
     @Override
-    protected I_IIPData createConstUserDataFromModel(UserDataModel model) {
+    protected I_IUserData createConstUserDataFromModel(UserDataModel model) {
 
         I_ConstUserVector result = null;
 

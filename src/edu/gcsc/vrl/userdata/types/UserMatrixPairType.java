@@ -4,7 +4,7 @@
  */
 package edu.gcsc.vrl.userdata.types;
 
-import edu.gcsc.vrl.ug.api.I_IIPData;
+import edu.gcsc.vrl.ug.api.I_IUserData;
 import edu.gcsc.vrl.ug.api.I_UserMatrix;
 import edu.gcsc.vrl.userdata.UserMatrixPair;
 import eu.mihosoft.vrl.annotation.TypeInfo;
@@ -41,7 +41,7 @@ public class UserMatrixPairType extends UserMatrixType implements Serializable {
     }
 
     @Override
-    protected Object createFinalUserData(I_IIPData userData) {
+    protected Object createFinalUserData(I_IUserData userData) {
 
         return new UserMatrixPair(input.getText(), userData);
     }

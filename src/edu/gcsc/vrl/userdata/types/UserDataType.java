@@ -7,7 +7,7 @@ package edu.gcsc.vrl.userdata.types;
 import edu.gcsc.vrl.ug.CondUserDataCompiler;
 import edu.gcsc.vrl.ug.UserData;
 import edu.gcsc.vrl.ug.UserDataCompiler;
-import edu.gcsc.vrl.ug.api.I_IIPData;
+import edu.gcsc.vrl.ug.api.I_IUserData;
 
 import edu.gcsc.vrl.userdata.UserDataModel;
 import edu.gcsc.vrl.userdata.UserDataWindow;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
  * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
-@TypeInfo(type = I_IIPData.class, input = true, output = false, style = "default")
+@TypeInfo(type = I_IUserData.class, input = true, output = false, style = "default")
 public abstract class UserDataType extends TypeRepresentationBase implements Serializable {
 
     private static final long serialVersionUID = 1;
@@ -68,7 +68,7 @@ public abstract class UserDataType extends TypeRepresentationBase implements Ser
     @Override
     public Object getViewValue() {
 
-        I_IIPData result = createUserDataFromModel(model);
+        I_IUserData result = createUserDataFromModel(model);
 
         return createFinalUserData(result);
     }
@@ -84,7 +84,7 @@ public abstract class UserDataType extends TypeRepresentationBase implements Ser
      *
      * @return reference on the maybe decorated instance
      */
-    protected Object createFinalUserData(I_IIPData userData) {
+    protected Object createFinalUserData(I_IUserData userData) {
         return userData;
     }
 
@@ -200,7 +200,7 @@ public abstract class UserDataType extends TypeRepresentationBase implements Ser
      * 
      * @return the created UserData
      */
-    protected abstract I_IIPData createVRLUserDataFromModel(UserDataModel model);
+    protected abstract I_IUserData createVRLUserDataFromModel(UserDataModel model);
 
     /**
      * Creates an UserData like e.g UserNumber from the table data that is stored
@@ -212,7 +212,7 @@ public abstract class UserDataType extends TypeRepresentationBase implements Ser
      * 
      * @return the created UserData
      */
-    protected abstract I_IIPData createConstUserDataFromModel(UserDataModel model);
+    protected abstract I_IUserData createConstUserDataFromModel(UserDataModel model);
 
     /**
      * Creates an UserData like e.g UserNumber from the corresponding UserDataModel.
@@ -228,9 +228,9 @@ public abstract class UserDataType extends TypeRepresentationBase implements Ser
      * 
      * @return the created UserData or null
      */
-    protected I_IIPData createUserDataFromModel(UserDataModel model) {
+    protected I_IUserData createUserDataFromModel(UserDataModel model) {
 
-        I_IIPData result = null;
+        I_IUserData result = null;
 
         if (model.isConstData()) {
 
