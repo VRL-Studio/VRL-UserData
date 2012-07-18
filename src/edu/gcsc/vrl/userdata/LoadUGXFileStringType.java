@@ -57,7 +57,7 @@ public class LoadUGXFileStringType extends TypeRepresentationBase {
         this.input.setMinimumSize(new Dimension(120, height));
         this.input.setMaximumSize(new Dimension(120, height));
         this.input.setPreferredSize(new Dimension(120, height));
-        input.setEditable(false);
+        input.setEditable(true);
         input.setAlignmentY(0.5f);
         input.setAlignmentX(0.0f);
         input.addActionListener(new ActionListener() {
@@ -76,7 +76,8 @@ public class LoadUGXFileStringType extends TypeRepresentationBase {
         ArrayList<String> endings = new ArrayList<String>();
         endings.add("ugx");
         fileFilter.setAcceptedEndings(endings);
-
+        fileFilter.setDescription("*.ugx");
+        
         // create a file manager
         final FileDialogManager fileManager = new FileDialogManager();
 
@@ -169,21 +170,24 @@ public class LoadUGXFileStringType extends TypeRepresentationBase {
 
     protected void notifyLoadUGXFileObservable() {
         File file = new File(input.getText());
-        String msg = "";
-        
+
         //  Here we inform the Singleton, that the file no scheduled
         if (file.isFile()) {
-            msg = LoadUGXFileObservable.getInstance().setSelectedFile(file, tag);
+            String msg = LoadUGXFileObservable.getInstance().setSelectedFile(file, tag);
+            if (!msg.isEmpty()) {
+                getMainCanvas().getMessageBox().addMessage("Invalid ugx-File",
+                        msg, getConnector(), MessageType.ERROR);
+            }
+
         } else {
             LoadUGXFileObservable.getInstance().setInvalidFile(tag);
+            if (!input.getText().isEmpty()) {
+                getMainCanvas().getMessageBox().addMessage("Invalid ugx-File",
+                        "Specified filename invalid: " + file.toString(),
+                        getConnector(), MessageType.ERROR);
+
+            }
         }
-        
-        if(!msg.isEmpty()){
-           getMainCanvas().getMessageBox().addMessage("Invalid ugx-Fule", 
-                    msg, 
-                    getConnector(), MessageType.ERROR);
-        }
- 
     }
 
     @Override

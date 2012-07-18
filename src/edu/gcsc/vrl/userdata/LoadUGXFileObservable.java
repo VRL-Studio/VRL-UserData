@@ -1,12 +1,11 @@
 package edu.gcsc.vrl.userdata;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import edu.gcsc.vrl.ug.api.UGXFileInfo;
-import eu.mihosoft.vrl.visual.MessageType;
+import java.util.HashSet;
 
 /**
  * Stores the data info to a ugx file. Several files are possible and destinguished
@@ -48,7 +47,7 @@ public class LoadUGXFileObservable {
      */
     private class UGXFileTag {
 
-        public Collection<LoadUGXFileObserver> observers = new ArrayList<LoadUGXFileObserver>();
+        public Collection<LoadUGXFileObserver> observers = new HashSet<LoadUGXFileObserver>();
         public UGXFileInfo data = null;
     }
     /**
@@ -80,12 +79,37 @@ public class LoadUGXFileObservable {
 
     /**
      * Add an observer to this Observable. The observer listens to a tag.
+     * The observer will be updated with the current data automatically.
      * 
      * @param obs       the observer to add
      * @param tag       the tag
      */
     public synchronized void addObserver(LoadUGXFileObserver obs, String tag) {
         getTag(tag, true).observers.add(obs);
+        obs.update(getTag(tag,false).data);
+    }
+
+    /**
+     * Removes an observer from this Observable. 
+     * 
+     * @param obs       the observer to remove
+     * @param tag       the tag
+     */
+    public synchronized void deleteObserver(LoadUGXFileObserver obs, String tag) {
+         if (tags.containsKey(tag)) {
+           tags.get(tag).observers.remove(obs);
+        }
+    }
+
+    /**
+     * Removes all observer of a tag from this Observable. 
+     * 
+     * @param tag       the tag
+     */
+    public synchronized void deleteObservers(String tag) {
+         if (tags.containsKey(tag)) {
+           tags.get(tag).observers.clear();
+        }
     }
 
     /**
@@ -93,7 +117,7 @@ public class LoadUGXFileObservable {
      * 
      * @param tag   the tag
      */
-    public void notifyObservers(String tag) {
+    public synchronized void notifyObservers(String tag) {
         // get data for tag
         UGXFileTag ugxTag = getTag(tag, false);
 
@@ -117,24 +141,31 @@ public class LoadUGXFileObservable {
      * @return          empty string if successful, error-msg if error occured
      */
     public synchronized String setSelectedFile(File file, String tag) {
+
         UGXFileTag ugxTag = getTag(tag, true);
+
+        if(!file.toString().endsWith(".ugx")){
+            setInvalidFile(tag);
+            return "Invalid Filename: " + file.toString()+". Must be *.ugx.";
+        }
+        
         ugxTag.data = new UGXFileInfo();
 
         //  Parse the ugx file for subsets and dimensions
         //  and store the subsets.
         if (ugxTag.data.parse_file(file.toString()) == false) {
-            ugxTag.data = null;
+            setInvalidFile(tag);
             return "Unable to parse ugx-File: " + file.toString();
         }
 
 
         if (ugxTag.data.const__num_grids() != 1) {
-            ugxTag.data = null;
+            setInvalidFile(tag);
             return "ugx-File must contain exactly one grid.";
         }
 
         if (ugxTag.data.const__num_subset_handlers(0) < 1) {
-            ugxTag.data = null;
+            setInvalidFile(tag);
             return "ugx-File must contain at least one subset handler.";
         }
 
