@@ -50,19 +50,18 @@ public class StringSubsetSelectionInputType extends SelectionInputType implement
         } else {
             return super.getViewValue();
         }
-        
- /*       if (tag == null) {
+
+        if (tag == null) {
             throw new RuntimeException("StringSubsetSelectionInputType: no tag"
                     + " specified in ParamInfo options.");
         }
-*/
+
         return null;
     }
 
     @Override
     protected void evaluationRequest(Script script) {
         Object property = null;
-
 
         if (getValueOptions() != null) {
 
@@ -71,22 +70,18 @@ public class StringSubsetSelectionInputType extends SelectionInputType implement
             }
 
             if (property != null) {
-                if (getViewValueWithoutValidation() == null) {
-
-                    tag = (String) property;
-                }
+                tag = (String) property;
             }
         }
 
-
-        if(tag == null){
-            getMainCanvas().getMessageBox().addMessage("Invalid ParamInfo option", 
-                    "ParamInfo for ugx-subset-selection requires tag in options", 
+        if (tag == null) {
+            getMainCanvas().getMessageBox().addMessage("Invalid ParamInfo option",
+                    "ParamInfo for ugx-subset-selection requires tag in options",
                     getConnector(), MessageType.ERROR);
         }
-        
-        //  register this as observer at the Observable using tag
-        registerAtLoadUGXFileObservable();
+
+        // we register at the observable for ugx-file-loads of this tag
+        LoadUGXFileObservable.getInstance().addObserver(this, tag);
     }
 
     @Override()
@@ -102,13 +97,12 @@ public class StringSubsetSelectionInputType extends SelectionInputType implement
         return result;
     }
 
-    protected void registerAtLoadUGXFileObservable() {
+    @Override
+    public void dispose() {
+        // we remove from the observable for ugx-file-loads of this tag
+        LoadUGXFileObservable.getInstance().deleteObserver(this, tag);
 
-        // we register at the oberver for all ugx-file-loads
-        LoadUGXFileObservable.getInstance().addObserver(this, tag);
-
-        // update with current data
-        update(LoadUGXFileObservable.getInstance().getSelectedData(tag));
+        super.dispose();
     }
 
     @Override
@@ -118,11 +112,11 @@ public class StringSubsetSelectionInputType extends SelectionInputType implement
         JComboBox box = super.getSelectionView();
 
         if (data != null) {
-            for(int i = 0; i < data.const__num_subsets(0, 0); ++i){
+            for (int i = 0; i < data.const__num_subsets(0, 0); ++i) {
                 subsetList.add(data.const__subset_name(0, 0, i));
             }
             box.setBackground(Color.GREEN);
-            
+
         } else {
             subsetList.add("-- No Grid Choosen --");
             box.setBackground(Color.RED);

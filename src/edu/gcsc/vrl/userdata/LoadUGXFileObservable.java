@@ -79,12 +79,14 @@ public class LoadUGXFileObservable {
 
     /**
      * Add an observer to this Observable. The observer listens to a tag.
+     * The observer will be updated with the current data automatically.
      * 
      * @param obs       the observer to add
      * @param tag       the tag
      */
     public synchronized void addObserver(LoadUGXFileObserver obs, String tag) {
         getTag(tag, true).observers.add(obs);
+        obs.update(getTag(tag,false).data);
     }
 
     /**
@@ -115,7 +117,7 @@ public class LoadUGXFileObservable {
      * 
      * @param tag   the tag
      */
-    public void notifyObservers(String tag) {
+    public synchronized void notifyObservers(String tag) {
         // get data for tag
         UGXFileTag ugxTag = getTag(tag, false);
 
