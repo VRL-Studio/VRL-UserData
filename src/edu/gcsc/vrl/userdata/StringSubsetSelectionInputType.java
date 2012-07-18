@@ -121,13 +121,10 @@ public class StringSubsetSelectionInputType extends SelectionInputType implement
             for(int i = 0; i < data.const__num_subsets(0, 0); ++i){
                 subsetList.add(data.const__subset_name(0, 0, i));
             }
-            box.setOpaque(true);
-            box.setForeground(Color.GREEN);
             box.setBackground(Color.GREEN);
+            
         } else {
             subsetList.add("-- No Grid Choosen --");
-            box.setOpaque(true);
-            box.setForeground(Color.RED);
             box.setBackground(Color.RED);
         }
 
