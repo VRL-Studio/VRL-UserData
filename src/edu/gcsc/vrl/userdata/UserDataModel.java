@@ -4,98 +4,24 @@
  */
 package edu.gcsc.vrl.userdata;
 
+import edu.gcsc.vrl.ug.api.UGXFileInfo;
 import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
-import edu.gcsc.vrl.userdata.managers.DimensionManager;
 import java.io.Serializable;
 
 /**
  *
- * @author Michael Hoffer <info@michaelhoffer.de>
- * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
+ * @author andreasvogel
  */
 public abstract class UserDataModel implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-    private boolean constData;
-    private String code;
-    private int dimension;
+ 
     protected UserDataCategory category;
-    protected String modelKey;
-    /**
-     * Boolean to differ between normal UserDataModel and an UserDataModel which
-     * should represent a Condition, which has no const data and therefore no
-     * visualization for const data will be available in an UserDataWindow.
-     */
-    protected boolean condition;
-
-    public UserDataModel() {
-
-        // default values
-        
-        constData = true;
-
-        dimension = DimensionManager.TWO; 
-
-        code = "//Available Parameters are: t, si \n"
-                + "//and depending on dimension: x, y, z \n";
-        
-        condition = false;
-    }
-
-    /**
-     * @return the constData
-     */
-    public boolean isConstData() {
-        return constData;
-    }
-
-    /**
-     * @param constData the constData to set
-     */
-    public void setConstData(boolean constData) {
-        this.constData = constData;
-    }
-
-    /**
-     * @return the code
-     */
-    public String getCode() {
-        return code;
-    }
-
-    /**
-     * @param code the code to set
-     */
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    /**
-     * @return the dimension
-     */
-    public int getDimension() {
-        return dimension;
-    }
-
-    /**
-     * @param dimension the dimension to set
-     */
-    public void setDimension(int dimension) {
-        this.dimension = dimension;
-    }
+    protected boolean externTriggered = false;
 
     /**
      * @return the category
      */
     public UserDataCategory getCategory() {
         return category;
-    }
-
-    /**
-     * @return the modelKey
-     */
-    public String getModelKey() {
-        return modelKey;
     }
 
     /**
@@ -109,9 +35,21 @@ public abstract class UserDataModel implements Serializable {
     public abstract void setData(Object data);
 
     /**
-     * @return the condition
+     * @param data the data to set
      */
-    public boolean isCondition() {
-        return condition;
+    public abstract void setModel(UserDataModel data);
+   
+    public abstract boolean adjustData(UGXFileInfo info);
+    
+    public abstract Object createUserData();
+
+    public boolean isExternTriggered() {
+        return externTriggered;
     }
+
+    public void setExternTriggered(boolean externTriggered) {
+        this.externTriggered = externTriggered;
+    }
+
 }
+

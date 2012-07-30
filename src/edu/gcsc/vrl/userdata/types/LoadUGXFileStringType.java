@@ -1,11 +1,13 @@
-package edu.gcsc.vrl.userdata;
+package edu.gcsc.vrl.userdata.types;
 
+import edu.gcsc.vrl.userdata.LoadUGXFileObservable;
 import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.dialogs.FileDialogManager;
 import eu.mihosoft.vrl.io.VFileFilter;
 import eu.mihosoft.vrl.lang.VLangUtils;
 import eu.mihosoft.vrl.reflection.LayoutType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
+import eu.mihosoft.vrl.reflection.VisualCanvas;
 import eu.mihosoft.vrl.visual.MessageType;
 import eu.mihosoft.vrl.visual.VBoxLayout;
 import eu.mihosoft.vrl.visual.VTextField;
@@ -21,7 +23,7 @@ import javax.swing.JTextField;
 
 /**
  *
- * @author andreasvogel
+ * @author Andreas Vogel <andreas.vogel@gcsc.uni-frankfurt.de>
  */
 @TypeInfo(type = String.class, input = true, output = false, style = "ugx-load-dialog")
 public class LoadUGXFileStringType extends TypeRepresentationBase {
@@ -46,17 +48,17 @@ public class LoadUGXFileStringType extends TypeRepresentationBase {
         // set the name label
         nameLabel.setText("File Name (*.ugx):");
         nameLabel.setAlignmentX(0.0f);
-        this.add(nameLabel);
+        add(nameLabel);
 
         // create input field
         input = new VTextField(this, "");
         input.setHorizontalAlignment(JTextField.RIGHT);
         setInputDocument(input, input.getDocument());
         int height = (int) this.input.getMinimumSize().getHeight();
-        this.input.setSize(new Dimension(120, height));
-        this.input.setMinimumSize(new Dimension(120, height));
-        this.input.setMaximumSize(new Dimension(120, height));
-        this.input.setPreferredSize(new Dimension(120, height));
+        input.setSize(new Dimension(120, height));
+        input.setMinimumSize(new Dimension(120, height));
+        input.setMaximumSize(new Dimension(120, height));
+        input.setPreferredSize(new Dimension(120, height));
         input.setEditable(true);
         input.setAlignmentY(0.5f);
         input.setAlignmentX(0.0f);
@@ -64,10 +66,10 @@ public class LoadUGXFileStringType extends TypeRepresentationBase {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                    setViewValue(input.getText());
+                setViewValue(input.getText());
             }
         });
-        this.add(input);
+        add(input);
 
         // hide connector, since no external data allowed
         setHideConnector(true);
@@ -77,7 +79,7 @@ public class LoadUGXFileStringType extends TypeRepresentationBase {
         endings.add("ugx");
         fileFilter.setAcceptedEndings(endings);
         fileFilter.setDescription("*.ugx");
-        
+
         // create a file manager
         final FileDialogManager fileManager = new FileDialogManager();
 
@@ -105,7 +107,7 @@ public class LoadUGXFileStringType extends TypeRepresentationBase {
             }
         });
 
-        this.add(button);
+        add(button);
     }
 
     @Override
@@ -158,29 +160,38 @@ public class LoadUGXFileStringType extends TypeRepresentationBase {
             }
         }
 
-        if(tag == null){
-            getMainCanvas().getMessageBox().addMessage("Invalid ParamInfo option", 
-                    "ParamInfo for ugx-subset-selection requires tag in options", 
+        if (tag == null) {
+            getMainCanvas().getMessageBox().addMessage("Invalid ParamInfo option",
+                    "ParamInfo for ugx-subset-selection requires tag in options",
                     getConnector(), MessageType.ERROR);
         }
+
+    }
+
+    @Override
+    public void addedToMethodRepresentation() {
+        super.addedToMethodRepresentation();
 
         // register at Observable using tag
         notifyLoadUGXFileObservable();
     }
-
+ 
     protected void notifyLoadUGXFileObservable() {
         File file = new File(input.getText());
+            int id = this.getParentMethod().getParentObject().getObjectID();
+            Object o = ((VisualCanvas) getMainCanvas()).getInspector().getObject(id);
+            int windowID = 0;
 
         //  Here we inform the Singleton, that the file no scheduled
         if (file.isFile()) {
-            String msg = LoadUGXFileObservable.getInstance().setSelectedFile(file, tag);
+            String msg = LoadUGXFileObservable.getInstance().setSelectedFile(file, tag, o, windowID);
             if (!msg.isEmpty()) {
                 getMainCanvas().getMessageBox().addMessage("Invalid ugx-File",
                         msg, getConnector(), MessageType.ERROR);
             }
 
         } else {
-            LoadUGXFileObservable.getInstance().setInvalidFile(tag);
+            LoadUGXFileObservable.getInstance().setInvalidFile(tag, o, windowID);
             if (!input.getText().isEmpty()) {
                 getMainCanvas().getMessageBox().addMessage("Invalid ugx-File",
                         "Specified filename invalid: " + file.toString(),

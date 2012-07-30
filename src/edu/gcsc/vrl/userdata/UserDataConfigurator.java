@@ -4,24 +4,20 @@
  */
 package edu.gcsc.vrl.userdata;
 
-import edu.gcsc.vrl.userdata.types.CondUserNumberPairArrayType;
-import edu.gcsc.vrl.userdata.types.CondUserNumberPairType;
-import edu.gcsc.vrl.userdata.types.UserMatrixPairArrayType;
-import edu.gcsc.vrl.userdata.types.UserMatrixArrayType;
-import edu.gcsc.vrl.userdata.types.UserMatrixPairType;
+import edu.gcsc.vrl.userdata.types.LoadUGXFileStringType;
+import edu.gcsc.vrl.userdata.types.UserDataTupleArrayType;
 import edu.gcsc.vrl.userdata.types.CondUserNumberType;
 import edu.gcsc.vrl.userdata.types.UserMatrixType;
 import edu.gcsc.vrl.userdata.types.CondUserNumberArrayType;
-import edu.gcsc.vrl.userdata.types.UserConvDiffDataTupleArrayType;
-import edu.gcsc.vrl.userdata.types.UserConvDiffDataTupleType;
-import edu.gcsc.vrl.userdata.types.UserNumberPairArrayType;
+import edu.gcsc.vrl.userdata.types.LoadUGXFileType;
+import edu.gcsc.vrl.userdata.types.StringSubsetArrayType;
+import edu.gcsc.vrl.userdata.types.StringSubsetType;
+import edu.gcsc.vrl.userdata.types.UserDataTupleType;
+import edu.gcsc.vrl.userdata.types.UserMatrixArrayType;
 import edu.gcsc.vrl.userdata.types.UserNumberType;
 import edu.gcsc.vrl.userdata.types.UserNumberArrayType;
-import edu.gcsc.vrl.userdata.types.UserVectorPairArrayType;
 import edu.gcsc.vrl.userdata.types.UserVectorType;
 import edu.gcsc.vrl.userdata.types.UserVectorArrayType;
-import edu.gcsc.vrl.userdata.types.UserNumberPairType;
-import edu.gcsc.vrl.userdata.types.UserVectorPairType;
 import eu.mihosoft.vrl.io.VersionInfo;
 import eu.mihosoft.vrl.system.*;
 
@@ -65,32 +61,24 @@ public class UserDataConfigurator extends VPluginConfigurator {
             /// TYPES 
             //
 
+            vapi.addTypeRepresentation( StringSubsetType.class);
+            vapi.addTypeRepresentation( StringSubsetArrayType.class);
+
+
+            vapi.addTypeRepresentation( UserDataTupleType.class);
             vapi.addTypeRepresentation( UserNumberType.class);
             vapi.addTypeRepresentation( UserVectorType.class);
             vapi.addTypeRepresentation( UserMatrixType.class);
-            
             vapi.addTypeRepresentation( CondUserNumberType.class);
-            vapi.addTypeRepresentation( CondUserNumberPairType.class);
-            vapi.addTypeRepresentation( CondUserNumberArrayType.class);
-            vapi.addTypeRepresentation( CondUserNumberPairArrayType.class);
             
-            vapi.addTypeRepresentation( UserNumberPairType.class);
-            vapi.addTypeRepresentation( UserNumberPairArrayType.class);
+            vapi.addTypeRepresentation( UserDataTupleArrayType.class);
             vapi.addTypeRepresentation( UserNumberArrayType.class);
-            
-            vapi.addTypeRepresentation( UserVectorPairType.class);
-            vapi.addTypeRepresentation( UserVectorPairArrayType.class);
             vapi.addTypeRepresentation( UserVectorArrayType.class);
-            
-            vapi.addTypeRepresentation( UserMatrixPairType.class);
-            vapi.addTypeRepresentation( UserMatrixPairArrayType.class);
             vapi.addTypeRepresentation( UserMatrixArrayType.class);
+            vapi.addTypeRepresentation( CondUserNumberArrayType.class);
 
-            vapi.addTypeRepresentation( UserConvDiffDataTupleType.class);
-            vapi.addTypeRepresentation( UserConvDiffDataTupleArrayType.class);
-
-            vapi.addTypeRepresentation( StringSubsetSelectionInputType.class);
             vapi.addTypeRepresentation( LoadUGXFileStringType.class);
+            vapi.addTypeRepresentation( LoadUGXFileType.class);
 
             
              //

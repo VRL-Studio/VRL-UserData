@@ -50,10 +50,53 @@ public class LoadUGXFileObservable {
         public Collection<LoadUGXFileObserver> observers = new HashSet<LoadUGXFileObserver>();
         public UGXFileInfo data = null;
     }
+
+    /**
+     * Identifier for grid loader strings. If several loaders exist, they are
+     * destinguished by tag, objectID and windowID
+     */
+    private class Identifier {
+
+        public Identifier(String tag, Object object, int windowID) {
+            this.tag = tag;
+            this.object = object;
+            this.windowID = windowID;
+        }
+        private String tag;
+        private Object object;
+        private int windowID;
+
+        @Override
+        public int hashCode() {
+            int result = 17;
+            result = 37*result + tag.hashCode(); 
+            result = 37*result + object.hashCode(); 
+            result = 37*result + windowID; 
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (obj == this) {
+                return true;
+            }
+            if (obj.getClass() != getClass()) {
+                return false;
+            }
+
+            Identifier rhs = (Identifier) obj;
+            
+            return (tag.equals(rhs.tag)) && (object == rhs.object) && (windowID == rhs.windowID);
+        }
+    }
+    
     /**
      * Map storing data and observers associated with a tag
      */
-    private Map<String, UGXFileTag> tags = new HashMap<String, UGXFileTag>();
+    private Map<Identifier, UGXFileTag> tags = new HashMap<Identifier, UGXFileTag>();
 
     /**
      * returns the file tag info for a tag. If create is set to true a new tag
@@ -64,14 +107,16 @@ public class LoadUGXFileObservable {
      * @param create    flag indicating if tag should be created if it does not exists
      * @return          file tag info
      */
-    private synchronized UGXFileTag getTag(String tag, boolean create) {
-        if (tags.containsKey(tag)) {
-            return tags.get(tag);
+    private synchronized UGXFileTag getTag(String tag, Object object, int windowID, boolean create) {
+        Identifier id = new Identifier(tag, object, windowID);
+
+        if (tags.containsKey(id)) {
+            return tags.get(id);
         }
 
         if (create) {
-            tags.put(tag, new UGXFileTag());
-            return getTag(tag, false);
+            tags.put(id, new UGXFileTag());
+            return getTag(tag, object, windowID, false);
         }
 
         return null;
@@ -84,9 +129,9 @@ public class LoadUGXFileObservable {
      * @param obs       the observer to add
      * @param tag       the tag
      */
-    public synchronized void addObserver(LoadUGXFileObserver obs, String tag) {
-        getTag(tag, true).observers.add(obs);
-        obs.update(getTag(tag,false).data);
+    public synchronized void addObserver(LoadUGXFileObserver obs, String tag, Object object, int windowID) {
+        getTag(tag, object, windowID, true).observers.add(obs);
+        obs.update(getTag(tag, object, windowID, false).data);
     }
 
     /**
@@ -95,9 +140,10 @@ public class LoadUGXFileObservable {
      * @param obs       the observer to remove
      * @param tag       the tag
      */
-    public synchronized void deleteObserver(LoadUGXFileObserver obs, String tag) {
-         if (tags.containsKey(tag)) {
-           tags.get(tag).observers.remove(obs);
+    public synchronized void deleteObserver(LoadUGXFileObserver obs, String tag, Object object, int windowID) {
+        Identifier id = new Identifier(tag, object, windowID);
+        if (tags.containsKey(id)) {
+            tags.get(id).observers.remove(obs);
         }
     }
 
@@ -106,9 +152,10 @@ public class LoadUGXFileObservable {
      * 
      * @param tag       the tag
      */
-    public synchronized void deleteObservers(String tag) {
-         if (tags.containsKey(tag)) {
-           tags.get(tag).observers.clear();
+    public synchronized void deleteObservers(String tag, Object object, int windowID) {
+        Identifier id = new Identifier(tag, object, windowID);
+        if (tags.containsKey(id)) {
+            tags.get(id).observers.clear();
         }
     }
 
@@ -117,9 +164,9 @@ public class LoadUGXFileObservable {
      * 
      * @param tag   the tag
      */
-    public synchronized void notifyObservers(String tag) {
+    public synchronized void notifyObservers(String tag, Object object, int windowID) {
         // get data for tag
-        UGXFileTag ugxTag = getTag(tag, false);
+        UGXFileTag ugxTag = getTag(tag, object, windowID, false);
 
         // if no such tag present, return (i.e. no observer)
         if (ugxTag == null) {
@@ -140,37 +187,37 @@ public class LoadUGXFileObservable {
      * @param tag       the tag
      * @return          empty string if successful, error-msg if error occured
      */
-    public synchronized String setSelectedFile(File file, String tag) {
+    public synchronized String setSelectedFile(File file, String tag, Object object, int windowID) {
 
-        UGXFileTag ugxTag = getTag(tag, true);
+        UGXFileTag ugxTag = getTag(tag, object, windowID, true);
 
-        if(!file.toString().endsWith(".ugx")){
-            setInvalidFile(tag);
-            return "Invalid Filename: " + file.toString()+". Must be *.ugx.";
+        if (!file.toString().endsWith(".ugx")) {
+            setInvalidFile(tag, object, windowID);
+            return "Invalid Filename: " + file.toString() + ". Must be *.ugx.";
         }
-        
+
         ugxTag.data = new UGXFileInfo();
 
         //  Parse the ugx file for subsets and dimensions
         //  and store the subsets.
         if (ugxTag.data.parse_file(file.toString()) == false) {
-            setInvalidFile(tag);
+            setInvalidFile(tag, object, windowID);
             return "Unable to parse ugx-File: " + file.toString();
         }
 
 
         if (ugxTag.data.const__num_grids() != 1) {
-            setInvalidFile(tag);
+            setInvalidFile(tag, object, windowID);
             return "ugx-File must contain exactly one grid.";
         }
 
         if (ugxTag.data.const__num_subset_handlers(0) < 1) {
-            setInvalidFile(tag);
+            setInvalidFile(tag, object, windowID);
             return "ugx-File must contain at least one subset handler.";
         }
 
         // now we notify the obersver of this tag
-        notifyObservers(tag);
+        notifyObservers(tag, object, windowID);
 
         return "";
     }
@@ -180,18 +227,18 @@ public class LoadUGXFileObservable {
      * 
      * @param tag       the tag
      */
-    public synchronized void setInvalidFile(String tag) {
-        UGXFileTag ugxTag = getTag(tag, true);
+    public synchronized void setInvalidFile(String tag, Object object, int windowID) {
+        UGXFileTag ugxTag = getTag(tag, object, windowID, true);
 
         //  set to new (empty) data
         ugxTag.data = null;
 
         // now we notify the obersver of this tag
-        notifyObservers(tag);
+        notifyObservers(tag, object, windowID);
     }
 
-    public synchronized UGXFileInfo getSelectedData(String tag) {
-        UGXFileTag ugxTag = getTag(tag, false);
+    public synchronized UGXFileInfo getSelectedData(String tag, Object object, int windowID) {
+        UGXFileTag ugxTag = getTag(tag, object, windowID, false);
         if (ugxTag == null) {
             return null;
         } else {

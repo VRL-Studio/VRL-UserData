@@ -4,17 +4,16 @@
  */
 package edu.gcsc.vrl.userdata.types;
 
-import edu.gcsc.vrl.ug.api.*;
 import eu.mihosoft.vrl.annotation.TypeInfo;
+import groovy.lang.Script;
 import java.io.Serializable;
 
 /**
  *
- * @author Michael Hoffer <info@michaelhoffer.de>
- * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
+ * @author Andreas Vogel <andreas.vogel@gcsc.uni-frankfurt.de>
  */
-@TypeInfo(type = I_UserVector.class, input = true, output = false, style = "default")
-public class UserVectorType extends UserDataTupleType implements Serializable {
+@TypeInfo(type = String.class, input = true, output = false, style = "ugx-subset-selection")
+public class StringSubsetType extends UserDataTupleType implements Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -35,7 +34,7 @@ public class UserVectorType extends UserDataTupleType implements Serializable {
             valueOptions = valueOptions + ";";
         }
 
-        String buttonName = "Vector";
+        String buttonName = "Subset";
         if (getParamInfo().name() != null && !getParamInfo().name().isEmpty()) {
             buttonName = getParamInfo().name();
         }
@@ -53,11 +52,11 @@ public class UserVectorType extends UserDataTupleType implements Serializable {
         }
 
         if (valueOptions.contains("type")) {
-            if (!valueOptions.contains("type=\"v:")) {
-                throw new RuntimeException("UserVectorType: no external 'type' setting allowed.");
+            if (!valueOptions.contains("type=\"s:")) {
+                throw new RuntimeException("StringSubsetType: no external 'type' setting allowed.");
             }
         } else {
-            valueOptions = valueOptions + " type=\"v:" + buttonName + "\"";
+            valueOptions = valueOptions + " type=\"s:" + buttonName + "\"";
         }
 
         super.setValueOptions(valueOptions);
@@ -66,8 +65,10 @@ public class UserVectorType extends UserDataTupleType implements Serializable {
     @Override
     public void setViewValue(Object o) {
 
-        if (o instanceof I_UserVector) {
-            // todo: think how this might be implemented
+        if (o instanceof String) {
+            if (datas.size() == 1) {
+                datas.get(0).model.setData(o);
+            }
         }
     }
 

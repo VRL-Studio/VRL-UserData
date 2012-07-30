@@ -4,7 +4,7 @@
  */
 package edu.gcsc.vrl.userdata.types;
 
-import edu.gcsc.vrl.ug.api.I_UserMatrix;
+import edu.gcsc.vrl.userdata.UserDataTuple;
 import eu.mihosoft.vrl.annotation.ParamInfo;
 import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.types.ArrayBaseType;
@@ -12,13 +12,13 @@ import java.lang.annotation.Annotation;
 
 /**
  *
- * @author Michael Hoffer <info@michaelhoffer.de>
+ * @author Andreas Vogel <andreas.vogel@gcsc.uni-frankfurt.de>
  */
-@TypeInfo(type = I_UserMatrix[].class, input = true, output = false, style = "array")
-public class UserMatrixArrayType extends ArrayBaseType {
+@TypeInfo(type=UserDataTuple[].class, input=true, output=false, style="array")
+public class UserDataTupleArrayType extends ArrayBaseType {
 
-    public UserMatrixArrayType() {
-        setValueName("Matrix Array");
+    public UserDataTupleArrayType() {
+       setValueName("Data Tuple Array");
 
         setElementInputInfo(new ParamInfo() {
 
@@ -39,12 +39,12 @@ public class UserMatrixArrayType extends ArrayBaseType {
 
             @Override
             public String options() {
-                return UserMatrixArrayType.this.getValueOptions();
+                return UserDataTupleArrayType.this.getValueOptions();
             }
 
             @Override
             public String typeName() {
-                return I_UserMatrix.class.getName();
+                return UserDataTuple.class.getName();
             }
 
             @Override
@@ -52,7 +52,5 @@ public class UserMatrixArrayType extends ArrayBaseType {
                 return null;
             }
         });
-
     }
-
 }

@@ -4,11 +4,10 @@ package edu.gcsc.vrl.userdata;
  * To change this template, choose Tools | Templates and open the template in
  * the editor.
  */
-import edu.gcsc.vrl.userdata.managers.DimensionManager;
+import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
+import edu.gcsc.vrl.userdata.types.UserDataTupleType;
 import eu.mihosoft.vrl.lang.CompilerProvider;
 import eu.mihosoft.vrl.lang.visual.EditorProvider;
-import eu.mihosoft.vrl.reflection.CustomParamData;
-import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.visual.*;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -17,70 +16,69 @@ import java.io.Serializable;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
+ * @author Andreas Vogel <andreas.vogel@gcsc.uni-frankfurt.de>
  */
 public class UserDataWindow extends CanvasWindow implements Serializable {
 
-    private static final long serialVersionUID = 1;
-    private transient Box outter = null;
-    private transient UserDataWindowPane windowPane = null;
+    private transient Box outerBox = null;
+    private transient UserDataWindowPane constantPane = null;
     private transient VCodeEditor editor = null;
-    private transient VContainer editorPane;
-    private transient JComponent parent;
-    private transient UserDataModel model = null;//new UserMatrixModel();
-    private transient JComboBox dimsChoose;
-    private transient TypeRepresentationBase tRep;
+    private transient JLabel codeCommment;
+    private transient Box codePane;
+    private transient JComponent editBox;
+    private transient JComboBox dimChooser;
     protected transient JRadioButton constant;
     protected transient JRadioButton code;
 
-    public UserDataWindow(UserDataModel model,
-            TypeRepresentationBase tRep,
-            String title,
-            Canvas canvas) {
+    private transient UserMathDataView mathDataView = null;
+    private transient UserMathDataModel model = null;
 
-        super(title, canvas);
+    public UserDataWindow(UserMathDataView view){
+        
+        super(view.getName(), view.getUserDataTupleType().getMainCanvas());
+        
+        mathDataView = view;
+        model = mathDataView.getUserMathDataModel();
 
-        this.tRep = tRep;
-
-        this.model = model;
-
-        init();
-
+        // must be visible
         setVisible(true);
 
-    }
+        // create an outer box, where we put in all other components
+        outerBox = Box.createVerticalBox();
+        add(outerBox);
 
-    private void init() {
-
-        int startdim = DimensionManager.TWO;//model.getDimension();
-
-        outter = Box.createVerticalBox();
-        add(outter);
-
+        // create a box for the menu
         Box menuBox = Box.createHorizontalBox();
         Border border1 = new EmptyBorder(0, 5, 0, 5);
-
         menuBox.setBorder(border1);
-        outter.add(menuBox);
+        outerBox.add(menuBox);
 
-        Integer[] dims = {DimensionManager.ONE, DimensionManager.TWO, DimensionManager.THREE};
-        dimsChoose = new JComboBox(dims);
-        dimsChoose.setSelectedItem(startdim);
+        // setup dim chooser
+        Integer[] dims = {1, 2, 3};
+        dimChooser = new JComboBox(dims);
+        Dimension prefSize = dimChooser.getPreferredSize();
+        Dimension maxSize = dimChooser.getMaximumSize();
+        maxSize.width = prefSize.width;
+        dimChooser.setMaximumSize(maxSize);
+        dimChooser.setPrototypeDisplayValue(3);
+        dimChooser.setSelectedItem(model.getDimension());
 
-        menuBox.add(dimsChoose);
+        // add dim chooser id needed
+        if (!model.isExternTriggered()) {
+            menuBox.add(dimChooser);
+        }
 
+        //Group of radio buttons.
         constant = new JRadioButton("Constant");
-
         code = new JRadioButton("Code");
 
-        //Group the radio buttons.
         ButtonGroup buttonGroup = new ButtonGroup();
         buttonGroup.add(constant);
         buttonGroup.add(code);
@@ -89,224 +87,143 @@ public class UserDataWindow extends CanvasWindow implements Serializable {
         menuBox.add(code);
 
         // here is the changed view added
-        final Box paneBox = Box.createHorizontalBox();
-        outter.add(paneBox);
+        editBox = Box.createHorizontalBox();
+        outerBox.add(editBox);
 
-        windowPane = new UserDataWindowPane(startdim, model);
-        paneBox.add(windowPane);
-
-        Dimension prefDim = new Dimension(300, 200);
-        Dimension maxDim = new Dimension(680, 800);
+        constantPane = new UserDataWindowPane(mathDataView);
 
         editor = EditorProvider.getEditor(CompilerProvider.LANG_GROOVY, this);
-//        editor.setVisible(true);
+        editor.getEditor().getDocument().addDocumentListener(new DocumentListener() {
 
-//        editor.setMinimumSize(prefDim);
-//        editor.setPreferredSize(prefDim);
-//        editor.setMaximumSize(maxDim);
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                model.setCode(editor.getEditor().getText());
+                storeData();
+            }
 
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                model.setCode(editor.getEditor().getText());
+                storeData();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent de) {
+            }
+        });
 
         VConstrainedScrollPane vScrollPane = new VConstrainedScrollPane(editor);
         vScrollPane.setVisible(true);
+        vScrollPane.setMaximumSize(new Dimension(680, 800));
+        vScrollPane.setMinimumSize(new Dimension(200, 100));
 
-        vScrollPane.setMaxHeight(maxDim.height);
-        vScrollPane.setMaxWidth(maxDim.width);
-
-        vScrollPane.setMinimumSize(prefDim);
-
-
-        editorPane = new VContainer(editor);
-
-        // add minimum editor width functionality
+        VContainer editorPane = new VContainer(editor);
         editorPane.setMinPreferredWidth(300);
         editorPane.setMinPreferredHeight(200);
-
         editorPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
+        codeCommment = new JLabel("", JLabel.LEFT);
 
-        paneBox.add(editorPane);
+        codePane = Box.createVerticalBox();
+        codePane.add(codeCommment);
+        codePane.add(editorPane);
 
-        parent = paneBox;
+        // all done, now update the window with the current data in the model
+        updateWindow(model);
 
-        VButton btn = new VButton("OK");
-        btn.setAlignmentX(CENTER_ALIGNMENT);
-
-        add(btn);
-
-        add(Box.createVerticalStrut(5));
-
-        btn.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updateModel();
-            }
-        });
-
-        if (getModel().isCondition()) {
-            // START Conditions have no constant data, only code
-            constant.setEnabled(false);
-            constant.setVisible(false);
-
-            code.setSelected(true);
-            code.setVisible(false);
-            // END Conditions have no constant data, only code
-        }
-
-        // SHOW the last information in window
-        // that the user views/choose before closing
-        // previous window for the corresponding UserData
-        if (getModel().isConstData()) {
-            constant.setSelected(true);
-        } else {
-            code.setSelected(true);
-        }
-        revalidate();
-
-        //
-        /// LISTENER 
-        //
-
-        //
-        // WHICH DIM CHOOSEN
-        //
-        dimsChoose.addActionListener(new ActionListener() {
+        dimChooser.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                paneBox.remove(windowPane);
+                editBox.remove(constantPane);
+                int dim = (Integer) dimChooser.getSelectedItem();
 
-                if (dimsChoose.getSelectedItem().equals(DimensionManager.ONE)) {
-                    windowPane = new UserDataWindowPane(DimensionManager.ONE, model);
+                model.setDimension(dim);
+                constantPane.updateModel(model);
+                codeCommment.setText(getCodeComment(dim, model.getCategory()));
 
-
-                } else if (dimsChoose.getSelectedItem().equals(DimensionManager.TWO)) {
-                    windowPane = new UserDataWindowPane(DimensionManager.TWO, model);
-
-
-                } else if (dimsChoose.getSelectedItem().equals(DimensionManager.THREE)) {
-                    windowPane = new UserDataWindowPane(DimensionManager.THREE, model);
-                }
-
-                //Make sure a pane is shown at opening window
-                //without changing dim or clicking on radio button
                 if (constant.isSelected()) {
-                    model.setConstData(true);
-                    parent.remove(editorPane);
-                    parent.add(windowPane);
+                    editBox.removeAll();
+                    editBox.add(constantPane);
                 } else {
-                    model.setConstData(false);
-                    parent.remove(windowPane);
-                    parent.add(editorPane);
+                    editBox.removeAll();
+                    editBox.add(codePane);
                 }
-
+                
+                storeData();
                 revalidate();
-
             }
         });
 
-
-        //
-        // IF CONSTANT
-        //
-        constant.addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (constant.isSelected()) {
-                    parent.add(windowPane);
-                    parent.remove(editorPane);
-                    revalidate();
-                    getModel().setConstData(true);
-                }
-            }
-        });
-
-        //
-        // IF CODE
-        // 
-        code.addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (code.isSelected()) {
-                    parent.remove(windowPane);
-                    parent.add(editorPane);
-                    revalidate();
-                    getModel().setConstData(false);
-                }
-            }
-        });
-
-
-
-        addActionListener(new CanvasActionListener() {
+        constant.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (e.getActionCommand().equals(CanvasWindow.CLOSE_ACTION)) {
-                    updateModel();
+                if (constant.isSelected()) {
+                    editBox.add(constantPane);
+                    editBox.remove(codePane);
+                    model.setInputType(UserMathDataModel.InputType.CONSTANT);
+
+                    storeData();
+                    revalidate();
                 }
             }
         });
 
+        code.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (code.isSelected()) {
+                    editBox.remove(constantPane);
+                    editBox.add(codePane);
+                    model.setInputType(UserMathDataModel.InputType.CODE);
+                    
+                    storeData();
+                    revalidate();
+                }
+            }
+        });
+    }
+    
+    protected void storeData(){
+        mathDataView.updateToolTipText();
+        mathDataView.setConsistentStateColor();
+        mathDataView.getUserDataTupleType().storeCustomParamData();
     }
 
     /**
      * Stores all informations which are visualized in the UserDataWindow
      * in a corresponding UserDataModel and calls
-     * <code>checkCustomData()</code>.
+     * <code>storeCustomParamData()</code>.
      *
-     * @see #checkCustomData()
+     * @see #storeCustomParamData()
      */
-    public void updateModel() {
+    public void updateModel(UserMathDataModel model) {
 
-        // SAVE the last information in window
-        // that the user views/choose before closing
-        // previous window for the corresponding UserData
         if (constant.isSelected()) {
-            getModel().setConstData(true);
+            model.setInputType(UserMathDataModel.InputType.CONSTANT);
+        } else if (code.isSelected()) {
+            model.setInputType(UserMathDataModel.InputType.CODE);
         } else {
-            getModel().setConstData(false);
+            throw new RuntimeException("UserDataWindow: Selection wrong.");
         }
-        /*
-         * Conditions has no const Data,
-         * therefore check, if is no condition
-         */
+
+        // copy dimension into model, if selectable
+        if (!model.isExternTriggered()) {
+            model.setDimension((Integer) dimChooser.getSelectedItem());
+        }
+
+        // copy table data from window into model
         if (!model.isCondition()) {
-            windowData2ModelData(this, getModel());
-        }
-        windowCode2ModelCode(this, getModel());
-
-        getModel().setDimension((Integer) dimsChoose.getSelectedItem());
-
-        checkCustomData();
-    }
-
-    /**
-     * Checks if there is custom parameter data in the corresponding
-     * TypRepresentation
-     * and the corresponding UserDataModel is stored there.
-     * If no custom paramater data exist a new one will be created.
-     */
-    public void checkCustomData() {
-        CustomParamData pData = tRep.getCustomData();
-
-        if (pData == null) {
-            pData = new CustomParamData();
+            model.setDataFromTable(constantPane.getTableModel());
         }
 
-        pData.put(getModel().getModelKey(), getModel());
+        // copy code from window into model
+        model.setCode(editor.getEditor().getText());
 
-        tRep.setCustomData(pData);
-    }
-
-    /**
-     * @return the model
-     */
-    public UserDataModel getModel() {
-        return model;
+        storeData();
     }
 
     /**
@@ -316,196 +233,101 @@ public class UserDataWindow extends CanvasWindow implements Serializable {
      *
      * @param model that stores the informations that should be visualized
      */
-    public void updateWindow(UserDataModel model) {
+    final public void updateWindow(UserMathDataModel model) {
 
-        // get the last information in window of model
-        // that the user views/choose before closing
-        // previous window for the corresponding UserData
-        if (model.isConstData()) {
-            constant.setSelected(true);
-            parent.add(windowPane);
-            parent.remove(editorPane);
+        editBox.removeAll();
+        constantPane.updateModel(model);
+        editor.getEditor().setText(model.getCode());
 
-        } else {
+        if (model.isCondition()) {
+            constant.setEnabled(false);
+            constant.setVisible(false);
             code.setSelected(true);
-            parent.remove(windowPane);
-            parent.add(editorPane);
-
+            code.setVisible(false);
         }
+
+        switch (model.getInputType()) {
+            case CONSTANT:
+                constant.setSelected(true);
+                editBox.add(constantPane);
+                break;
+            case CODE:
+                code.setSelected(true);
+                editBox.add(codePane);
+                break;
+            default:
+                throw new RuntimeException("UserDataWindow: InputType wrong.");
+        }
+
+        int dim = model.getDimension();
+        UserDataCategory cat = model.getCategory();
+        dimChooser.setSelectedItem(dim);
+        codeCommment.setText(getCodeComment(dim, cat));
 
         revalidate();
+    }
 
-        switch (model.getDimension()) {
+    /**
+     * @return the model
+     */
+    public UserMathDataModel getModel() {
+        return model;
+    }
 
-            case 1:
-                dimsChoose.setSelectedItem(DimensionManager.ONE);
-                break;
-            case 2:
-                dimsChoose.setSelectedItem(DimensionManager.TWO);
-                break;
-            case 3:
-                dimsChoose.setSelectedItem(DimensionManager.THREE);
-                break;
+    protected static String getCodeComment(int dim, UserDataCategory cat) {
 
-            default:
-                System.out.println(">> UserDataWindow: UserDataModel has invalid dimension!");
-                break;
+        String[] spaceParam = {"x", "y", "z"};
+
+        String Text = "<html><left>";
+        Text += "<b>Parameters:</b> ";
+        for (int d = 0; d < dim; d++) {
+            if (d > 0) {
+                Text += ", ";
+            }
+            Text += spaceParam[d];
         }
+        Text += ", t, si";
+        Text += "<br>";
 
-        /*
-         * Conditions has no const Data,
-         * therefore check, if is no condition
-         */
-        if (!model.isCondition()) {
-
-            modelData2WindowData(model, this);
-        }
-
-        modelCode2WindowCode(model, this);
-
-    }
-
-    /**
-     *
-     * @return the TableModel that contains the const data of the window.
-     */
-    protected DefaultTableModel getTableModel() {
-        return windowPane.getTableModel();
-    }
-
-    /**
-     *
-     * @return the current code in the editor of the window
-     */
-    private String getCode() {
-        return editor.getEditor().getText();
-    }
-
-    /**
-     *
-     * @param code that should be set into the editor of the window
-     */
-    private void setCode(String code) {
-        editor.getEditor().setText(code);
-    }
-
-    /**
-     * Updates / replaces the code in the window by the code from model.
-     *
-     * @param model that is used as source
-     * @param window that should be updated
-     */
-    public void modelCode2WindowCode(UserDataModel model, UserDataWindow window) {
-        window.setCode(model.getCode());
-    }
-
-    /**
-     * Updates / replaces the code in the model by the code from window.
-     *
-     * @param window that is used as source
-     * @param model that should be updated
-     */
-    public void windowCode2ModelCode(UserDataWindow window, UserDataModel model) {
-        model.setCode(window.getCode());
-    }
-
-//    private static void matrixToModel(DefaultTableModel dataModel, Double[][] data) {
-//        dataModel.setRowCount(data.length);
-//
-//        for (int j = 0; j < data.length; j++) {
-//            for (int i = 0; i < data[j].length; i++) {
-//                dataModel.setValueAt(data[i][j], i, j);
-//            }
-//        }
-//    }
-//    private static Double[][] modelToMatrix(DefaultTableModel dataModel) {
-//        Double[][] data = new Double[dataModel.getRowCount()][dataModel.getColumnCount()];
-//
-//        for (int j = 0; j < dataModel.getColumnCount(); j++) {
-//            for (int i = 0; i < dataModel.getRowCount(); i++) {
-//                data[i][j] = (Double) dataModel.getValueAt(i, j);
-//            }
-//        }
-//        return data;
-//    }
-    public void modelData2WindowData(UserDataModel model, UserDataWindow window) {
-
-        DefaultTableModel tableModel = window.getTableModel();
-
-        // see docu to know which number stands for which UserDataModel type
-        int type = DimensionManager.getArrayDimension(model.getData());
-
-
-        if (type == 2) {
-            Double[][] data2 = (Double[][]) model.getData();
-
-            for (int j = 0; j < data2.length; j++) {
-                for (int i = 0; i < data2[j].length; i++) {
-                    tableModel.setValueAt(data2[i][j], i, j);
+        switch (cat) {
+            case NUMBER:
+                Text += "<b>Return:</b> value (as double)";
+                break;
+            case VECTOR:
+                Text += "<b>Return:</b> [";
+                for (int d = 0; d < dim; d++) {
+                    if (d > 0) {
+                        Text += ", ";
+                    }
+                    Text += "<b>v</b><font size=-1><sub>" + spaceParam[d] + "</sub></font>";
                 }
-            }
+                Text += "]";
+                break;
 
-        } else if (type == 1) {
-
-            Double[] data1 = (Double[]) model.getData();
-
-            tableModel.setRowCount(data1.length);
-
-            for (int i = 0; i < data1.length; i++) {
-                tableModel.setValueAt(data1[i], i, 0);
-            }
-
-        } else if (type == 0) {
-
-            window.getTableModel().setValueAt(model.getData(), 0, 0);
-
-        } else {
-            throw new IllegalStateException(" >> " + this.getClass().getSimpleName()
-                    + ".modelData2WindowData() have no implementation for the "
-                    + "required data structure.");
-        }
-
-
-    }
-
-    public void windowData2ModelData(UserDataWindow window, UserDataModel model) {
-
-        DefaultTableModel tableModel = window.getTableModel();
-
-        // see docu to know which number stands for which UserDataModel type
-        int type = DimensionManager.getArrayDimension(model.getData());
-
-
-        if (type == 2) {
-
-            Double[][] data2 = new Double[tableModel.getRowCount()][tableModel.getColumnCount()];
-
-            for (int j = 0; j < tableModel.getColumnCount(); j++) {
-                for (int i = 0; i < tableModel.getRowCount(); i++) {
-                    data2[i][j] = (Double) tableModel.getValueAt(i, j);
+            case MATRIX:
+                Text += "<table border=\"0\" cellspacing=\"0\">";
+                Text += "<tr>";
+                Text += "<td><b>Return:</b></td>";
+                Text += "<td>[</td><td>";
+                for (int d1 = 0; d1 < dim; d1++) {
+                    Text += "[";
+                    for (int d2 = 0; d2 < dim; d2++) {
+                        if (d2 > 0) {
+                            Text += ", ";
+                        }
+                        Text += "<b>D</b><font size=-2>" + spaceParam[d1] + spaceParam[d2] + "</font>";
+                    }
+                    if (d1 < dim - 1) {
+                        Text += "],</td><td></td></tr> <tr><td></td><td></td><td>";
+                    } else {
+                        Text += "]</td><td>]</td></tr>";
+                    }
                 }
-            }
-
-            model.setData(data2);
-
-        } else if (type == 1) {
-
-            Double[] data1 = new Double[tableModel.getRowCount()];
-
-            for (int i = 0; i < tableModel.getRowCount(); i++) {
-                data1[i] = (Double) tableModel.getValueAt(i, 0);
-            }
-
-            model.setData(data1);
-
-        } else if (type == 0) {
-
-            getModel().setData((Double) window.getTableModel().getValueAt(0, 0));
-
-        } else {
-            throw new IllegalStateException(" >> " + this.getClass().getSimpleName()
-                    + ".windowData2ModelData() have no implementation for the "
-                    + "required data structure.");
+                Text += "<table>";
+                break;
         }
+        Text += "</left></html>";
+
+        return Text;
     }
 }

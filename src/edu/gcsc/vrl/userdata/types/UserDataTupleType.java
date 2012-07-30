@@ -1,0 +1,306 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package edu.gcsc.vrl.userdata.types;
+
+import edu.gcsc.vrl.ug.api.UGXFileInfo;
+import edu.gcsc.vrl.userdata.LoadUGXFileObservable;
+import edu.gcsc.vrl.userdata.LoadUGXFileObserver;
+import edu.gcsc.vrl.userdata.UserDataFactory;
+import edu.gcsc.vrl.userdata.UserDataModel;
+import edu.gcsc.vrl.userdata.UserDataTuple;
+import edu.gcsc.vrl.userdata.UserDataView;
+import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
+import eu.mihosoft.vrl.annotation.TypeInfo;
+import eu.mihosoft.vrl.reflection.CustomParamData;
+import eu.mihosoft.vrl.reflection.LayoutType;
+import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
+import eu.mihosoft.vrl.reflection.VisualCanvas;
+import eu.mihosoft.vrl.visual.VBoxLayout;
+import groovy.lang.Script;
+import java.io.Serializable;
+import java.util.ArrayList;
+import javax.swing.Box;
+
+/**
+ *
+ * @author Andreas Vogel <andreas.vogel@gcsc.uni-frankfurt.de>
+ */
+@TypeInfo(type = UserDataTuple.class, input = true, output = false, style = "default")
+public class UserDataTupleType extends TypeRepresentationBase implements Serializable, LoadUGXFileObserver {
+
+    protected static class Data {
+
+        UserDataCategory category = null;
+        String name = null;
+        boolean separateBehind = false;
+        UserDataModel model = null;
+        UserDataView view = null;
+    }
+    // list of userdata
+    protected ArrayList<Data> datas = new ArrayList<Data>();
+    // tag (if triggered externally)
+    protected String tag = null;
+
+    public UserDataTupleType() {
+    }
+
+    public void init() {
+
+        removeAll();
+
+        // create a VBoxLayout and set it as layout
+        VBoxLayout layout = new VBoxLayout(this, VBoxLayout.Y_AXIS);
+        setLayout(layout);
+        setLayoutType(LayoutType.STATIC);
+
+        nameLabel.setAlignmentX(LEFT_ALIGNMENT);
+        add(nameLabel);
+
+        // create horizontal box for vertical button columns
+        Box horizbox = Box.createHorizontalBox();
+        horizbox.setAlignmentX(LEFT_ALIGNMENT);
+        add(horizbox);
+
+        // create box for buttons
+        Box box = Box.createVerticalBox();
+
+        for (Data data : datas) {
+
+            // create new model
+            data.model = UserDataFactory.createModel(data.category);
+
+            // set userdata to external triggering depending on presence of tag
+            if (tag == null) {
+                data.model.setExternTriggered(false);
+            } else {
+                data.model.setExternTriggered(true);
+            }
+
+            // create new view
+            data.view = UserDataFactory.createView(data.category, data.name, data.model, this);
+
+            // add view to box
+            box.add(data.view.getComponent());
+
+            // check if new box needed
+            if (data.separateBehind) {
+
+                // add filled box to visualization
+                horizbox.add(box);
+
+                // create new (empty box) to be filled with next user data
+                box = Box.createVerticalBox();
+            }
+        }
+
+        // add last box
+        horizbox.add(box);
+
+        // hide connector 
+        setHideConnector(true);
+    }
+
+    @Override
+    public void setViewValue(Object o) {
+
+        if (o instanceof UserDataTuple) {
+            UserDataTuple tuple = (UserDataTuple) o;
+
+            // copy data only if valid size (e.g. not loaded from file)
+            if (tuple.size() == datas.size()) {
+                for (int i = 0; i < datas.size(); ++i) {
+                    Data data = datas.get(i);
+                    data.model.setData(tuple.getData(i));
+                }
+            }
+        }
+    }
+
+    @Override
+    public Object getViewValue() {
+
+        UserDataTuple tuple = new UserDataTuple();
+
+        for (int i = 0; i < datas.size(); i++) {
+            Data data = datas.get(i);
+            tuple.add(data.model.createUserData());
+        }
+
+        return tuple;
+    }
+
+    @Override
+    public void evaluateCustomParamData() {
+        super.evaluateCustomParamData();
+
+        for (int i = 0; i < datas.size(); i++) {
+
+            Data data = datas.get(i);
+
+            UserDataModel tmpModel = (UserDataModel) getCustomData().get("UserDataTuple:" + i);
+            if (tmpModel != null) {
+
+                data.model.setModel(tmpModel);
+                data.view.updateView(data.model);
+            } else {
+//                throw new RuntimeException("UserDataTupleType:evaluateCustomParamData:"
+//                        + " cannot reaf custom data correctly.");
+            }
+        }
+
+    }
+
+    public void storeCustomParamData() {
+
+        CustomParamData pData = getCustomData();
+
+        if (pData == null) {
+            pData = new CustomParamData();
+        }
+
+
+        for (int i = 0; i < datas.size(); i++) {
+
+            Data data = datas.get(i);
+
+            pData.put("UserDataTuple:" + i, data.model);
+        }
+
+        setCustomData(pData);
+    }
+
+    @Override
+    protected void evaluationRequest(Script script) {
+
+        super.evaluationRequest(script);
+
+        String type = null;
+
+        if (getValueOptions() != null) {
+
+            if (getValueOptions().contains("type")) {
+                Object property = script.getProperty("type");
+                if (property != null) {
+                    type = (String) property;
+                }
+            }
+        }
+
+        if (type == null || type.isEmpty()) {
+            throw new RuntimeException("UserDataTupleType: no or empty 'type' info in options.");
+        }
+
+        String[] twoParts = type.split(":");
+        if (twoParts.length != 2) {
+            throw new RuntimeException("UserDataTupleType: wrong format in 'type'.");
+        }
+
+        twoParts[0].trim();
+        String[] nameArray = twoParts[1].split(",");
+
+        // parse category and name
+        datas.clear();
+        int nameCnt = 0;
+        for (int i = 0; i < twoParts[0].length(); ++i) {
+
+            Data newData = new Data();
+
+            switch (twoParts[0].charAt(i)) {
+                case 'n':
+                    newData.category = UserDataCategory.NUMBER;
+                    break;
+                case 'v':
+                    newData.category = UserDataCategory.VECTOR;
+                    break;
+                case 'm':
+                    newData.category = UserDataCategory.MATRIX;
+                    break;
+                case 'c':
+                    newData.category = UserDataCategory.COND_NUMBER;
+                    break;
+                case 's':
+                    newData.category = UserDataCategory.SUBSET;
+                    break;
+                case '|':
+                    if (datas.size() > 0) {
+                        datas.get(datas.size() - 1).separateBehind = true;
+                    }
+                    continue;
+                default:
+                    throw new RuntimeException("UserDataTupleType: invalid type identifier");
+            }
+
+            if (nameCnt < nameArray.length) {
+                newData.name = nameArray[nameCnt++].trim();
+            }
+            datas.add(newData);
+        }
+
+
+        if (datas.size() != nameArray.length) {
+            throw new RuntimeException("UserDataTupleType: number of categories does "
+                    + "not match number of names.");
+        }
+
+        // read the tag
+        if (getValueOptions() != null) {
+
+            if (getValueOptions().contains("tag")) {
+                Object property = script.getProperty("tag");
+                if (property != null) {
+                    tag = (String) property;
+                }
+            }
+        }
+
+        // init also the views 
+        init();
+    }
+
+    @Override
+    public void addedToMethodRepresentation() {
+        super.addedToMethodRepresentation();
+        
+        // register at the observable for ugx-file-loads if tag given
+        if (tag != null) {
+            int id = this.getParentMethod().getParentObject().getObjectID();
+            Object o = ((VisualCanvas)getMainCanvas()).getInspector().getObject(id);
+            int windowID = 0;
+            LoadUGXFileObservable.getInstance().addObserver(this, tag, o, windowID);
+        }
+
+        storeCustomParamData();        
+    }
+
+    @Override
+    public void dispose() {
+        //  remove from the observable for ugx-file-loads if tag given
+        if (tag != null) {
+            int id = this.getParentMethod().getParentObject().getObjectID();
+            Object o = ((VisualCanvas)getMainCanvas()).getInspector().getObject(id);
+            int windowID = 0;
+            LoadUGXFileObservable.getInstance().deleteObserver(this, tag, o, windowID);
+        }
+
+        super.dispose();
+    }
+
+    @Override
+    public void update(UGXFileInfo info) {
+
+        // adjust Data for new FileInfo in model and view
+        for (Data theData : datas) {
+
+            boolean modelConsistent = theData.model.adjustData(info);
+            theData.view.adjustData(info, modelConsistent);
+        }
+    }
+
+    @Override
+    public String getValueAsCode() {
+        // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
+        return "null as " + getType().getName();
+    }
+}

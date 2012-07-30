@@ -13,6 +13,7 @@ public enum UserDataCategory {
     COND_NUMBER,
     NUMBER,
     VECTOR,
-    MATRIX
+    MATRIX,
+    SUBSET
     
 }

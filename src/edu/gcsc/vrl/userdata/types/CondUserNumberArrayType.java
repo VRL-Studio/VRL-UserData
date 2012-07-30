@@ -17,6 +17,5 @@ public class CondUserNumberArrayType extends ArrayBaseType {
 
     public CondUserNumberArrayType() {
         setValueName("Array");
-//        setType(I_CondUserNumber[].class);
     }
 }

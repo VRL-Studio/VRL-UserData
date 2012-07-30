@@ -1,0 +1,208 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package edu.gcsc.vrl.userdata;
+
+import edu.gcsc.vrl.ug.CondUserDataCompiler;
+import edu.gcsc.vrl.ug.UserData;
+import edu.gcsc.vrl.ug.UserDataCompiler;
+import edu.gcsc.vrl.ug.api.I_IUserData;
+import edu.gcsc.vrl.ug.api.UGXFileInfo;
+import java.util.ArrayList;
+import javax.swing.table.TableModel;
+
+/**
+ *
+ * @author Michael Hoffer <info@michaelhoffer.de>
+ * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
+ */
+public abstract class UserMathDataModel extends UserDataModel {
+
+    public enum InputType {
+
+        SCALAR_CONSTANT,
+        CONSTANT,
+        CODE
+    }
+    private static final long serialVersionUID = 1L;
+    private InputType inputType;
+    private int dimension;
+    private String code;
+    /**
+     * Boolean to differ between normal UserDataModel and an UserDataModel which
+     * should represent a Condition, which has no const data and therefore no
+     * visualization for const data will be available in an UserDataWindow.
+     */
+    protected boolean condition;
+
+    public UserMathDataModel() {
+
+        // default values
+
+        inputType = InputType.CONSTANT;
+
+        dimension = 2;
+
+        code = "";
+
+        condition = false;
+    }
+
+    /**
+     * @return the constData
+     */
+    public InputType getInputType() {
+        return inputType;
+    }
+
+    /**
+     * @param constData the constData to set
+     */
+    public void setInputType(InputType inputType) {
+        this.inputType = inputType;
+    }
+
+    /**
+     * @return the code
+     */
+    public String getCode() {
+        return code;
+    }
+
+    /**
+     * @param code the code to set
+     */
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    /**
+     * @return the dimension
+     */
+    public int getDimension() {
+        return dimension;
+    }
+
+    /**
+     * @param dimension the dimension to set
+     */
+    public boolean setDimension(int dim) {
+        this.dimension = dim;
+        return adjustDataForDimension(dim);
+    }
+
+    public abstract void setDataFromTable(TableModel tableModel);
+
+    /**
+     * @return the condition
+     */
+    public boolean isCondition() {
+        return condition;
+    }
+
+    /**
+     * sets the condition
+     */
+    public void setCondition(boolean isCondition) {
+        condition = isCondition;
+    }
+
+    @Override
+    public boolean adjustData(UGXFileInfo info) {
+
+        if(info != null){
+            int dim = info.const__grid_world_dimension(0);
+            return setDimension(dim);
+        }
+        return true;
+    }
+
+    public abstract boolean adjustDataForDimension(int dim);
+
+    @Override
+    public void setModel(UserDataModel model) {
+        if (model instanceof UserMathDataModel) {
+
+            UserMathDataModel m = (UserMathDataModel) model;
+
+            setData(m.getData());
+            setCode(m.getCode());
+            setDimension(m.getDimension());
+            setInputType(m.getInputType());
+            setCondition(m.isCondition());
+
+        } else {
+            throw new RuntimeException("UserData could be set from other UserDataModel.");
+
+        }
+    }
+
+    @Override
+    public Object createUserData() {
+
+        I_IUserData result = null;
+
+        switch (getInputType()) {
+            case CONSTANT:
+                result = createConstUserData();
+                break;
+            case CODE:
+                result = createVRLUserData();
+                break;
+        }
+
+        if (result == null) {
+            throw new NullPointerException("No UserData could be created from an UserDataModel.");
+        }
+
+        return result;
+    }
+
+    protected abstract I_IUserData createVRLUserData();
+
+    protected abstract I_IUserData createConstUserData();
+
+    
+    public abstract String getToolTipText();
+    
+    /**
+     *
+     * @param code that is written in the editor of a UserDataWindow
+     * @param dim is an Integer between 1 and 3 indicating the space dimension
+     * @param type is an Integer between 0 and 3,<br>
+     * 0 = CondNumber or Number,<br>
+     * 1 = Vector, <br>
+     * 2 = Matrix, <br>
+     * 3 = Tensor <br>
+     * @param cond if true CondUserDataCompiler is used else UserDataCompiler
+     *
+     * @return the code that is returned by one of the above named ug-compilers
+     */
+    protected static String createCode(String code, int dim, int type, boolean cond) {
+
+        ArrayList<String> paramNames = new ArrayList<String>();
+
+        if (dim >= 1) {
+            paramNames.add("x");
+        }
+        if (dim >= 2) {
+            paramNames.add("y");
+        }
+        if (dim >= 3) {
+            paramNames.add("z");
+        }
+        paramNames.add("t");
+        paramNames.add("si");
+
+        if (cond) {
+
+            code = CondUserDataCompiler.getUserDataImplCode(code, paramNames);
+
+        } else {
+            code = UserDataCompiler.getUserDataImplCode(code, type,
+                    paramNames, UserData.returnTypes[type]);
+        }
+        return code;
+    }
+}

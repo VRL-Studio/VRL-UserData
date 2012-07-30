@@ -10,11 +10,6 @@ package edu.gcsc.vrl.userdata.managers;
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
 public class DimensionManager {
-    
-    public static final int ONE = 1;
-    public static final int TWO = 2;
-    public static final int THREE = 3;
-    
     /**
      * Checks if the data is an array and if counts the dimensions of the array.
      * 
