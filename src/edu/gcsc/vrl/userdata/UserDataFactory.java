@@ -4,7 +4,6 @@
  */
 package edu.gcsc.vrl.userdata;
 
-import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
 import edu.gcsc.vrl.userdata.types.UserDataTupleType;
 
 /**
@@ -13,7 +12,7 @@ import edu.gcsc.vrl.userdata.types.UserDataTupleType;
  */
 public class UserDataFactory {
  
-    public static UserDataModel createModel(UserDataCategory cat){
+    public static UserDataModel createModel(UserDataModel.Category cat){
         UserDataModel model = null;
         switch (cat) {
                 case NUMBER:
@@ -37,9 +36,9 @@ public class UserDataFactory {
         return model;
     }
             
-    public static UserDataView createView(UserDataCategory cat,
-                                            String name, UserDataModel model,
-                                            UserDataTupleType tuple) {
+    public static UserDataView createView(UserDataModel.Category cat,
+                                          String name, UserDataModel model,
+                                          UserDataTupleType tuple) {
         UserDataView view = null;
         switch (cat) {
                 case NUMBER:

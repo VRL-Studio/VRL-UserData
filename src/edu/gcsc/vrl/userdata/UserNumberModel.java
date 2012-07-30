@@ -11,7 +11,6 @@ import edu.gcsc.vrl.ug.api.VRLUserNumber1d;
 import edu.gcsc.vrl.ug.api.VRLUserNumber2d;
 import edu.gcsc.vrl.ug.api.VRLUserNumber3d;
 import edu.gcsc.vrl.userdata.managers.DimensionManager;
-import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
 import javax.swing.table.TableModel;
 
 /**
@@ -24,7 +23,7 @@ public class UserNumberModel extends UserMathDataModel {
     private Double data;
 
     public UserNumberModel() {
-        category = UserDataCategory.NUMBER;
+        category = UserDataModel.Category.NUMBER;
 
         data = 0.0;
 

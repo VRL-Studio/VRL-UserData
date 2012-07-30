@@ -10,7 +10,6 @@ import edu.gcsc.vrl.ug.api.I_VRLCondUserNumber;
 import edu.gcsc.vrl.ug.api.VRLCondUserNumber1d;
 import edu.gcsc.vrl.ug.api.VRLCondUserNumber2d;
 import edu.gcsc.vrl.ug.api.VRLCondUserNumber3d;
-import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
 import javax.swing.table.TableModel;
 
 /**
@@ -22,7 +21,7 @@ public class CondUserNumberModel extends UserMathDataModel {
     private static final long serialVersionUID = 1L;
 
     public CondUserNumberModel() {
-        category = UserDataCategory.COND_NUMBER;
+        category = UserDataModel.Category.COND_NUMBER;
 
         setCode("return new Cond(true, 0.0);");
 

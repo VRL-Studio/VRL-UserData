@@ -14,7 +14,6 @@ import edu.gcsc.vrl.ug.api.VRLUserVector1d;
 import edu.gcsc.vrl.ug.api.VRLUserVector2d;
 import edu.gcsc.vrl.ug.api.VRLUserVector3d;
 import edu.gcsc.vrl.userdata.managers.DimensionManager;
-import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
 import javax.swing.table.TableModel;
 
 /**
@@ -26,7 +25,7 @@ public class UserVectorModel extends UserMathDataModel {
     private Double[] data;
 
     public UserVectorModel() {
-        category = UserDataCategory.VECTOR;
+        category = UserDataModel.Category.VECTOR;
 
         Double[] defaultdata = {0.0, 0.0};
         data = defaultdata;

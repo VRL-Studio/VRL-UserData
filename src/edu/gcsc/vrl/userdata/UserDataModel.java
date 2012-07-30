@@ -5,7 +5,6 @@
 package edu.gcsc.vrl.userdata;
 
 import edu.gcsc.vrl.ug.api.UGXFileInfo;
-import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
 import java.io.Serializable;
 
 /**
@@ -13,14 +12,36 @@ import java.io.Serializable;
  * @author andreasvogel
  */
 public abstract class UserDataModel implements Serializable {
- 
-    protected UserDataCategory category;
+
+    /**
+     * Status of user data, indicating if data is valid or invalid etc.
+     */
+    public enum Status {
+
+        VALID,
+        WARNING,
+        INVALID
+    }
+
+    /**
+     * Category of user Data
+     */
+    public enum Category {
+        COND_NUMBER,
+        NUMBER,
+        VECTOR,
+        MATRIX,
+        SUBSET
+    }
+    
+    protected Status status;
+    protected Category category;
     protected boolean externTriggered = false;
 
     /**
      * @return the category
      */
-    public UserDataCategory getCategory() {
+    public Category getCategory() {
         return category;
     }
 
@@ -38,9 +59,9 @@ public abstract class UserDataModel implements Serializable {
      * @param data the data to set
      */
     public abstract void setModel(UserDataModel data);
-   
+
     public abstract boolean adjustData(UGXFileInfo info);
-    
+
     public abstract Object createUserData();
 
     public boolean isExternTriggered() {
@@ -50,6 +71,4 @@ public abstract class UserDataModel implements Serializable {
     public void setExternTriggered(boolean externTriggered) {
         this.externTriggered = externTriggered;
     }
-
 }
-

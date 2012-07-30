@@ -4,7 +4,6 @@
  */
 package edu.gcsc.vrl.userdata;
 
-import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
 import edu.gcsc.vrl.userdata.managers.DimensionManager;
 import edu.gcsc.vrl.userdata.types.UserDataTupleType;
 import java.awt.Color;
@@ -200,7 +199,7 @@ public class UserDataWindowPane extends JPanel {
      * <br>for Number a 1 x 1 table. </br>
      *
      */
-    protected static TableModel createTableModel(int dim, UserDataCategory category) {
+    protected static TableModel createTableModel(int dim, UserDataModel.Category category) {
 
         switch (category) {
             case NUMBER:

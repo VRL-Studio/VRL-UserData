@@ -11,7 +11,6 @@ import edu.gcsc.vrl.userdata.UserDataFactory;
 import edu.gcsc.vrl.userdata.UserDataModel;
 import edu.gcsc.vrl.userdata.UserDataTuple;
 import edu.gcsc.vrl.userdata.UserDataView;
-import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
 import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.reflection.CustomParamData;
 import eu.mihosoft.vrl.reflection.LayoutType;
@@ -32,7 +31,7 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
 
     protected static class Data {
 
-        UserDataCategory category = null;
+        UserDataModel.Category category = null;
         String name = null;
         boolean separateBehind = false;
         UserDataModel model = null;
@@ -209,19 +208,19 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
 
             switch (twoParts[0].charAt(i)) {
                 case 'n':
-                    newData.category = UserDataCategory.NUMBER;
+                    newData.category = UserDataModel.Category.NUMBER;
                     break;
                 case 'v':
-                    newData.category = UserDataCategory.VECTOR;
+                    newData.category = UserDataModel.Category.VECTOR;
                     break;
                 case 'm':
-                    newData.category = UserDataCategory.MATRIX;
+                    newData.category = UserDataModel.Category.MATRIX;
                     break;
                 case 'c':
-                    newData.category = UserDataCategory.COND_NUMBER;
+                    newData.category = UserDataModel.Category.COND_NUMBER;
                     break;
                 case 's':
-                    newData.category = UserDataCategory.SUBSET;
+                    newData.category = UserDataModel.Category.SUBSET;
                     break;
                 case '|':
                     if (datas.size() > 0) {

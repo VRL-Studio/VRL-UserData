@@ -55,12 +55,6 @@ public class UserDataConfigurator extends VPluginConfigurator {
         if (api instanceof VPluginAPI) {
             VPluginAPI vapi = (VPluginAPI) api;
             
-            // ... 
-            
-             //
-            /// TYPES 
-            //
-
             vapi.addTypeRepresentation( StringSubsetType.class);
             vapi.addTypeRepresentation( StringSubsetArrayType.class);
 
@@ -79,15 +73,7 @@ public class UserDataConfigurator extends VPluginConfigurator {
 
             vapi.addTypeRepresentation( LoadUGXFileStringType.class);
             vapi.addTypeRepresentation( LoadUGXFileType.class);
-
-            
-             //
-            /// BASICMATH Components
-            //
-            
-//            vapi.addComponent(AddUserDataWindow.class);
-        
-        }
+       }
     }
 
     @Override

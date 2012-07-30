@@ -4,8 +4,6 @@ package edu.gcsc.vrl.userdata;
  * To change this template, choose Tools | Templates and open the template in
  * the editor.
  */
-import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
-import edu.gcsc.vrl.userdata.types.UserDataTupleType;
 import eu.mihosoft.vrl.lang.CompilerProvider;
 import eu.mihosoft.vrl.lang.visual.EditorProvider;
 import eu.mihosoft.vrl.visual.*;
@@ -260,7 +258,7 @@ public class UserDataWindow extends CanvasWindow implements Serializable {
         }
 
         int dim = model.getDimension();
-        UserDataCategory cat = model.getCategory();
+        UserDataModel.Category cat = model.getCategory();
         dimChooser.setSelectedItem(dim);
         codeCommment.setText(getCodeComment(dim, cat));
 
@@ -274,7 +272,7 @@ public class UserDataWindow extends CanvasWindow implements Serializable {
         return model;
     }
 
-    protected static String getCodeComment(int dim, UserDataCategory cat) {
+    protected static String getCodeComment(int dim, UserDataModel.Category cat) {
 
         String[] spaceParam = {"x", "y", "z"};
 

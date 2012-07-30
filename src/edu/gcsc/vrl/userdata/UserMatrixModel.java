@@ -14,7 +14,6 @@ import edu.gcsc.vrl.ug.api.VRLUserMatrix1d;
 import edu.gcsc.vrl.ug.api.VRLUserMatrix2d;
 import edu.gcsc.vrl.ug.api.VRLUserMatrix3d;
 import edu.gcsc.vrl.userdata.managers.DimensionManager;
-import edu.gcsc.vrl.userdata.helpers.UserDataCategory;
 import javax.swing.table.TableModel;
 
 /**
@@ -27,7 +26,7 @@ public class UserMatrixModel extends UserMathDataModel {
 
     public UserMatrixModel() {
 
-        category = UserDataCategory.MATRIX;
+        category = UserDataModel.Category.MATRIX;
 
         Double[][] defaultdata = {{0.0, 0.0}, {0.0, 0.0}};
         data = defaultdata;
