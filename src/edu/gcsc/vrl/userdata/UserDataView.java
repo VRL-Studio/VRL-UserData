@@ -17,5 +17,5 @@ public abstract class UserDataView {
   
     public abstract void updateView(UserDataModel theModel);
     
-    public abstract void adjustData(UGXFileInfo info, boolean modelConsistent);
+    public abstract void adjustView(UGXFileInfo info, UserDataModel.Status modelConsistent);
 }

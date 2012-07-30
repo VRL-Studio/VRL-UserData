@@ -2,14 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.gcsc.vrl.userdata.managers;
+package edu.gcsc.vrl.userdata.util;
 
 /**
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
-public class DimensionManager {
+public class DimensionUtil {
     /**
      * Checks if the data is an array and if counts the dimensions of the array.
      * 

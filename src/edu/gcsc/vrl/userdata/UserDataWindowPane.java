@@ -4,7 +4,7 @@
  */
 package edu.gcsc.vrl.userdata;
 
-import edu.gcsc.vrl.userdata.managers.DimensionManager;
+import edu.gcsc.vrl.userdata.util.DimensionUtil;
 import edu.gcsc.vrl.userdata.types.UserDataTupleType;
 import java.awt.Color;
 import java.awt.Component;
@@ -241,7 +241,7 @@ public class UserDataWindowPane extends JPanel {
     public static void fillFromModel(TableModel tableModel, UserMathDataModel model) {
 
         // see docu to know which number stands for which UserDataModel type
-        int type = DimensionManager.getArrayDimension(model.getData());
+        int type = DimensionUtil.getArrayDimension(model.getData());
 
 
         if (type == 2) {

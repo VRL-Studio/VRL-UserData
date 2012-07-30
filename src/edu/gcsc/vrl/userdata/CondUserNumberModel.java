@@ -91,8 +91,8 @@ public class CondUserNumberModel extends UserMathDataModel {
     }
 
     @Override
-    public boolean adjustDataForDimension(int dimension) {
-        return true;
+    public Status adjustDataForDimension(int dimension) {
+        return Status.VALID;
         // do nothing
     }
 

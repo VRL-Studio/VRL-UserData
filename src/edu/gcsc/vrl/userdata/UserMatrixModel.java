@@ -13,7 +13,7 @@ import edu.gcsc.vrl.ug.api.I_VRLUserMatrix;
 import edu.gcsc.vrl.ug.api.VRLUserMatrix1d;
 import edu.gcsc.vrl.ug.api.VRLUserMatrix2d;
 import edu.gcsc.vrl.ug.api.VRLUserMatrix3d;
-import edu.gcsc.vrl.userdata.managers.DimensionManager;
+import edu.gcsc.vrl.userdata.util.DimensionUtil;
 import javax.swing.table.TableModel;
 
 /**
@@ -50,7 +50,7 @@ public class UserMatrixModel extends UserMathDataModel {
     @Override
     public void setData(Object data) {
 
-        int arrayDim = DimensionManager.getArrayDimension(data);
+        int arrayDim = DimensionUtil.getArrayDimension(data);
         if (arrayDim == 2) {
             setData((Double[][]) data);
 
@@ -75,24 +75,24 @@ public class UserMatrixModel extends UserMathDataModel {
     }
 
     @Override
-    public boolean adjustDataForDimension(int dim) {
-        boolean bConsistent = adjustConstDataForDimension(dim);
+    public Status adjustDataForDimension(int dim) {
+        Status bConsistent = adjustConstDataForDimension(dim);
 
         if (getInputType() == InputType.CONSTANT) {
             return bConsistent;
         } else {
-            return true;
+            return Status.VALID;
         }
     }
 
-    protected boolean adjustConstDataForDimension(int dim) {
+    protected Status adjustConstDataForDimension(int dim) {
 
         int oldRowSize = data.length;
         int oldColSize = data[0].length;
 
         // if nothing changes, data must be ok
         if (dim == oldRowSize && dim == oldColSize) {
-            return true;
+            return Status.VALID;
         }
 
         Double[][] newData = new Double[dim][dim];
@@ -112,7 +112,7 @@ public class UserMatrixModel extends UserMathDataModel {
                 newData[i][i] = data[0][0];
             }
             data = newData;
-            return true;
+            return Status.VALID;
         }
 
         // copy old
@@ -126,11 +126,11 @@ public class UserMatrixModel extends UserMathDataModel {
 
         // if only smaller matrix, data may be ok
         if (oldRowSize > dim && oldColSize > dim) {
-            return true;
+            return Status.VALID;
         }
 
         // maybe we have to do something
-        return false;
+        return Status.WARNING;
     }
 
     protected boolean isScalarDiagonal(Double[][] data) {

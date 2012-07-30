@@ -41,14 +41,14 @@ public class UserMathDataView extends UserDataView {
     }
 
     public void updateToolTipText() {
-        
+
         button.setToolTipText(model.getToolTipText());
     }
-    
+
     public UserMathDataView(String theName, UserDataModel theModel,
             UserDataTupleType theTuple) {
         this.name = theName;
-        this.model = (UserMathDataModel)theModel;
+        this.model = (UserMathDataModel) theModel;
         this.tuple = theTuple;
         button = new VButton(name);
         updateToolTipText();
@@ -87,7 +87,7 @@ public class UserMathDataView extends UserDataView {
     @Override
     public void updateView(UserDataModel theModel) {
 
-        this.model = (UserMathDataModel)theModel;
+        this.model = (UserMathDataModel) theModel;
         updateToolTipText();
         if (window != null) {
             window.updateWindow(model);
@@ -95,25 +95,24 @@ public class UserMathDataView extends UserDataView {
     }
 
     @Override
-    public void adjustData(UGXFileInfo info, boolean modelConsistent) {
+    public void adjustView(UGXFileInfo info, UserDataModel.Status modelStatus) {
         if (info != null) {
-
             if (window != null) {
                 window.updateWindow(model);
             }
+        }
 
-            if (modelConsistent) {
-                button.setBackground(defaultColor);
-            } else {
-                button.setBackground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
-                        TypeRepresentationBase.WARNING_VALUE_COLOR_KEY));
-            }
-        } else {
+        if (modelStatus == UserDataModel.Status.VALID) {
+            button.setBackground(defaultColor);
+        } else if (modelStatus == UserDataModel.Status.WARNING) {
+            button.setBackground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
+                    TypeRepresentationBase.WARNING_VALUE_COLOR_KEY));
+        } else if (modelStatus == UserDataModel.Status.INVALID) {
             button.setBackground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
                     TypeRepresentationBase.INVALID_VALUE_COLOR_KEY));
         }
     }
-    
+
     void setConsistentStateColor() {
         button.setBackground(defaultColor);
     }

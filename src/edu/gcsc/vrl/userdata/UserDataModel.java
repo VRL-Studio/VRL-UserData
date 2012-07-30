@@ -38,6 +38,15 @@ public abstract class UserDataModel implements Serializable {
     protected Category category;
     protected boolean externTriggered = false;
 
+    
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     /**
      * @return the category
      */
@@ -60,14 +69,37 @@ public abstract class UserDataModel implements Serializable {
      */
     public abstract void setModel(UserDataModel data);
 
-    public abstract boolean adjustData(UGXFileInfo info);
+    /**
+     * Adjusts data for new DataInfo (e.g. for new dimension) and returns in 
+     * with state the data is after modification to new Info.
+     * 
+     * @param info      new file data and its parameters
+     * @return          status of data after adaption to file data.
+     */
+    public abstract Status adjustData(UGXFileInfo info);
 
+    /**
+     *  creates the user data
+     * @return  the created user data
+     */
     public abstract Object createUserData();
 
+    /**
+     * returns if the Data setup (e.g. dimension of data) is triggered externally,
+     * e.g. due to some file loading
+     * 
+     * @return flag is externally triggered
+     */
     public boolean isExternTriggered() {
         return externTriggered;
     }
 
+    /**
+     * sets if the Data setup (e.g. dimension of data) is triggered externally,
+     * e.g. due to some file loading
+     * 
+     * @param externTriggered flag is externally triggered
+     */
     public void setExternTriggered(boolean externTriggered) {
         this.externTriggered = externTriggered;
     }

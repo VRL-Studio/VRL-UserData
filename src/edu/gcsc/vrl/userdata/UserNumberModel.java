@@ -10,7 +10,7 @@ import edu.gcsc.vrl.ug.api.I_VRLUserNumber;
 import edu.gcsc.vrl.ug.api.VRLUserNumber1d;
 import edu.gcsc.vrl.ug.api.VRLUserNumber2d;
 import edu.gcsc.vrl.ug.api.VRLUserNumber3d;
-import edu.gcsc.vrl.userdata.managers.DimensionManager;
+import edu.gcsc.vrl.userdata.util.DimensionUtil;
 import javax.swing.table.TableModel;
 
 /**
@@ -48,7 +48,7 @@ public class UserNumberModel extends UserMathDataModel {
     @Override
     public void setData(Object data) {
 
-        int arrayDim = DimensionManager.getArrayDimension(data);
+        int arrayDim = DimensionUtil.getArrayDimension(data);
         if (arrayDim == 0) {
             setData((Double) data);
         } else {
@@ -65,9 +65,9 @@ public class UserNumberModel extends UserMathDataModel {
     }
 
     @Override
-    public boolean adjustDataForDimension(int dim) {
+    public Status adjustDataForDimension(int dim) {
         // nothing to do
-        return true;
+        return Status.VALID;
     }
 
     @Override

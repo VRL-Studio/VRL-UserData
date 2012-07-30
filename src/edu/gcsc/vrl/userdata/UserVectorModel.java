@@ -13,7 +13,7 @@ import edu.gcsc.vrl.ug.api.I_VRLUserVector;
 import edu.gcsc.vrl.ug.api.VRLUserVector1d;
 import edu.gcsc.vrl.ug.api.VRLUserVector2d;
 import edu.gcsc.vrl.ug.api.VRLUserVector3d;
-import edu.gcsc.vrl.userdata.managers.DimensionManager;
+import edu.gcsc.vrl.userdata.util.DimensionUtil;
 import javax.swing.table.TableModel;
 
 /**
@@ -49,7 +49,7 @@ public class UserVectorModel extends UserMathDataModel {
     @Override
     public void setData(Object data) {
 
-        int arrayDim = DimensionManager.getArrayDimension(data);
+        int arrayDim = DimensionUtil.getArrayDimension(data);
         if (arrayDim == 1) {
             setData((Double[]) data);
 
@@ -71,22 +71,22 @@ public class UserVectorModel extends UserMathDataModel {
     }
 
     @Override
-    public boolean adjustDataForDimension(int dim) {
-        boolean bConsistent = adjustConstDataForDimension(dim);
+    public Status adjustDataForDimension(int dim) {
+        Status bConsistent = adjustConstDataForDimension(dim);
 
         if (getInputType() == InputType.CONSTANT) {
             return bConsistent;
         } else {
-            return true;
+            return Status.VALID;
         }
     }
 
-    protected boolean adjustConstDataForDimension(int dim) {
+    protected Status adjustConstDataForDimension(int dim) {
 
         int oldLength = data.length;
 
         if (dim == oldLength) {
-            return true;
+            return Status.VALID;
         }
 
         Double[] newData = new Double[dim];
@@ -117,10 +117,10 @@ public class UserVectorModel extends UserMathDataModel {
         data = newData;
 
         if (oldLength > dim || bSameData) {
-            return true;
+            return Status.VALID;
         }
 
-        return false;
+        return Status.WARNING;
     }
 
     @Override

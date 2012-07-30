@@ -292,8 +292,8 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
         // adjust Data for new FileInfo in model and view
         for (Data theData : datas) {
 
-            boolean modelConsistent = theData.model.adjustData(info);
-            theData.view.adjustData(info, modelConsistent);
+            UserDataModel.Status modelStatus = theData.model.adjustData(info);
+            theData.view.adjustView(info, modelStatus);
         }
     }
 

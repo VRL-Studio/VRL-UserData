@@ -123,7 +123,7 @@ public class UserSubsetView extends UserDataView {
 
         int index = 0;
         boolean modelConsistent = true;
-        
+
         if (selection != null) {
 
             index = ((ArrayList<String>) selection.getCollection()).indexOf(model.getData());
@@ -149,7 +149,7 @@ public class UserSubsetView extends UserDataView {
     }
 
     @Override
-    public void adjustData(UGXFileInfo info, boolean modelConsistent) {
+    public void adjustView(UGXFileInfo info, UserDataModel.Status modelStatus) {
         String currentSubset = "";
         if (model != null) {
             currentSubset = (String) model.getData();
@@ -197,15 +197,12 @@ public class UserSubsetView extends UserDataView {
         tuple.storeCustomParamData();
 
 
-
-        if (info != null) {
-            if (modelConsistent) {
-                selectionView.setBackground(defaultColor);
-            } else {
-                selectionView.setBackground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
-                        TypeRepresentationBase.WARNING_VALUE_COLOR_KEY));
-            }
-        } else {
+        if (modelStatus == UserDataModel.Status.VALID) {
+            selectionView.setBackground(defaultColor);
+        } else if (modelStatus == UserDataModel.Status.WARNING) {
+            selectionView.setBackground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
+                    TypeRepresentationBase.WARNING_VALUE_COLOR_KEY));
+        } else if (modelStatus == UserDataModel.Status.INVALID) {
             selectionView.setBackground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
                     TypeRepresentationBase.INVALID_VALUE_COLOR_KEY));
         }

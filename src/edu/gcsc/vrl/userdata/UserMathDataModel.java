@@ -87,7 +87,7 @@ public abstract class UserMathDataModel extends UserDataModel {
     /**
      * @param dimension the dimension to set
      */
-    public boolean setDimension(int dim) {
+    public Status setDimension(int dim) {
         this.dimension = dim;
         return adjustDataForDimension(dim);
     }
@@ -109,16 +109,16 @@ public abstract class UserMathDataModel extends UserDataModel {
     }
 
     @Override
-    public boolean adjustData(UGXFileInfo info) {
+    public Status adjustData(UGXFileInfo info) {
 
         if(info != null){
             int dim = info.const__grid_world_dimension(0);
             return setDimension(dim);
         }
-        return true;
+        return Status.INVALID;
     }
 
-    public abstract boolean adjustDataForDimension(int dim);
+    public abstract Status adjustDataForDimension(int dim);
 
     @Override
     public void setModel(UserDataModel model) {
