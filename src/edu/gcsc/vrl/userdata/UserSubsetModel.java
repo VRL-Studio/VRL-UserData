@@ -40,6 +40,7 @@ public class UserSubsetModel extends UserDataModel {
             UserSubsetModel m = (UserSubsetModel) model;
 
             setData(m.getData());
+            setStatus(m.getStatus());
 
         } else {
             throw new RuntimeException("UserData could be set from other UserDataModel.");
@@ -49,19 +50,26 @@ public class UserSubsetModel extends UserDataModel {
 
     @Override
     public Status adjustData(UGXFileInfo info) {
+        Status myStatus = Status.INVALID; 
+        
         if(info != null){
             for (int i = 0; i < info.const__num_subsets(0, 0); ++i) {
                 String newSubset = info.const__subset_name(0, 0, i);
                 
                 // in this case we can stay with the old selected subset
-                if(newSubset.equals(data)) return Status.VALID;
+                if(newSubset.equals(data)) {
+                    myStatus = Status.VALID;
+                    setStatus(myStatus);
+                    return myStatus;
+                }
             }
 
             // reset data
             data = "";
-            return Status.WARNING;
+            myStatus = Status.WARNING;
         }
         
-        return Status.INVALID;
+        setStatus(myStatus);
+        return myStatus;
     }
 }

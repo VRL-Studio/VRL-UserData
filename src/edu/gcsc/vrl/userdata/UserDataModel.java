@@ -34,7 +34,7 @@ public abstract class UserDataModel implements Serializable {
         SUBSET
     }
     
-    protected Status status;
+    protected Status status = Status.WARNING;
     protected Category category;
     protected boolean externTriggered = false;
 

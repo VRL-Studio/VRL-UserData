@@ -111,11 +111,13 @@ public abstract class UserMathDataModel extends UserDataModel {
     @Override
     public Status adjustData(UGXFileInfo info) {
 
+        Status myStatus = Status.INVALID;
         if(info != null){
             int dim = info.const__grid_world_dimension(0);
-            return setDimension(dim);
+            myStatus = setDimension(dim);
         }
-        return Status.INVALID;
+        setStatus(myStatus);
+        return myStatus;
     }
 
     public abstract Status adjustDataForDimension(int dim);
@@ -131,6 +133,7 @@ public abstract class UserMathDataModel extends UserDataModel {
             setDimension(m.getDimension());
             setInputType(m.getInputType());
             setCondition(m.isCondition());
+            setStatus(m.getStatus());
 
         } else {
             throw new RuntimeException("UserData could be set from other UserDataModel.");
