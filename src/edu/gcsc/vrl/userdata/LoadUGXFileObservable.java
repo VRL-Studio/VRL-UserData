@@ -96,7 +96,7 @@ public class LoadUGXFileObservable {
     /**
      * Map storing data and observers associated with a tag
      */
-    private Map<Identifier, UGXFileTag> tags = new HashMap<Identifier, UGXFileTag>();
+    private transient Map<Identifier, UGXFileTag> tags = new HashMap<Identifier, UGXFileTag>();
 
     /**
      * returns the file tag info for a tag. If create is set to true a new tag
@@ -144,6 +144,19 @@ public class LoadUGXFileObservable {
         Identifier id = new Identifier(tag, object, windowID);
         if (tags.containsKey(id)) {
             tags.get(id).observers.remove(obs);
+        }
+    }
+
+    /**
+     * Removes an observer from this Observable. 
+     * 
+     * @param obs       the observer to remove
+     * @param tag       the tag
+     */
+    public synchronized void deleteObserver(LoadUGXFileObserver obs) {
+        
+        for (Map.Entry<Identifier, UGXFileTag> entry : tags.entrySet()) {
+            entry.getValue().observers.remove(obs);
         }
     }
 

@@ -53,7 +53,6 @@ public class LoadUGXFileType extends TypeRepresentationBase {
         // create input field
         input = new VTextField(this, "");
         input.setHorizontalAlignment(JTextField.RIGHT);
-        setInputDocument(input, input.getDocument());
         int height = (int) this.input.getMinimumSize().getHeight();
         input.setSize(new Dimension(120, height));
         input.setMinimumSize(new Dimension(120, height));
@@ -66,7 +65,7 @@ public class LoadUGXFileType extends TypeRepresentationBase {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                setViewValue(input.getText());
+                setViewValue(new File(input.getText()));
             }
         });
         add(input);
@@ -112,8 +111,8 @@ public class LoadUGXFileType extends TypeRepresentationBase {
 
     @Override
     public void setViewValue(Object o) {
-        if(o instanceof File) {
-            input.setText(((File)o).getAbsolutePath());
+        if (o instanceof File) {
+            input.setText(((File) o).getAbsolutePath());
             input.setCaretPosition(input.getText().length());
             input.setToolTipText(input.getText());
             input.setHorizontalAlignment(JTextField.RIGHT);
@@ -124,18 +123,7 @@ public class LoadUGXFileType extends TypeRepresentationBase {
 
     @Override
     public Object getViewValue() {
-        Object o = null;
-
-        String inputText = input.getText();
-        if (inputText.length() > 0) {
-            try {
-                o =  new File(inputText);
-            } catch (Exception e) {
-                invalidateValue();
-            }
-        }
-
-        return o;
+        return new File(input.getText());
     }
 
     @Override
@@ -176,28 +164,27 @@ public class LoadUGXFileType extends TypeRepresentationBase {
         // register at Observable using tag
         notifyLoadUGXFileObservable();
     }
- 
+
     protected void notifyLoadUGXFileObservable() {
         File file = new File(input.getText());
-            int id = this.getParentMethod().getParentObject().getObjectID();
-            Object o = ((VisualCanvas) getMainCanvas()).getInspector().getObject(id);
-            int windowID = 0;
+        int id = this.getParentMethod().getParentObject().getObjectID();
+        Object o = ((VisualCanvas) getMainCanvas()).getInspector().getObject(id);
+        int windowID = 0;
 
         //  Here we inform the Singleton, that the file no scheduled
-        if (file.isFile()) {
+        if (!file.getAbsolutePath().isEmpty() && file.isFile()) {
             String msg = LoadUGXFileObservable.getInstance().setSelectedFile(file, tag, o, windowID);
-            if (!msg.isEmpty()) {
+            if (!msg.isEmpty() && !getMainCanvas().isLoadingSession()) {
                 getMainCanvas().getMessageBox().addMessage("Invalid ugx-File",
                         msg, getConnector(), MessageType.ERROR);
             }
 
         } else {
             LoadUGXFileObservable.getInstance().setInvalidFile(tag, o, windowID);
-            if (!input.getText().isEmpty()) {
+            if (!input.getText().isEmpty() && !getMainCanvas().isLoadingSession()) {
                 getMainCanvas().getMessageBox().addMessage("Invalid ugx-File",
                         "Specified filename invalid: " + file.toString(),
                         getConnector(), MessageType.ERROR);
-
             }
         }
     }

@@ -35,6 +35,7 @@ public class UserDataWindowPane extends JPanel {
     private transient UserMathDataModel mathDataModel;
     private transient UserDataTupleType userDataTuple;
     private transient UserMathDataView mathDataView = null;
+    private transient boolean internalAdjustment = false;
 
     public UserDataWindowPane(UserMathDataView view) {
         setBackground(new Color(0, 0, 0, 0));
@@ -97,12 +98,20 @@ public class UserDataWindowPane extends JPanel {
             ((JComponent) getComponent()).setBorder(null);
 
             boolean res = super.stopCellEditing();
-            
+
+            if (internalAdjustment) {
+                return res;
+            }
+
             mathDataModel.setDataFromTable(tableModel);
-            mathDataView.setConsistentStateColor();
+
+            if (mathDataModel.getStatus() != UserDataModel.Status.INVALID) {
+                mathDataModel.setStatus(UserDataModel.Status.VALID);
+            }
+            mathDataView.adjustView(mathDataModel.getStatus());
             mathDataView.updateToolTipText();
             userDataTuple.storeCustomParamData();
-            
+
             return res;
         }
 
@@ -277,6 +286,7 @@ public class UserDataWindowPane extends JPanel {
     }
 
     public void updateModel(UserMathDataModel model) {
+        internalAdjustment = true;
 
         mathDataModel = model;
 
@@ -288,5 +298,8 @@ public class UserDataWindowPane extends JPanel {
 
         add(tableView);
 
+        revalidate();
+
+        internalAdjustment = false;
     }
 }

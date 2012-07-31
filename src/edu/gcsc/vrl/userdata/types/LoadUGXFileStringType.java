@@ -53,7 +53,6 @@ public class LoadUGXFileStringType extends TypeRepresentationBase {
         // create input field
         input = new VTextField(this, "");
         input.setHorizontalAlignment(JTextField.RIGHT);
-        setInputDocument(input, input.getDocument());
         int height = (int) this.input.getMinimumSize().getHeight();
         input.setSize(new Dimension(120, height));
         input.setMinimumSize(new Dimension(120, height));
@@ -123,18 +122,7 @@ public class LoadUGXFileStringType extends TypeRepresentationBase {
 
     @Override
     public Object getViewValue() {
-        Object o = null;
-
-        String inputText = input.getText();
-        if (inputText.length() > 0) {
-            try {
-                o = inputText;
-            } catch (Exception e) {
-                invalidateValue();
-            }
-        }
-
-        return o;
+        return input.getText();
     }
 
     @Override
@@ -183,16 +171,18 @@ public class LoadUGXFileStringType extends TypeRepresentationBase {
             int windowID = 0;
 
         //  Here we inform the Singleton, that the file no scheduled
-        if (file.isFile()) {
+        if (!file.getAbsolutePath().isEmpty() && file.isFile()) {
             String msg = LoadUGXFileObservable.getInstance().setSelectedFile(file, tag, o, windowID);
-            if (!msg.isEmpty()) {
+
+            if (!msg.isEmpty() && !getMainCanvas().isLoadingSession()) {
                 getMainCanvas().getMessageBox().addMessage("Invalid ugx-File",
                         msg, getConnector(), MessageType.ERROR);
             }
 
         } else {
             LoadUGXFileObservable.getInstance().setInvalidFile(tag, o, windowID);
-            if (!input.getText().isEmpty()) {
+            
+            if (!input.getText().isEmpty() && !getMainCanvas().isLoadingSession()) {
                 getMainCanvas().getMessageBox().addMessage("Invalid ugx-File",
                         "Specified filename invalid: " + file.toString(),
                         getConnector(), MessageType.ERROR);

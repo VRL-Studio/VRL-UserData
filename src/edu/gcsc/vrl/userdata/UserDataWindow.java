@@ -34,14 +34,14 @@ public class UserDataWindow extends CanvasWindow implements Serializable {
     private transient JComboBox dimChooser;
     protected transient JRadioButton constant;
     protected transient JRadioButton code;
-
     private transient UserMathDataView mathDataView = null;
     private transient UserMathDataModel model = null;
+    protected boolean internalAdjustment = false;
 
-    public UserDataWindow(UserMathDataView view){
-        
+    public UserDataWindow(UserMathDataView view) {
+
         super(view.getName(), view.getUserDataTupleType().getMainCanvas());
-        
+
         mathDataView = view;
         model = mathDataView.getUserMathDataModel();
 
@@ -95,12 +95,18 @@ public class UserDataWindow extends CanvasWindow implements Serializable {
 
             @Override
             public void insertUpdate(DocumentEvent e) {
+                if (internalAdjustment) {
+                    return;
+                }
                 model.setCode(editor.getEditor().getText());
                 storeData();
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
+                if (internalAdjustment) {
+                    return;
+                }
                 model.setCode(editor.getEditor().getText());
                 storeData();
             }
@@ -133,11 +139,14 @@ public class UserDataWindow extends CanvasWindow implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (internalAdjustment) {
+                    return;
+                }
 
                 editBox.remove(constantPane);
                 int dim = (Integer) dimChooser.getSelectedItem();
 
-                model.setDimension(dim);
+                model.setDimensionWithAdjust(dim);
                 constantPane.updateModel(model);
                 codeCommment.setText(getCodeComment(dim, model.getCategory()));
 
@@ -148,7 +157,7 @@ public class UserDataWindow extends CanvasWindow implements Serializable {
                     editBox.removeAll();
                     editBox.add(codePane);
                 }
-                
+
                 storeData();
                 revalidate();
             }
@@ -158,6 +167,9 @@ public class UserDataWindow extends CanvasWindow implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (internalAdjustment) {
+                    return;
+                }
                 if (constant.isSelected()) {
                     editBox.add(constantPane);
                     editBox.remove(codePane);
@@ -173,21 +185,27 @@ public class UserDataWindow extends CanvasWindow implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (internalAdjustment) {
+                    return;
+                }
                 if (code.isSelected()) {
                     editBox.remove(constantPane);
                     editBox.add(codePane);
                     model.setInputType(UserMathDataModel.InputType.CODE);
-                    
+
                     storeData();
                     revalidate();
                 }
             }
         });
     }
-    
-    protected void storeData(){
+
+    protected void storeData() {
+        if (model.getStatus() != UserDataModel.Status.INVALID) {
+            model.setStatus(UserDataModel.Status.VALID);
+        }
+        mathDataView.adjustView(model.getStatus());
         mathDataView.updateToolTipText();
-        mathDataView.setConsistentStateColor();
         mathDataView.getUserDataTupleType().storeCustomParamData();
     }
 
@@ -210,7 +228,7 @@ public class UserDataWindow extends CanvasWindow implements Serializable {
 
         // copy dimension into model, if selectable
         if (!model.isExternTriggered()) {
-            model.setDimension((Integer) dimChooser.getSelectedItem());
+            model.setDimensionWithAdjust((Integer) dimChooser.getSelectedItem());
         }
 
         // copy table data from window into model
@@ -232,6 +250,7 @@ public class UserDataWindow extends CanvasWindow implements Serializable {
      * @param model that stores the informations that should be visualized
      */
     final public void updateWindow(UserMathDataModel model) {
+        internalAdjustment = true;
 
         editBox.removeAll();
         constantPane.updateModel(model);
@@ -263,6 +282,7 @@ public class UserDataWindow extends CanvasWindow implements Serializable {
         codeCommment.setText(getCodeComment(dim, cat));
 
         revalidate();
+        internalAdjustment = false;
     }
 
     /**

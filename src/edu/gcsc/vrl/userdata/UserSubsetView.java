@@ -5,10 +5,9 @@
 package edu.gcsc.vrl.userdata;
 
 import edu.gcsc.vrl.ug.api.UGXFileInfo;
+import edu.gcsc.vrl.userdata.UserDataModel.Status;
 import edu.gcsc.vrl.userdata.types.UserDataTupleType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
-import eu.mihosoft.vrl.reflection.VisualCanvas;
-import eu.mihosoft.vrl.types.Selection;
 import eu.mihosoft.vrl.visual.VTextField;
 import java.awt.Color;
 import java.awt.Component;
@@ -16,7 +15,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import javax.swing.JComboBox;
 
 /**
@@ -29,10 +27,10 @@ public class UserSubsetView extends UserDataView {
     protected UserDataTupleType tuple;
     protected String name;
     protected JComboBox selectionView = null;
-    protected Selection selection = null;
     protected Color defaultColor = null;
     protected boolean externTriggered;
     protected VTextField textView = null;
+    protected boolean internalAdjustment = false;
 
     public UserSubsetView(String theName, UserDataModel theModel,
             UserDataTupleType theTuple) {
@@ -50,24 +48,15 @@ public class UserSubsetView extends UserDataView {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    boolean isLoading = false;
 
-                    // check whether this action event is a mouse event or if it is
-                    // caused by session loading
-                    if (tuple.getMainCanvas() != null) {
-                        VisualCanvas canvas = (VisualCanvas) tuple.getMainCanvas();
-                        isLoading = canvas.isLoadingSession();
-                    }
+                    if (selectionView.getSelectedItem() != null && !internalAdjustment) {
+                        model.setData(selectionView.getSelectedItem());
 
-                    // if the event is a mouse event and the selection model exists
-                    // change the model according to the view
-                    if (selection != null && !isLoading) {
-                        selection.setSelectedIndex(selectionView.getSelectedIndex());
-                        selection.setSelectedObject(selectionView.getSelectedItem());
-                        if (selectionView.getSelectedItem() != null) {
-                            model.setData(selectionView.getSelectedItem());
+                        if (model.getStatus() != UserDataModel.Status.INVALID) {
+                            model.setStatus(UserDataModel.Status.VALID);
                         }
-                        selectionView.setBackground(defaultColor);
+                        adjustView(model.getStatus());
+
                         tuple.setDataOutdated();
                         tuple.storeCustomParamData();
                     }
@@ -113,73 +102,59 @@ public class UserSubsetView extends UserDataView {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void updateView(UserDataModel theModel) {
+    public void adjustView(UserDataModel theModel) {
         this.model = theModel;
         externTriggered = model.isExternTriggered();
 
         if (textView != null) {
             textView.setText((String) model.getData());
         }
-
-        int index = 0;
-        boolean modelConsistent = true;
-
-        if (selection != null) {
-
-            index = ((ArrayList<String>) selection.getCollection()).indexOf(model.getData());
-            if (index < 0) {
-                index = 0;
-                modelConsistent = false;
-            }
-
-            selection.setSelectedIndex(index);
-        }
-
+        
         if (selectionView != null) {
-            selectionView.setSelectedIndex(index);
-        }
 
-        if (modelConsistent) {
-            selectionView.setBackground(defaultColor);
-        } else {
-            selectionView.setBackground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
-                    TypeRepresentationBase.WARNING_VALUE_COLOR_KEY));
-        }
+            internalAdjustment = true;
 
+            if (model.getStatus() == UserDataModel.Status.INVALID) {
+                selectionView.removeAllItems();
+                selectionView.addItem("-- No Grid --");
+            } else {
+                selectionView.setSelectedItem(model.getData());
+            }
+            
+            internalAdjustment = false;
+
+            adjustView(model.getStatus());
+        }
     }
 
     @Override
-    public void adjustView(UGXFileInfo info, UserDataModel.Status modelStatus) {
-        String currentSubset = "";
-        if (model != null) {
-            currentSubset = (String) model.getData();
-        }
-
-        int index = 0;
-
-        if (info != null) {
-            ArrayList<String> subsetList = new ArrayList<String>();
-            for (int i = 0; i < info.const__num_subsets(0, 0); ++i) {
-                subsetList.add(info.const__subset_name(0, 0, i));
-            }
-
-            index = subsetList.indexOf(currentSubset);
-            if (index < 0) {
-                index = 0;
-            }
-
-            selection = new Selection(subsetList);
-        } else {
-            ArrayList<String> subsetList = new ArrayList<String>();
-            subsetList.add("-- No Grid --");
-            selection = new Selection(subsetList);
-        }
+    public void adjustView(UGXFileInfo info) {
+        internalAdjustment = true;
 
         selectionView.removeAllItems();
-        for (Object object : selection.getCollection()) {
-            selectionView.addItem(object);
+        if (info != null) {
+
+            for (int i = 0; i < info.const__num_subsets(0, 0); ++i) {
+                selectionView.addItem(info.const__subset_name(0, 0, i));
+            }
+
+            if (model != null) {
+                selectionView.setSelectedItem(model.getData());
+                adjustView(model.getStatus());
+            }
+
+            if (selectionView.getSelectedItem() == null) {
+                selectionView.setSelectedIndex(0);
+                model.setData(selectionView.getSelectedItem());
+                model.setStatus(UserDataModel.Status.WARNING);
+                adjustView(model.getStatus());
+            }
+
+        } else {
+            selectionView.addItem("-- No Grid --");
+            model.setStatus(Status.INVALID);
+            adjustView(model.getStatus());
         }
-        selectionView.setSelectedIndex(index);
 
         // set the maximum size to prefered size in order to avoid stretched drop-downs
         Dimension max = selectionView.getMaximumSize();
@@ -187,24 +162,29 @@ public class UserSubsetView extends UserDataView {
         max.height = pref.height;
         selectionView.setMaximumSize(max);
 
+        selectionView.revalidate();
 
-        selection.setSelectedIndex(index);
-        selection.setSelectedObject(index);
-        if (selectionView.getSelectedItem() != null) {
-            model.setData(selectionView.getSelectedItem());
+        internalAdjustment = false;
+    }
+
+    @Override
+    public void adjustView(UserDataModel.Status status) {
+        switch (status) {
+            case VALID:
+                selectionView.setBackground(defaultColor);
+                break;
+            case WARNING:
+                selectionView.setBackground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
+                        TypeRepresentationBase.WARNING_VALUE_COLOR_KEY));
+                break;
+            case INVALID:
+            default:
+                selectionView.setBackground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
+                        TypeRepresentationBase.INVALID_VALUE_COLOR_KEY));
         }
-        tuple.setDataOutdated();
-        tuple.storeCustomParamData();
+    }
 
-
-        if (modelStatus == UserDataModel.Status.VALID) {
-            selectionView.setBackground(defaultColor);
-        } else if (modelStatus == UserDataModel.Status.WARNING) {
-            selectionView.setBackground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
-                    TypeRepresentationBase.WARNING_VALUE_COLOR_KEY));
-        } else if (modelStatus == UserDataModel.Status.INVALID) {
-            selectionView.setBackground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
-                    TypeRepresentationBase.INVALID_VALUE_COLOR_KEY));
-        }
+    @Override
+    public void closeView() {
     }
 }

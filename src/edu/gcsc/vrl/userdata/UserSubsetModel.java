@@ -49,27 +49,31 @@ public class UserSubsetModel extends UserDataModel {
     }
 
     @Override
-    public Status adjustData(UGXFileInfo info) {
-        Status myStatus = Status.INVALID; 
-        
-        if(info != null){
+    public void adjustData(UGXFileInfo info) {
+
+        if (info != null) {
             for (int i = 0; i < info.const__num_subsets(0, 0); ++i) {
                 String newSubset = info.const__subset_name(0, 0, i);
-                
+
                 // in this case we can stay with the old selected subset
-                if(newSubset.equals(data)) {
-                    myStatus = Status.VALID;
-                    setStatus(myStatus);
-                    return myStatus;
+                if (newSubset.equals(data)) {
+                    if (getStatus() != Status.VALID) {
+                        setStatus(Status.WARNING);
+                    }
+                    return;
                 }
             }
 
             // reset data
-            data = "";
-            myStatus = Status.WARNING;
+            if (info.const__num_subsets(0, 0) > 0) {
+                data = info.const__subset_name(0, 0, 0);
+            }
+            else {
+                data = "";
+            }
+            setStatus(Status.WARNING);
+        } else {
+            setStatus(Status.INVALID);
         }
-        
-        setStatus(myStatus);
-        return myStatus;
     }
 }

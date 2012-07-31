@@ -76,7 +76,7 @@ public abstract class UserDataModel implements Serializable {
      * @param info      new file data and its parameters
      * @return          status of data after adaption to file data.
      */
-    public abstract Status adjustData(UGXFileInfo info);
+    public abstract void adjustData(UGXFileInfo info);
 
     /**
      *  creates the user data

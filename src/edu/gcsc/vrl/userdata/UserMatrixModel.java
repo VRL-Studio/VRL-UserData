@@ -79,7 +79,8 @@ public class UserMatrixModel extends UserMathDataModel {
         Status bConsistent = adjustConstDataForDimension(dim);
 
         if (getInputType() == InputType.CONSTANT) {
-            return bConsistent;
+            if(getStatus() == Status.VALID) return bConsistent;
+            else return getStatus();
         } else {
             return Status.VALID;
         }

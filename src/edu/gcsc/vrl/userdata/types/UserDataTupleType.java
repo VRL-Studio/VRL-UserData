@@ -16,6 +16,7 @@ import eu.mihosoft.vrl.reflection.CustomParamData;
 import eu.mihosoft.vrl.reflection.LayoutType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.reflection.VisualCanvas;
+import eu.mihosoft.vrl.visual.MessageType;
 import eu.mihosoft.vrl.visual.VBoxLayout;
 import groovy.lang.Script;
 import java.io.Serializable;
@@ -43,6 +44,8 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
     protected String tag = null;
 
     public UserDataTupleType() {
+        // hide connector 
+        setHideConnector(true);
     }
 
     public void init() {
@@ -96,9 +99,6 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
 
         // add last box
         horizbox.add(box);
-
-        // hide connector 
-        setHideConnector(true);
     }
 
     @Override
@@ -124,10 +124,39 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
 
         for (int i = 0; i < datas.size(); i++) {
             Data data = datas.get(i);
+
             tuple.add(data.model.createUserData());
         }
 
         return tuple;
+    }
+
+    @Override
+    protected void evaluateContract() {
+
+        for (int i = 0; i < datas.size(); i++) {
+            Data data = datas.get(i);
+
+            if (tag != null
+                    && !getMainCanvas().isLoadingSession()
+                    && !getMainCanvas().isSavingSession()) {
+
+                if (data.model.getStatus() == UserDataModel.Status.INVALID) {
+
+                    getMainCanvas().getMessageBox().addMessage("User Data not specified",
+                            "User Data '" + data.name + "' has not been specified correctly. Please make sure to select a valid grid and valid user data parameter.",
+                            getConnector(), MessageType.ERROR);
+
+                    invalidateValue();
+
+                    throw new RuntimeException("User Data error at Data " + i + " (" + data.name + "). Data INVALID.");
+                }
+            }
+
+        }
+
+        super.evaluateContract();
+
     }
 
     @Override
@@ -142,7 +171,7 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
             if (tmpModel != null) {
 
                 data.model.setModel(tmpModel);
-                data.view.updateView(data.model);
+                data.view.adjustView(data.model);
             } else {
 //                throw new RuntimeException("UserDataTupleType:evaluateCustomParamData:"
 //                        + " cannot reaf custom data correctly.");
@@ -261,26 +290,28 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
     @Override
     public void addedToMethodRepresentation() {
         super.addedToMethodRepresentation();
-        
+
         // register at the observable for ugx-file-loads if tag given
         if (tag != null) {
             int id = this.getParentMethod().getParentObject().getObjectID();
-            Object o = ((VisualCanvas)getMainCanvas()).getInspector().getObject(id);
+            Object o = ((VisualCanvas) getMainCanvas()).getInspector().getObject(id);
             int windowID = 0;
             LoadUGXFileObservable.getInstance().addObserver(this, tag, o, windowID);
         }
 
-        storeCustomParamData();        
+        if (!getMainCanvas().isLoadingSession()) {
+            storeCustomParamData();
+        }
     }
 
     @Override
     public void dispose() {
-        //  remove from the observable for ugx-file-loads if tag given
         if (tag != null) {
-            int id = this.getParentMethod().getParentObject().getObjectID();
-            Object o = ((VisualCanvas)getMainCanvas()).getInspector().getObject(id);
-            int windowID = 0;
-            LoadUGXFileObservable.getInstance().deleteObserver(this, tag, o, windowID);
+            LoadUGXFileObservable.getInstance().deleteObserver(this);
+        }
+
+        for (Data theData : datas) {
+            theData.view.closeView();
         }
 
         super.dispose();
@@ -292,8 +323,10 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
         // adjust Data for new FileInfo in model and view
         for (Data theData : datas) {
 
-            UserDataModel.Status modelStatus = theData.model.adjustData(info);
-            theData.view.adjustView(info, modelStatus);
+            theData.model.adjustData(info);
+            theData.view.adjustView(info);
+
+            storeCustomParamData();
         }
     }
 

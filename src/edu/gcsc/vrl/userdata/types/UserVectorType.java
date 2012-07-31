@@ -5,6 +5,7 @@
 package edu.gcsc.vrl.userdata.types;
 
 import edu.gcsc.vrl.ug.api.*;
+import edu.gcsc.vrl.userdata.UserDataTuple;
 import eu.mihosoft.vrl.annotation.TypeInfo;
 import java.io.Serializable;
 
@@ -73,6 +74,7 @@ public class UserVectorType extends UserDataTupleType implements Serializable {
 
     @Override
     public Object getViewValue() {
-        return datas.get(0).model.createUserData();
+        UserDataTuple tuple = (UserDataTuple)super.getViewValue();
+        return tuple.getVectorData(0);
     }
 }

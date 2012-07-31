@@ -15,7 +15,12 @@ public abstract class UserDataView {
     
     public abstract Component getComponent(); 
   
-    public abstract void updateView(UserDataModel theModel);
-    
-    public abstract void adjustView(UGXFileInfo info, UserDataModel.Status modelConsistent);
+    public abstract void adjustView(UserDataModel theModel);
+
+    public abstract void adjustView(UserDataModel.Status status);
+
+    public abstract void adjustView(UGXFileInfo info);
+
+    public abstract void closeView();
+
 }

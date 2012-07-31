@@ -19,16 +19,17 @@ import javax.swing.table.TableModel;
  */
 public abstract class UserMathDataModel extends UserDataModel {
 
-    public enum InputType {
+    public static enum InputType {
 
         SCALAR_CONSTANT,
         CONSTANT,
         CODE
     }
+    
     private static final long serialVersionUID = 1L;
-    private InputType inputType;
-    private int dimension;
-    private String code;
+    protected InputType inputType;
+    protected int dimension;
+    protected String code;
     /**
      * Boolean to differ between normal UserDataModel and an UserDataModel which
      * should represent a Condition, which has no const data and therefore no
@@ -84,10 +85,14 @@ public abstract class UserMathDataModel extends UserDataModel {
         return dimension;
     }
 
+    public void setDimension(int dimension) {
+        this.dimension = dimension;
+    }
+    
     /**
      * @param dimension the dimension to set
      */
-    public Status setDimension(int dim) {
+    public Status setDimensionWithAdjust(int dim) {
         this.dimension = dim;
         return adjustDataForDimension(dim);
     }
@@ -109,15 +114,17 @@ public abstract class UserMathDataModel extends UserDataModel {
     }
 
     @Override
-    public Status adjustData(UGXFileInfo info) {
+    public void adjustData(UGXFileInfo info) {
 
-        Status myStatus = Status.INVALID;
-        if(info != null){
+        if (info != null) {
+            if (getStatus() == Status.INVALID) {
+                setStatus(Status.WARNING);
+            }
             int dim = info.const__grid_world_dimension(0);
-            myStatus = setDimension(dim);
+            setStatus(setDimensionWithAdjust(dim));
+        } else {
+            setStatus(Status.INVALID);
         }
-        setStatus(myStatus);
-        return myStatus;
     }
 
     public abstract Status adjustDataForDimension(int dim);
@@ -128,12 +135,13 @@ public abstract class UserMathDataModel extends UserDataModel {
 
             UserMathDataModel m = (UserMathDataModel) model;
 
-            setData(m.getData());
-            setCode(m.getCode());
-            setDimension(m.getDimension());
+            setDimensionWithAdjust(m.getDimension());
             setInputType(m.getInputType());
             setCondition(m.isCondition());
             setStatus(m.getStatus());
+
+            setData(m.getData());
+            setCode(m.getCode());
 
         } else {
             throw new RuntimeException("UserData could be set from other UserDataModel.");
@@ -166,9 +174,8 @@ public abstract class UserMathDataModel extends UserDataModel {
 
     protected abstract I_IUserData createConstUserData();
 
-    
     public abstract String getToolTipText();
-    
+
     /**
      *
      * @param code that is written in the editor of a UserDataWindow

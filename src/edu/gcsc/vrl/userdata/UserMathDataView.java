@@ -5,8 +5,11 @@
 package edu.gcsc.vrl.userdata;
 
 import edu.gcsc.vrl.ug.api.UGXFileInfo;
+import edu.gcsc.vrl.userdata.UserDataModel.Status;
 import edu.gcsc.vrl.userdata.types.UserDataTupleType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
+import eu.mihosoft.vrl.visual.CanvasActionListener;
+import eu.mihosoft.vrl.visual.CanvasWindow;
 import eu.mihosoft.vrl.visual.VButton;
 import eu.mihosoft.vrl.visual.VSwingUtil;
 import java.awt.Color;
@@ -14,6 +17,8 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  *
@@ -27,6 +32,7 @@ public class UserMathDataView extends UserDataView {
     protected UserDataWindow window = null;
     protected VButton button = null;
     protected Color defaultColor = null;
+    protected Color defaultTextColor = null;
 
     public UserMathDataModel getUserMathDataModel() {
         return model;
@@ -53,6 +59,7 @@ public class UserMathDataView extends UserDataView {
         button = new VButton(name);
         updateToolTipText();
         defaultColor = button.getBackground();
+        defaultTextColor = button.getForeground();
         button.addActionListener(new ActionListener() {
 
             @Override
@@ -62,10 +69,27 @@ public class UserMathDataView extends UserDataView {
 
                     window = new UserDataWindow(UserMathDataView.this);
 
+                    window.getTitleBar().addMouseListener(new MouseAdapter() {
+
+                        @Override
+                        public void mousePressed(MouseEvent e) {
+                            button.setForeground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
+                                    CanvasWindow.UPPER_ACTIVE_TITLE_COLOR_KEY));
+                        }
+
+                        @Override
+                        public void mouseReleased(MouseEvent e) {
+                            button.setForeground(defaultTextColor);
+                        }
+                    });
+
                     tuple.getMainCanvas().addWindow(window);
                 }
 
-                button.setBackground(defaultColor);
+                if (model.getStatus() != UserDataModel.Status.INVALID) {
+                    model.setStatus(Status.VALID);
+                }
+                adjustView(model.getStatus());
 
                 Point loc = VSwingUtil.getAbsPos(tuple);
 
@@ -85,35 +109,52 @@ public class UserMathDataView extends UserDataView {
     }
 
     @Override
-    public void updateView(UserDataModel theModel) {
+    public void adjustView(UserDataModel theModel) {
 
         this.model = (UserMathDataModel) theModel;
+
         updateToolTipText();
+
+        adjustView(model.getStatus());
+
         if (window != null) {
             window.updateWindow(model);
         }
     }
 
     @Override
-    public void adjustView(UGXFileInfo info, UserDataModel.Status modelStatus) {
+    public void adjustView(UGXFileInfo info) {
         if (info != null) {
             if (window != null) {
                 window.updateWindow(model);
             }
         }
 
-        if (modelStatus == UserDataModel.Status.VALID) {
-            button.setBackground(defaultColor);
-        } else if (modelStatus == UserDataModel.Status.WARNING) {
-            button.setBackground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
-                    TypeRepresentationBase.WARNING_VALUE_COLOR_KEY));
-        } else if (modelStatus == UserDataModel.Status.INVALID) {
-            button.setBackground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
-                    TypeRepresentationBase.INVALID_VALUE_COLOR_KEY));
+        adjustView(model.getStatus());
+    }
+
+    @Override
+    public void adjustView(Status status) {
+        switch (status) {
+            case VALID:
+                button.setBackground(defaultColor);
+                break;
+            case WARNING:
+                button.setBackground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
+                        TypeRepresentationBase.WARNING_VALUE_COLOR_KEY));
+                break;
+            case INVALID:
+            default:
+                button.setBackground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
+                        TypeRepresentationBase.INVALID_VALUE_COLOR_KEY));
         }
     }
 
-    void setConsistentStateColor() {
-        button.setBackground(defaultColor);
+    @Override
+    public void closeView() {
+        if (window != null && !window.isDisposed()) {
+            window.close();
+            window = null;
+        }
     }
 }
