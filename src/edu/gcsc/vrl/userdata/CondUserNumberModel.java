@@ -92,7 +92,7 @@ public class CondUserNumberModel extends UserMathDataModel {
 
     @Override
     public Status adjustDataForDimension(int dimension) {
-        return Status.VALID;
+        return getStatus();
         // do nothing
     }
 

@@ -67,7 +67,7 @@ public class UserNumberModel extends UserMathDataModel {
     @Override
     public Status adjustDataForDimension(int dim) {
         // nothing to do
-        return Status.VALID;
+        return getStatus();
     }
 
     @Override
