@@ -99,6 +99,9 @@ public class CondUserNumberModel extends UserMathDataModel {
     @Override
     public String getToolTipText() {
 
-        return getCode();
+        String toolTip = "<html><pre>";
+        toolTip += getCode();
+        toolTip += "</pre><html>";
+        return toolTip;
     }
 }

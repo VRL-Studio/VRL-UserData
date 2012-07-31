@@ -140,7 +140,9 @@ public class UserVectorModel extends UserMathDataModel {
                 toolTip += "</table><html>";
                 break;
             case CODE:
+                toolTip = "<html><pre>";
                 toolTip += getCode();
+                toolTip += "</pre><html>";
                 break;
             default:
                 throw new RuntimeException("UserMathDataView: type not found.");
