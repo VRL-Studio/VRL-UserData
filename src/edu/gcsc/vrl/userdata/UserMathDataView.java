@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.ToolTipManager;
 
 /**
  *
@@ -101,6 +102,32 @@ public class UserMathDataView extends UserDataView {
                 tuple.getMainCanvas().setComponentZOrder(window, 0);
             }
         });
+
+        // tuning tooltip to be shown all the time on mouse-over
+        button.addMouseListener(new MouseAdapter() {
+
+            private int defaultDismissDelay;
+            private int defaultInitialDelay;
+            private int defaultReshowDelay;
+
+            @Override
+            public void mouseEntered(MouseEvent me) {
+                defaultDismissDelay = ToolTipManager.sharedInstance().getDismissDelay();
+                defaultInitialDelay = ToolTipManager.sharedInstance().getInitialDelay();
+                defaultReshowDelay = ToolTipManager.sharedInstance().getReshowDelay();
+                ToolTipManager.sharedInstance().setDismissDelay(60000000);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                ToolTipManager.sharedInstance().setReshowDelay(0);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent me) {
+                ToolTipManager.sharedInstance().setDismissDelay(defaultDismissDelay);
+                ToolTipManager.sharedInstance().setInitialDelay(defaultInitialDelay);
+                ToolTipManager.sharedInstance().setReshowDelay(defaultReshowDelay);
+            }
+        });
+
     }
 
     @Override
