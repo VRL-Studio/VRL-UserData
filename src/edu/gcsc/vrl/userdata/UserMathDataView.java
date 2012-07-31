@@ -130,7 +130,13 @@ public class UserMathDataView extends UserDataView {
             }
         }
 
+        updateToolTipText();
+
         adjustView(model.getStatus());
+
+        if (window != null) {
+            window.updateWindow(model);
+        }
     }
 
     @Override
