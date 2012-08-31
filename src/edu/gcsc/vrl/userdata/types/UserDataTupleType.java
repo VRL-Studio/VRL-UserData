@@ -174,8 +174,10 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
             }
 
         }
-
-        super.evaluateContract();
+        
+        if (isValidValue()) {
+            super.evaluateContract();
+        }
 
     }
 
