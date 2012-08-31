@@ -125,7 +125,10 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
         for (int i = 0; i < datas.size(); i++) {
             Data data = datas.get(i);
 
-            tuple.add(data.model.createUserData());
+            try {
+                tuple.add(data.model.createUserData());
+            } catch (Exception e) {
+            }
         }
 
         return tuple;
@@ -148,8 +151,25 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
                             getConnector(), MessageType.ERROR);
 
                     invalidateValue();
+                }
 
-                    throw new RuntimeException("User Data error at Data " + i + " (" + data.name + "). Data INVALID.");
+                String checkMsg = data.model.checkUserData();
+                if (!checkMsg.isEmpty()) {
+
+                    getMainCanvas().getMessageBox().addMessage("User Data Code invalid",
+                            "User Data '" + data.name + "': " + checkMsg,
+                            getConnector(), MessageType.ERROR);
+
+                    invalidateValue();
+                }
+
+                if (data.model.createUserData() == null) {
+
+                    getMainCanvas().getMessageBox().addMessage("User Data Code invalid",
+                            "User Data '" + data.name + "' has been specified with invalid code.",
+                            getConnector(), MessageType.ERROR);
+
+                    invalidateValue();
                 }
             }
 

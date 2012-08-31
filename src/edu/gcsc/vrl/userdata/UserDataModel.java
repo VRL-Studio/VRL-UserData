@@ -85,6 +85,12 @@ public abstract class UserDataModel implements Serializable {
     public abstract Object createUserData();
 
     /**
+     *  checks if user data can be created
+     * returns empty message if everything ok, error message else
+     */
+    public abstract String checkUserData();
+
+    /**
      * returns if the Data setup (e.g. dimension of data) is triggered externally,
      * e.g. due to some file loading
      * 

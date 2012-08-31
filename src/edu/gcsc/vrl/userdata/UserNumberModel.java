@@ -4,6 +4,7 @@
  */
 package edu.gcsc.vrl.userdata;
 
+import edu.gcsc.vrl.ug.UserDataCompiler;
 import edu.gcsc.vrl.ug.api.ConstUserNumber;
 import edu.gcsc.vrl.ug.api.I_IUserData;
 import edu.gcsc.vrl.ug.api.I_VRLUserNumber;
@@ -78,7 +79,7 @@ public class UserNumberModel extends UserMathDataModel {
         switch (getInputType()) {
             case CONSTANT:
                 toolTip = "<html><table align=\"center\">";
-                    toolTip += data;
+                toolTip += data;
                 toolTip += "</table><html>";
                 break;
             case CODE:
@@ -123,5 +124,28 @@ public class UserNumberModel extends UserMathDataModel {
     @Override
     protected I_IUserData createConstUserData() {
         return new ConstUserNumber(data);
+    }
+
+    @Override
+    public String checkUserData() {
+        if (getInputType() == InputType.CODE) {
+            int type = 0; //means Number, see docu of createCode()
+            int dim = getDimension();
+
+            String codeText = getCode();
+            codeText.trim();
+            if (codeText.isEmpty()) {
+                return "No code specified.";
+            }
+
+            String theCode = createCode(getCode(), dim, type, false);
+            try {
+                UserDataCompiler.compile(theCode, dim);
+            } catch (Exception ex) {
+
+                return "User Data Code (Number) cannot be compiled:<br>" + ex.getMessage();
+            }
+        }
+        return "";
     }
 }

@@ -4,6 +4,7 @@
  */
 package edu.gcsc.vrl.userdata;
 
+import edu.gcsc.vrl.ug.UserDataCompiler;
 import edu.gcsc.vrl.ug.api.ConstUserMatrix1d;
 import edu.gcsc.vrl.ug.api.ConstUserMatrix2d;
 import edu.gcsc.vrl.ug.api.ConstUserMatrix3d;
@@ -79,8 +80,11 @@ public class UserMatrixModel extends UserMathDataModel {
         Status bConsistent = adjustConstDataForDimension(dim);
 
         if (getInputType() == InputType.CONSTANT) {
-            if(getStatus() == Status.VALID) return bConsistent;
-            else return getStatus();
+            if (getStatus() == Status.VALID) {
+                return bConsistent;
+            } else {
+                return getStatus();
+            }
         } else {
             return Status.VALID;
         }
@@ -240,5 +244,29 @@ public class UserMatrixModel extends UserMathDataModel {
         }
 
         return result;
+    }
+
+    @Override
+    public String checkUserData() {
+        if (getInputType() == InputType.CODE) {
+            int type = 2; //means Matrix, see docu of createCode()
+            int dim = getDimension();
+            
+            String codeText = getCode();
+            codeText.trim();
+            if(codeText.isEmpty()){
+                return "No code specified.";
+            }
+            
+            String theCode = createCode(getCode(), dim, type, false);
+            try {
+                UserDataCompiler.compile(theCode, dim);
+            } catch (Exception ex) {
+
+                return "User Data Code (Matrix) cannot be compiled:<br>" + ex.getMessage();
+            }
+        }
+
+        return "";
     }
 }

@@ -76,4 +76,9 @@ public class UserSubsetModel extends UserDataModel {
             setStatus(Status.INVALID);
         }
     }
+
+    @Override
+    public String checkUserData() {
+        return "";
+    }
 }

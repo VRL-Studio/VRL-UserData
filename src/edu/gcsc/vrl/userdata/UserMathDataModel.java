@@ -163,10 +163,6 @@ public abstract class UserMathDataModel extends UserDataModel {
                 break;
         }
 
-        if (result == null) {
-            throw new NullPointerException("No UserData could be created from an UserDataModel.");
-        }
-
         return result;
     }
 

@@ -4,6 +4,7 @@
  */
 package edu.gcsc.vrl.userdata;
 
+import edu.gcsc.vrl.ug.UserDataCompiler;
 import edu.gcsc.vrl.ug.api.ConstUserVector1d;
 import edu.gcsc.vrl.ug.api.ConstUserVector2d;
 import edu.gcsc.vrl.ug.api.ConstUserVector3d;
@@ -14,6 +15,7 @@ import edu.gcsc.vrl.ug.api.VRLUserVector1d;
 import edu.gcsc.vrl.ug.api.VRLUserVector2d;
 import edu.gcsc.vrl.ug.api.VRLUserVector3d;
 import edu.gcsc.vrl.userdata.util.DimensionUtil;
+import eu.mihosoft.vrl.system.VMessage;
 import javax.swing.table.TableModel;
 
 /**
@@ -75,8 +77,11 @@ public class UserVectorModel extends UserMathDataModel {
         Status bConsistent = adjustConstDataForDimension(dim);
 
         if (getInputType() == InputType.CONSTANT) {
-            if(getStatus() == Status.VALID) return bConsistent;
-            else return getStatus();
+            if (getStatus() == Status.VALID) {
+                return bConsistent;
+            } else {
+                return getStatus();
+            }
         } else {
             return Status.VALID;
         }
@@ -206,5 +211,29 @@ public class UserVectorModel extends UserMathDataModel {
         }
 
         return result;
+    }
+
+    @Override
+    public String checkUserData() {
+        if (getInputType() == InputType.CODE) {
+           int type = 1; //means Vector, see docu of createCode()
+            int dim = getDimension();
+
+            String codeText = getCode();
+            codeText.trim();
+            if (codeText.isEmpty()) {
+                return "No code specified.";
+            }
+
+            String theCode = createCode(getCode(), dim, type, false);
+            try {
+                UserDataCompiler.compile(theCode, dim);
+            } catch (Exception ex) {
+
+                return "User Data Code (Vector) cannot be compiled:<br>" + ex.getMessage();
+            }
+        }
+
+        return "";
     }
 }

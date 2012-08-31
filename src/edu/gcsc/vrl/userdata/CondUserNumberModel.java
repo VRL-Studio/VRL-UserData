@@ -4,6 +4,7 @@
  */
 package edu.gcsc.vrl.userdata;
 
+import edu.gcsc.vrl.ug.UserDataCompiler;
 import edu.gcsc.vrl.ug.api.ConstUserNumber;
 import edu.gcsc.vrl.ug.api.I_IUserData;
 import edu.gcsc.vrl.ug.api.I_VRLCondUserNumber;
@@ -103,5 +104,29 @@ public class CondUserNumberModel extends UserMathDataModel {
         toolTip += getCode();
         toolTip += "</pre><html>";
         return toolTip;
+    }
+
+    @Override
+    public String checkUserData() {
+        if (getInputType() == InputType.CODE) {
+            int type = 0; //means Number, see docu of createCode()
+            int dim = getDimension();
+
+            String codeText = getCode();
+            codeText.trim();
+            if (codeText.isEmpty()) {
+                return "No code specified.";
+            }
+
+            String theCode = createCode(getCode(), dim, type, true);
+            try {
+                UserDataCompiler.compile(theCode, dim);
+            } catch (Exception ex) {
+
+                return "User Data Code (Vector) cannot be compiled:<br>" + ex.getMessage();
+            }
+        }
+
+        return "";
     }
 }
