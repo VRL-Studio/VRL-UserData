@@ -52,6 +52,16 @@ public class LoadUGXFileObservable {
     }
 
     /**
+     * Info for global tags, i.e. tags that do listen to all tags with a name,
+     * not depending on the object. The actual data is not stored here, but at 
+     * the concrete tag with object.
+     */
+    private class UGXFileGlobalTag {
+
+        public Collection<LoadUGXFileObserver> observers = new HashSet<LoadUGXFileObserver>();
+    }
+
+    /**
      * Identifier for grid loader strings. If several loaders exist, they are
      * destinguished by tag, objectID and windowID
      */
@@ -69,9 +79,9 @@ public class LoadUGXFileObservable {
         @Override
         public int hashCode() {
             int result = 17;
-            result = 37*result + tag.hashCode(); 
-            result = 37*result + object.hashCode(); 
-            result = 37*result + windowID; 
+            result = 37 * result + tag.hashCode();
+            result = 37 * result + object.hashCode();
+            result = 37 * result + windowID;
             return result;
         }
 
@@ -88,15 +98,15 @@ public class LoadUGXFileObservable {
             }
 
             Identifier rhs = (Identifier) obj;
-            
+
             return (tag.equals(rhs.tag)) && (object == rhs.object) && (windowID == rhs.windowID);
         }
     }
-    
     /**
      * Map storing data and observers associated with a tag
      */
     private transient Map<Identifier, UGXFileTag> tags = new HashMap<Identifier, UGXFileTag>();
+    private transient Map<String, UGXFileGlobalTag> globalTags = new HashMap<String, UGXFileGlobalTag>();
 
     /**
      * returns the file tag info for a tag. If create is set to true a new tag
@@ -123,6 +133,28 @@ public class LoadUGXFileObservable {
     }
 
     /**
+     * returns the file tag info for a tag. If create is set to true a new tag
+     * entry is create, else not. If no tag exists and create is set to false 
+     * null is returned.
+     * 
+     * @param tag       tag name
+     * @param create    flag indicating if tag should be created if it does not exists
+     * @return          file tag info
+     */
+    private synchronized UGXFileGlobalTag getGlobalTag(String tag, boolean create) {
+        if (globalTags.containsKey(tag)) {
+            return globalTags.get(tag);
+        }
+
+        if (create) {
+            globalTags.put(tag, new UGXFileGlobalTag());
+            return getGlobalTag(tag, false);
+        }
+
+        return null;
+    }
+
+    /**
      * Add an observer to this Observable. The observer listens to a tag.
      * The observer will be updated with the current data automatically.
      * 
@@ -132,6 +164,25 @@ public class LoadUGXFileObservable {
     public synchronized void addObserver(LoadUGXFileObserver obs, String tag, Object object, int windowID) {
         getTag(tag, object, windowID, true).observers.add(obs);
         obs.update(getTag(tag, object, windowID, false).data);
+    }
+
+    /**
+     * Add an observer to this Observable. The observer listens to a tag.
+     * The observer will be updated with the current data automatically.
+     * 
+     * @param obs       the observer to add
+     * @param tag       the tag
+     */
+    public synchronized void addObserver(LoadUGXFileObserver obs, String tag) {
+        getGlobalTag(tag, true).observers.add(obs);
+
+        for (Map.Entry<Identifier, UGXFileTag> entry : tags.entrySet()) {
+            if (entry.getKey().tag.equals(tag)) {
+                obs.update(entry.getValue().data);
+            }
+        }
+        // TODO: should we inform the listeners here?!
+        //obs.update(getTag(tag, object, windowID, false).data);
     }
 
     /**
@@ -145,6 +196,9 @@ public class LoadUGXFileObservable {
         if (tags.containsKey(id)) {
             tags.get(id).observers.remove(obs);
         }
+        if (globalTags.containsKey(tag)) {
+            globalTags.get(tag).observers.remove(obs);
+        }
     }
 
     /**
@@ -154,8 +208,11 @@ public class LoadUGXFileObservable {
      * @param tag       the tag
      */
     public synchronized void deleteObserver(LoadUGXFileObserver obs) {
-        
+
         for (Map.Entry<Identifier, UGXFileTag> entry : tags.entrySet()) {
+            entry.getValue().observers.remove(obs);
+        }
+        for (Map.Entry<String, UGXFileGlobalTag> entry : globalTags.entrySet()) {
             entry.getValue().observers.remove(obs);
         }
     }
@@ -170,6 +227,9 @@ public class LoadUGXFileObservable {
         if (tags.containsKey(id)) {
             tags.get(id).observers.clear();
         }
+        for (Map.Entry<String, UGXFileGlobalTag> entry : globalTags.entrySet()) {
+            entry.getValue().observers.clear();
+        }
     }
 
     /**
@@ -182,14 +242,30 @@ public class LoadUGXFileObservable {
         UGXFileTag ugxTag = getTag(tag, object, windowID, false);
 
         // if no such tag present, return (i.e. no observer)
-        if (ugxTag == null) {
-            return;
+        if (ugxTag != null) {
+
+            // notify observers of this tag
+            for (LoadUGXFileObserver b : ugxTag.observers) {
+                b.update(ugxTag.data);
+            }
         }
 
-        // notify observers of this tag
-        for (LoadUGXFileObserver b : ugxTag.observers) {
-            b.update(ugxTag.data);
+        // get data for global tag
+        UGXFileGlobalTag ugxGlobalTag = getGlobalTag(tag, false);
+
+        // if no such tag present, return (i.e. no observer)
+        if (ugxGlobalTag != null) {
+
+            // notify observers of this tag
+            for (LoadUGXFileObserver b : ugxGlobalTag.observers) {
+                if (ugxTag != null) {
+                    b.update(ugxTag.data);
+                } else {
+                    b.update(null);
+                }
+            }
         }
+
     }
 
     /**
@@ -248,14 +324,5 @@ public class LoadUGXFileObservable {
 
         // now we notify the obersver of this tag
         notifyObservers(tag, object, windowID);
-    }
-
-    public synchronized UGXFileInfo getSelectedData(String tag, Object object, int windowID) {
-        UGXFileTag ugxTag = getTag(tag, object, windowID, false);
-        if (ugxTag == null) {
-            return null;
-        } else {
-            return ugxTag.data;
-        }
     }
 }

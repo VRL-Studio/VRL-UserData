@@ -42,6 +42,7 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
     protected ArrayList<Data> datas = new ArrayList<Data>();
     // tag (if triggered externally)
     protected String tag = null;
+    protected String globalTag = null;
 
     public UserDataTupleType() {
         // hide connector 
@@ -74,7 +75,7 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
             data.model = UserDataFactory.createModel(data.category);
 
             // set userdata to external triggering depending on presence of tag
-            if (tag == null) {
+            if (tag == null && globalTag == null) {
                 data.model.setExternTriggered(false);
             } else {
                 data.model.setExternTriggered(true);
@@ -140,7 +141,7 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
         for (int i = 0; i < datas.size(); i++) {
             Data data = datas.get(i);
 
-            if (tag != null
+            if ((tag != null || globalTag != null)
                     && !getMainCanvas().isLoadingSession()
                     && !getMainCanvas().isSavingSession()) {
 
@@ -174,7 +175,7 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
             }
 
         }
-        
+
         if (isValidValue()) {
             super.evaluateContract();
         }
@@ -305,6 +306,22 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
             }
         }
 
+        // read the tag
+        if (getValueOptions() != null) {
+
+            if (getValueOptions().contains("globalTag")) {
+                Object property = script.getProperty("globalTag");
+                if (property != null) {
+                    globalTag = (String) property;
+                }
+            }
+        }
+
+        if (tag != null && globalTag != null) {
+            throw new RuntimeException("UserDataTupleType: simultaneous usage of"
+                    + " 'tag' and 'globalTag' not allowed.");
+        }
+
         // init also the views 
         init();
     }
@@ -321,6 +338,10 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
             LoadUGXFileObservable.getInstance().addObserver(this, tag, o, windowID);
         }
 
+        if (globalTag != null) {
+            LoadUGXFileObservable.getInstance().addObserver(this, globalTag);
+        }
+
         if (!getMainCanvas().isLoadingSession()) {
             storeCustomParamData();
         }
@@ -328,7 +349,7 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
 
     @Override
     public void dispose() {
-        if (tag != null) {
+        if (tag != null || globalTag != null) {
             LoadUGXFileObservable.getInstance().deleteObserver(this);
         }
 
