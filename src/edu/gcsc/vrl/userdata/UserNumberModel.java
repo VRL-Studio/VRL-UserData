@@ -6,6 +6,10 @@ package edu.gcsc.vrl.userdata;
 
 import edu.gcsc.vrl.ug.UserDataCompiler;
 import edu.gcsc.vrl.ug.api.ConstUserNumber;
+import edu.gcsc.vrl.ug.api.ConstUserNumber1d;
+import edu.gcsc.vrl.ug.api.ConstUserNumber2d;
+import edu.gcsc.vrl.ug.api.ConstUserNumber3d;
+import edu.gcsc.vrl.ug.api.I_ConstUserNumber;
 import edu.gcsc.vrl.ug.api.I_IUserData;
 import edu.gcsc.vrl.ug.api.I_VRLUserNumber;
 import edu.gcsc.vrl.ug.api.VRLUserNumber1d;
@@ -123,7 +127,24 @@ public class UserNumberModel extends UserMathDataModel {
 
     @Override
     protected I_IUserData createConstUserData() {
-        return new ConstUserNumber(data);
+        I_ConstUserNumber result = null;
+
+        switch (getDimension()) {
+            case 1:
+                result = new ConstUserNumber1d(data);
+                break;
+            case 2:
+                result = new ConstUserNumber2d(data);
+                break;
+            case 3:
+                result = new ConstUserNumber3d(data);
+                break;
+            default:
+                throw new RuntimeException(this.getClass().getSimpleName()
+                        + ": UserData has invalid dimension!");
+        }
+
+        return result;
     }
 
     @Override

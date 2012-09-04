@@ -274,6 +274,9 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
                 case 's':
                     newData.category = UserDataModel.Category.SUBSET;
                     break;
+                case 'l':
+                    newData.category = UserDataModel.Category.LINKER;
+                    break;
                 case '|':
                     if (datas.size() > 0) {
                         datas.get(datas.size() - 1).separateBehind = true;
