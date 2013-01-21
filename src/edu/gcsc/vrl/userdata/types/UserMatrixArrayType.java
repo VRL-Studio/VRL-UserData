@@ -15,44 +15,9 @@ import java.lang.annotation.Annotation;
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
 @TypeInfo(type = I_UserMatrix[].class, input = true, output = false, style = "array")
-public class UserMatrixArrayType extends ArrayBaseType {
+public class UserMatrixArrayType extends UserDataArrayBaseType {
 
     public UserMatrixArrayType() {
         setValueName("Matrix Array");
-
-        setElementInputInfo(new ParamInfo() {
-
-            @Override
-            public String name() {
-                return "";
-            }
-
-            @Override
-            public String style() {
-                return "default";
-            }
-
-            @Override
-            public boolean nullIsValid() {
-                return false;
-            }
-
-            @Override
-            public String options() {
-                return UserMatrixArrayType.this.getValueOptions();
-            }
-
-            @Override
-            public String typeName() {
-                return I_UserMatrix.class.getName();
-            }
-
-            @Override
-            public Class<? extends Annotation> annotationType() {
-                return null;
-            }
-        });
-
     }
-
 }

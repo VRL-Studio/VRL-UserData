@@ -13,7 +13,7 @@ import eu.mihosoft.vrl.types.ArrayBaseType;
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
 @TypeInfo(type=I_CondUserNumber[].class, input=true, output=false, style="array")
-public class CondUserNumberArrayType extends ArrayBaseType {
+public class CondUserNumberArrayType extends UserDataArrayBaseType {
 
     public CondUserNumberArrayType() {
         setValueName("Array");

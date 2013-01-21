@@ -14,43 +14,10 @@ import java.lang.annotation.Annotation;
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
-@TypeInfo(type=I_UserVector[].class, input=true, output=false, style="array")
-public class UserVectorArrayType extends ArrayBaseType {
+@TypeInfo(type = I_UserVector[].class, input = true, output = false, style = "array")
+public class UserVectorArrayType extends UserDataArrayBaseType {
 
     public UserVectorArrayType() {
-       setValueName("Vector Array");
-
-        setElementInputInfo(new ParamInfo() {
-
-            @Override
-            public String name() {
-                return "";
-            }
-
-            @Override
-            public String style() {
-                return "default";
-            }
-
-            @Override
-            public boolean nullIsValid() {
-                return false;
-            }
-
-            @Override
-            public String options() {
-                return UserVectorArrayType.this.getValueOptions();
-            }
-
-            @Override
-            public String typeName() {
-                return I_UserVector.class.getName();
-            }
-
-            @Override
-            public Class<? extends Annotation> annotationType() {
-                return null;
-            }
-        });
+        setValueName("Vector Array");
     }
 }

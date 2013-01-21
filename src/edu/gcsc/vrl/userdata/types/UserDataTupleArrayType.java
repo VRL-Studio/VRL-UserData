@@ -17,47 +17,14 @@ import java.lang.annotation.Annotation;
  *
  * @author Andreas Vogel <andreas.vogel@gcsc.uni-frankfurt.de>
  */
-@TypeInfo(type=UserDataTuple[].class, input=true, output=false, style="array")
-public class UserDataTupleArrayType extends ArrayBaseType {
+@TypeInfo(type = UserDataTuple[].class, input = true, output = false, style = "array")
+public class UserDataTupleArrayType extends UserDataArrayBaseType {
 
     public UserDataTupleArrayType() {
-       setValueName("Data Tuple Array");
-
-        setElementInputInfo(new ParamInfo() {
-
-            @Override
-            public String name() {
-                return "";
-            }
-
-            @Override
-            public String style() {
-                return "default";
-            }
-
-            @Override
-            public boolean nullIsValid() {
-                return false;
-            }
-
-            @Override
-            public String options() {
-                return UserDataTupleArrayType.this.getValueOptions();
-            }
-
-            @Override
-            public String typeName() {
-                return UserDataTuple.class.getName();
-            }
-
-            @Override
-            public Class<? extends Annotation> annotationType() {
-                return null;
-            }
-        });
+        setValueName("Data Tuple Array");
     }
-    
-        /**
+
+    /**
      * Evaluates the contract, e.g., checks for correct data type or range
      * condition.
      */
@@ -65,9 +32,10 @@ public class UserDataTupleArrayType extends ArrayBaseType {
     protected void evaluateContract() {
         // deactivated contract evaluation to prevent multiple error messages
         // due to null array
-        
-        if (value==null) {
+
+        if (value == null) {
             invalidateValue();
         }
     }
+
 }

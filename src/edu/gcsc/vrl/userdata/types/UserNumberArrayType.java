@@ -15,43 +15,9 @@ import java.lang.annotation.Annotation;
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
 @TypeInfo(type=I_UserNumber[].class, input=true, output=false, style="array")
-public class UserNumberArrayType extends ArrayBaseType {
+public class UserNumberArrayType extends UserDataArrayBaseType {
 
     public UserNumberArrayType() {
         setValueName("Number Array");
-
-        setElementInputInfo(new ParamInfo() {
-
-            @Override
-            public String name() {
-                return "";
-            }
-
-            @Override
-            public String style() {
-                return "default";
-            }
-
-            @Override
-            public boolean nullIsValid() {
-                return false;
-            }
-
-            @Override
-            public String options() {
-                return UserNumberArrayType.this.getValueOptions();
-            }
-
-            @Override
-            public String typeName() {
-                return I_UserNumber.class.getName();
-            }
-
-            @Override
-            public Class<? extends Annotation> annotationType() {
-                return null;
-            }
-        });
-    }
-   
+    }   
 }
