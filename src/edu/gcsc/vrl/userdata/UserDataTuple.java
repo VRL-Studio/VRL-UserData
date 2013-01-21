@@ -7,6 +7,8 @@ package edu.gcsc.vrl.userdata;
 import edu.gcsc.vrl.ug.api.I_UserMatrix;
 import edu.gcsc.vrl.ug.api.I_UserNumber;
 import edu.gcsc.vrl.ug.api.I_UserVector;
+import edu.gcsc.vrl.ug.api.I_VRLUserLinkerNumberNumber;
+import edu.gcsc.vrl.ug.api.VRLUserLinkerNumberNumber;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -89,6 +91,16 @@ public class UserDataTuple implements Serializable {
         } else {
             throw new RuntimeException("UserDataTuple: data stored at position "
                     + i + " is not a UserMatrix, but " + o.getClass().getName());
+        }
+    }
+
+    public I_VRLUserLinkerNumberNumber getDataLinkerNumberNumber(int i) {
+        Object o = getData(i);
+        if (o instanceof I_VRLUserLinkerNumberNumber) {
+            return (I_VRLUserLinkerNumberNumber) o;
+        } else {
+            throw new RuntimeException("UserDataTuple: data stored at position "
+                    + i + " is not a VRLUserLinkerNumberNumber, but " + o.getClass().getName());
         }
     }
 }

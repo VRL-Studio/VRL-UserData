@@ -31,7 +31,8 @@ public abstract class UserDataModel implements Serializable {
         NUMBER,
         VECTOR,
         MATRIX,
-        SUBSET
+        SUBSET,
+        LINKER
     }
     
     protected Status status = Status.WARNING;
