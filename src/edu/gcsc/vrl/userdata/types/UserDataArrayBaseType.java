@@ -15,6 +15,8 @@ import java.lang.annotation.Annotation;
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
 public class UserDataArrayBaseType extends ArrayBaseType {
+    
+    private String elementStyleName = "default";
 
     public UserDataArrayBaseType() {
         setElementInputInfo(null);
@@ -37,7 +39,7 @@ public class UserDataArrayBaseType extends ArrayBaseType {
 
             @Override
             public String style() {
-                return "default";
+                return getElementStyleName();
             }
 
             @Override
@@ -68,5 +70,19 @@ public class UserDataArrayBaseType extends ArrayBaseType {
      */
     protected String getElementTypeName() {
         return super.getType().getComponentType().getName();
+    }
+
+    /**
+     * @return the elementStyleName
+     */
+    public String getElementStyleName() {
+        return elementStyleName;
+    }
+
+    /**
+     * @param elementStyleName the elementStyleName to set
+     */
+    public void setElementStyleName(String elementStyleName) {
+        this.elementStyleName = elementStyleName;
     }
 }

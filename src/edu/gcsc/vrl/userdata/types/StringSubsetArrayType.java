@@ -18,5 +18,6 @@ public class StringSubsetArrayType extends UserDataArrayBaseType {
 
     public StringSubsetArrayType() {
       setValueName("Subset Array");
+      setElementStyleName("ugx-subset-selection");
     }
 }
