@@ -6,7 +6,7 @@ package edu.gcsc.vrl.userdata;
 
 import edu.gcsc.vrl.ug.UserDataCompiler;
 import edu.gcsc.vrl.ug.api.ConstUserNumber;
-import edu.gcsc.vrl.ug.api.I_IUserData;
+import edu.gcsc.vrl.ug.api.I_UserDataInfo;
 import edu.gcsc.vrl.ug.api.I_VRLCondUserNumber;
 import edu.gcsc.vrl.ug.api.VRLCondUserNumber1d;
 import edu.gcsc.vrl.ug.api.VRLCondUserNumber2d;
@@ -31,7 +31,7 @@ public class CondUserNumberModel extends UserMathDataModel {
     }
 
     @Override
-    protected I_IUserData createVRLUserData() {
+    protected I_UserDataInfo createVRLUserData() {
 
         /*
          * TODO: Ask why there is no I_VRLCondUserNumber which has also access
@@ -64,7 +64,7 @@ public class CondUserNumberModel extends UserMathDataModel {
     }
 
     @Override
-    protected I_IUserData createConstUserData() {
+    protected I_UserDataInfo createConstUserData() {
         return new ConstUserNumber((Double) getData());
     }
 

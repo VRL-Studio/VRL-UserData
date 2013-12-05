@@ -9,7 +9,7 @@ import edu.gcsc.vrl.ug.api.ConstUserMatrix1d;
 import edu.gcsc.vrl.ug.api.ConstUserMatrix2d;
 import edu.gcsc.vrl.ug.api.ConstUserMatrix3d;
 import edu.gcsc.vrl.ug.api.I_ConstUserMatrix;
-import edu.gcsc.vrl.ug.api.I_IUserData;
+import edu.gcsc.vrl.ug.api.I_UserDataInfo;
 import edu.gcsc.vrl.ug.api.I_VRLUserMatrix;
 import edu.gcsc.vrl.ug.api.VRLUserMatrix1d;
 import edu.gcsc.vrl.ug.api.VRLUserMatrix2d;
@@ -160,7 +160,7 @@ public class UserMatrixModel extends UserMathDataModel {
     }
 
     @Override
-    protected I_IUserData createVRLUserData() {
+    protected I_UserDataInfo createVRLUserData() {
 
         I_VRLUserMatrix result = null;
 
@@ -218,7 +218,7 @@ public class UserMatrixModel extends UserMathDataModel {
     }
 
     @Override
-    protected I_IUserData createConstUserData() {
+    protected I_UserDataInfo createConstUserData() {
 
         I_ConstUserMatrix result = null;
 

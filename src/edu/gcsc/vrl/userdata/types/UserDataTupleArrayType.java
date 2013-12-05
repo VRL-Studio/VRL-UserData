@@ -5,13 +5,7 @@
 package edu.gcsc.vrl.userdata.types;
 
 import edu.gcsc.vrl.userdata.UserDataTuple;
-import eu.mihosoft.vrl.annotation.ParamInfo;
 import eu.mihosoft.vrl.annotation.TypeInfo;
-import eu.mihosoft.vrl.types.ArrayBaseType;
-import eu.mihosoft.vrl.visual.Connector;
-import eu.mihosoft.vrl.visual.MessageBox;
-import eu.mihosoft.vrl.visual.MessageType;
-import java.lang.annotation.Annotation;
 
 /**
  *

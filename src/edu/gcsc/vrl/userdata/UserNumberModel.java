@@ -10,7 +10,7 @@ import edu.gcsc.vrl.ug.api.ConstUserNumber1d;
 import edu.gcsc.vrl.ug.api.ConstUserNumber2d;
 import edu.gcsc.vrl.ug.api.ConstUserNumber3d;
 import edu.gcsc.vrl.ug.api.I_ConstUserNumber;
-import edu.gcsc.vrl.ug.api.I_IUserData;
+import edu.gcsc.vrl.ug.api.I_UserDataInfo;
 import edu.gcsc.vrl.ug.api.I_VRLUserNumber;
 import edu.gcsc.vrl.ug.api.VRLUserNumber1d;
 import edu.gcsc.vrl.ug.api.VRLUserNumber2d;
@@ -98,7 +98,7 @@ public class UserNumberModel extends UserMathDataModel {
     }
 
     @Override
-    protected I_IUserData createVRLUserData() {
+    protected I_UserDataInfo createVRLUserData() {
 
         int type = 0; //means Number, see docu of createCode()
 
@@ -126,7 +126,7 @@ public class UserNumberModel extends UserMathDataModel {
     }
 
     @Override
-    protected I_IUserData createConstUserData() {
+    protected I_UserDataInfo createConstUserData() {
         I_ConstUserNumber result = null;
 
         switch (getDimension()) {

@@ -7,7 +7,7 @@ package edu.gcsc.vrl.userdata;
 import edu.gcsc.vrl.ug.CondUserDataCompiler;
 import edu.gcsc.vrl.ug.UserData;
 import edu.gcsc.vrl.ug.UserDataCompiler;
-import edu.gcsc.vrl.ug.api.I_IUserData;
+import edu.gcsc.vrl.ug.api.I_UserDataInfo;
 import edu.gcsc.vrl.ug.api.UGXFileInfo;
 import java.util.ArrayList;
 import javax.swing.table.TableModel;
@@ -152,7 +152,7 @@ public abstract class UserMathDataModel extends UserDataModel {
     @Override
     public Object createUserData() {
 
-        I_IUserData result = null;
+        I_UserDataInfo result = null;
 
         switch (getInputType()) {
             case CONSTANT:
@@ -166,9 +166,9 @@ public abstract class UserMathDataModel extends UserDataModel {
         return result;
     }
 
-    protected abstract I_IUserData createVRLUserData();
+    protected abstract I_UserDataInfo createVRLUserData();
 
-    protected abstract I_IUserData createConstUserData();
+    protected abstract I_UserDataInfo createConstUserData();
 
     public abstract String getToolTipText();
 

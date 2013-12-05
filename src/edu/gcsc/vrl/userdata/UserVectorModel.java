@@ -9,7 +9,7 @@ import edu.gcsc.vrl.ug.api.ConstUserVector1d;
 import edu.gcsc.vrl.ug.api.ConstUserVector2d;
 import edu.gcsc.vrl.ug.api.ConstUserVector3d;
 import edu.gcsc.vrl.ug.api.I_ConstUserVector;
-import edu.gcsc.vrl.ug.api.I_IUserData;
+import edu.gcsc.vrl.ug.api.I_UserDataInfo;
 import edu.gcsc.vrl.ug.api.I_VRLUserVector;
 import edu.gcsc.vrl.ug.api.VRLUserVector1d;
 import edu.gcsc.vrl.ug.api.VRLUserVector2d;
@@ -156,7 +156,7 @@ public class UserVectorModel extends UserMathDataModel {
     }
 
     @Override
-    protected I_IUserData createVRLUserData() {
+    protected I_UserDataInfo createVRLUserData() {
 
         I_VRLUserVector result = null;
 
@@ -185,7 +185,7 @@ public class UserVectorModel extends UserMathDataModel {
     }
 
     @Override
-    protected I_IUserData createConstUserData() {
+    protected I_UserDataInfo createConstUserData() {
 
         I_ConstUserVector result = null;
 
