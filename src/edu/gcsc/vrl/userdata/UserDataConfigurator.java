@@ -9,6 +9,8 @@ import edu.gcsc.vrl.userdata.types.UserDataTupleArrayType;
 import edu.gcsc.vrl.userdata.types.CondUserNumberType;
 import edu.gcsc.vrl.userdata.types.UserMatrixType;
 import edu.gcsc.vrl.userdata.types.CondUserNumberArrayType;
+import edu.gcsc.vrl.userdata.types.FunctionDefinitionArrayType;
+import edu.gcsc.vrl.userdata.types.FunctionDefinitionType;
 import edu.gcsc.vrl.userdata.types.LoadUGXFileType;
 import edu.gcsc.vrl.userdata.types.StringSubsetArrayType;
 import edu.gcsc.vrl.userdata.types.StringSubsetType;
@@ -57,7 +59,9 @@ public class UserDataConfigurator extends VPluginConfigurator {
             
             vapi.addTypeRepresentation( StringSubsetType.class);
             vapi.addTypeRepresentation( StringSubsetArrayType.class);
-
+            
+            vapi.addTypeRepresentation( FunctionDefinitionType.class);
+            vapi.addTypeRepresentation( FunctionDefinitionArrayType.class);
 
             vapi.addTypeRepresentation( UserDataTupleType.class);
             vapi.addTypeRepresentation( UserNumberType.class);

@@ -5,6 +5,8 @@
 package edu.gcsc.vrl.userdata.types;
 
 import edu.gcsc.vrl.ug.api.UGXFileInfo;
+import edu.gcsc.vrl.userdata.FunctionDefinitionObservable;
+import edu.gcsc.vrl.userdata.FunctionDefinitionObserver;
 import edu.gcsc.vrl.userdata.LoadUGXFileObservable;
 import edu.gcsc.vrl.userdata.LoadUGXFileObserver;
 import edu.gcsc.vrl.userdata.UserDataFactory;
@@ -21,6 +23,7 @@ import eu.mihosoft.vrl.visual.VBoxLayout;
 import groovy.lang.Script;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.Box;
 
 /**
@@ -28,7 +31,7 @@ import javax.swing.Box;
  * @author Andreas Vogel <andreas.vogel@gcsc.uni-frankfurt.de>
  */
 @TypeInfo(type = UserDataTuple.class, input = true, output = false, style = "default")
-public class UserDataTupleType extends TypeRepresentationBase implements Serializable, LoadUGXFileObserver {
+public class UserDataTupleType extends TypeRepresentationBase implements Serializable, LoadUGXFileObserver, FunctionDefinitionObserver {
 
     protected static class Data {
 
@@ -40,9 +43,10 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
     }
     // list of userdata
     protected ArrayList<Data> datas = new ArrayList<Data>();
-    // tag (if triggered externally)
-    protected String tag = null;
-    protected String globalTag = null;
+    // ugx_tag, fct_tag (if triggered externally)
+    protected String ugx_tag = null;
+    protected String ugx_globalTag = null;
+    protected String fct_tag = null;
 
     public UserDataTupleType() {
         // hide connector 
@@ -74,8 +78,8 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
             // create new model
             data.model = UserDataFactory.createModel(data.category);
 
-            // set userdata to external triggering depending on presence of tag
-            if (tag == null && globalTag == null) {
+            // set userdata to external triggering depending on presence of ugx_tag
+            if (ugx_tag == null && ugx_globalTag == null && fct_tag == null) {
                 data.model.setExternTriggered(false);
             } else {
                 data.model.setExternTriggered(true);
@@ -141,7 +145,7 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
         for (int i = 0; i < datas.size(); i++) {
             Data data = datas.get(i);
 
-            if ((tag != null || globalTag != null)
+            if ((ugx_tag != null || ugx_globalTag != null || fct_tag != null)
                     && !getMainCanvas().isLoadingSession()
                     && !getMainCanvas().isSavingSession()) {
 
@@ -197,7 +201,7 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
                 data.view.adjustView(data.model);
             } else {
 //                throw new RuntimeException("UserDataTupleType:evaluateCustomParamData:"
-//                        + " cannot reaf custom data correctly.");
+//                        + " cannot read custom data correctly.");
             }
         }
 
@@ -247,8 +251,7 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
         if (twoParts.length != 2) {
             throw new RuntimeException("UserDataTupleType: wrong format in 'type'.");
         }
-
-        twoParts[0].trim();
+        twoParts[0] = twoParts[0].trim();
         String[] nameArray = twoParts[1].split(",");
 
         // parse category and name
@@ -274,6 +277,9 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
                 case 's':
                     newData.category = UserDataModel.Category.SUBSET;
                     break;
+                case 'f':
+                    newData.category = UserDataModel.Category.FUNCTION;
+                    break;
                 case 'l':
                     newData.category = UserDataModel.Category.LINKER;
                     break;
@@ -298,31 +304,39 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
                     + "not match number of names.");
         }
 
-        // read the tag
+        // read the ugx_tag
         if (getValueOptions() != null) {
 
-            if (getValueOptions().contains("tag")) {
-                Object property = script.getProperty("tag");
+            if (getValueOptions().contains("ugx_tag")) {
+                Object property = script.getProperty("ugx_tag");
                 if (property != null) {
-                    tag = (String) property;
+                    ugx_tag = (String) property;
                 }
             }
         }
 
-        // read the tag
+        // read the ugx_tag
         if (getValueOptions() != null) {
 
-            if (getValueOptions().contains("globalTag")) {
-                Object property = script.getProperty("globalTag");
+            if (getValueOptions().contains("ugx_globalTag")) {
+                Object property = script.getProperty("ugx_globalTag");
                 if (property != null) {
-                    globalTag = (String) property;
+                    ugx_globalTag = (String) property;
                 }
             }
         }
+        
+        // read the fct_tag
+        if (getValueOptions() != null && getValueOptions().contains("fct_tag"))
+        {
+            Object property = script.getProperty("fct_tag");
+            if (property != null) fct_tag = (String) property;
+        }
 
-        if (tag != null && globalTag != null) {
+        // prohibit ugx_tag and ugx_globalTag together
+        if (ugx_tag != null && ugx_globalTag != null) {
             throw new RuntimeException("UserDataTupleType: simultaneous usage of"
-                    + " 'tag' and 'globalTag' not allowed.");
+                    + " 'ugx_tag' and 'ugx_globalTag' not allowed.");
         }
 
         // init also the views 
@@ -333,16 +347,25 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
     public void addedToMethodRepresentation() {
         super.addedToMethodRepresentation();
 
-        // register at the observable for ugx-file-loads if tag given
-        if (tag != null) {
+        // register at the observable for ugx-file-loads if ugx_tag given
+        if (ugx_tag != null) {
             int id = this.getParentMethod().getParentObject().getObjectID();
             Object o = ((VisualCanvas) getMainCanvas()).getInspector().getObject(id);
             int windowID = 0;
-            LoadUGXFileObservable.getInstance().addObserver(this, tag, o, windowID);
+            LoadUGXFileObservable.getInstance().addObserver(this, ugx_tag, o, windowID);
         }
 
-        if (globalTag != null) {
-            LoadUGXFileObservable.getInstance().addObserver(this, globalTag);
+        if (ugx_globalTag != null) {
+            LoadUGXFileObservable.getInstance().addObserver(this, ugx_globalTag);
+        }
+        
+        // register at the observable for function definition if fct_tag given
+        if (fct_tag != null)
+        {
+            int id = this.getParentMethod().getParentObject().getObjectID();
+            Object o = ((VisualCanvas) getMainCanvas()).getInspector().getObject(id);
+            int windowID = 0;
+            FunctionDefinitionObservable.getInstance().addObserver(this, fct_tag, o, windowID);
         }
 
         if (!getMainCanvas().isLoadingSession()) {
@@ -352,9 +375,12 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
 
     @Override
     public void dispose() {
-        if (tag != null || globalTag != null) {
+        if (ugx_tag != null || ugx_globalTag != null) {
             LoadUGXFileObservable.getInstance().deleteObserver(this);
         }
+        
+        if (fct_tag != null)
+            FunctionDefinitionObservable.getInstance().deleteObserver(this);
 
         for (Data theData : datas) {
             theData.view.closeView();
@@ -363,22 +389,44 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
         super.dispose();
     }
 
+    // inherited from LoadUGXFileObserver
     @Override
     public void update(UGXFileInfo info) {
 
         // adjust Data for new FileInfo in model and view
         for (Data theData : datas) {
-
-            theData.model.adjustData(info);
-            theData.view.adjustView(info);
-
+            
+            if (/*theData.category != UserDataModel.Category.SUBSET
+                &&*/ theData.category != UserDataModel.Category.FUNCTION)
+            {   
+                theData.model.adjustData(info);
+                theData.view.adjustView(info);
+            }
+            
             storeCustomParamData();
         }
     }
-
+    
+    // inherited from FunctionDefinitionObserver
+    @Override
+    public void update(List<FunctionDefinitionObservable.FctData> newData)
+    {
+        // adjust data for new FileInfo in model and view
+        for (Data theData : datas)
+        {
+            if (/*theData.category == UserDataModel.Category.SUBSET
+                || */theData.category == UserDataModel.Category.FUNCTION)
+            {
+                theData.model.adjustData(newData);
+                theData.view.adjustView(newData);
+            }
+            storeCustomParamData();
+        }
+    }
+    
     @Override
     public String getValueAsCode() {
-        // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
+        // TODO this is only to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
         return "null as " + getType().getName();
     }
 }

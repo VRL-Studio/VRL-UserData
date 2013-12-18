@@ -12,11 +12,13 @@ import eu.mihosoft.vrl.visual.MessageType;
 import eu.mihosoft.vrl.visual.VBoxLayout;
 import eu.mihosoft.vrl.visual.VTextField;
 import groovy.lang.Script;
+import static java.awt.Component.LEFT_ALIGNMENT;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
+import javax.swing.Box;
 
 import javax.swing.JButton;
 import javax.swing.JTextField;
@@ -32,8 +34,8 @@ public class LoadUGXFileType extends TypeRepresentationBase {
     private VTextField input;
     /// filter to restrict to ugx file
     private VFileFilter fileFilter = new VFileFilter();
-    /// the current tag
-    private String tag = null;
+    /// the current ugx_tag
+    private String ugx_tag = null;
 
     /**
      * Constructor.
@@ -44,12 +46,17 @@ public class LoadUGXFileType extends TypeRepresentationBase {
         VBoxLayout layout = new VBoxLayout(this, VBoxLayout.Y_AXIS);
         setLayout(layout);
         setLayoutType(LayoutType.STATIC);
-
+        
         // set the name label
         nameLabel.setText("File Name (*.ugx):");
         nameLabel.setAlignmentX(0.0f);
         add(nameLabel);
-
+        
+        // elements are horizontally aligned
+        Box horizBox = Box.createHorizontalBox();
+        horizBox.setAlignmentX(LEFT_ALIGNMENT);
+        add(horizBox);
+        
         // create input field
         input = new VTextField(this, "");
         input.setHorizontalAlignment(JTextField.RIGHT);
@@ -68,7 +75,7 @@ public class LoadUGXFileType extends TypeRepresentationBase {
                 setViewValue(new File(input.getText()));
             }
         });
-        add(input);
+        horizBox.add(input);
 
         // hide connector, since no external data allowed
         setHideConnector(true);
@@ -106,7 +113,7 @@ public class LoadUGXFileType extends TypeRepresentationBase {
             }
         });
 
-        add(button);
+        horizBox.add(button);
     }
 
     @Override
@@ -116,6 +123,7 @@ public class LoadUGXFileType extends TypeRepresentationBase {
             input.setCaretPosition(input.getText().length());
             input.setToolTipText(input.getText());
             input.setHorizontalAlignment(JTextField.RIGHT);
+            //TODO: reset width according to file name
         }
         //  Here we inform the Singleton, that the file has been scheduled
         notifyLoadUGXFileObservable();
@@ -140,18 +148,18 @@ public class LoadUGXFileType extends TypeRepresentationBase {
 
         if (getValueOptions() != null) {
 
-            if (getValueOptions().contains("tag")) {
-                property = script.getProperty("tag");
+            if (getValueOptions().contains("ugx_tag")) {
+                property = script.getProperty("ugx_tag");
             }
 
             if (property != null) {
-                tag = (String) property;
+                ugx_tag = (String) property;
             }
         }
 
-        if (tag == null) {
+        if (ugx_tag == null) {
             getMainCanvas().getMessageBox().addMessage("Invalid ParamInfo option",
-                    "ParamInfo for ugx-subset-selection requires tag in options",
+                    "ParamInfo for ugx-subset-selection requires ugx_tag in options",
                     getConnector(), MessageType.ERROR);
         }
 
@@ -161,7 +169,7 @@ public class LoadUGXFileType extends TypeRepresentationBase {
     public void addedToMethodRepresentation() {
         super.addedToMethodRepresentation();
 
-        // register at Observable using tag
+        // register at Observable using ugx_tag
         notifyLoadUGXFileObservable();
     }
 
@@ -171,16 +179,16 @@ public class LoadUGXFileType extends TypeRepresentationBase {
         Object o = ((VisualCanvas) getMainCanvas()).getInspector().getObject(id);
         int windowID = 0;
 
-        //  Here we inform the Singleton, that the file no scheduled
+        //  Here we inform the Singleton, that the file has been scheduled
         if (!file.getAbsolutePath().isEmpty() && file.isFile()) {
-            String msg = LoadUGXFileObservable.getInstance().setSelectedFile(file, tag, o, windowID);
+            String msg = LoadUGXFileObservable.getInstance().setSelectedFile(file, ugx_tag, o, windowID);
             if (!msg.isEmpty() && !getMainCanvas().isLoadingSession()) {
                 getMainCanvas().getMessageBox().addMessage("Invalid ugx-File",
                         msg, getConnector(), MessageType.ERROR);
             }
 
         } else {
-            LoadUGXFileObservable.getInstance().setInvalidFile(tag, o, windowID);
+            LoadUGXFileObservable.getInstance().setInvalidFile(ugx_tag, o, windowID);
             if (!input.getText().isEmpty() && !getMainCanvas().isLoadingSession()) {
                 getMainCanvas().getMessageBox().addMessage("Invalid ugx-File",
                         "Specified filename invalid: " + file.toString(),

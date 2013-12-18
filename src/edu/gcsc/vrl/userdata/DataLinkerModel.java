@@ -84,7 +84,7 @@ public abstract class DataLinkerModel extends UserDataModel {
     
 
     @Override
-    public void adjustData(UGXFileInfo info) {
+    public void adjustData(Object info) {
 
         if (info != null) {
             if (getStatus() == Status.INVALID) {

@@ -19,7 +19,7 @@ public abstract class UserDataView {
 
     public abstract void adjustView(UserDataModel.Status status);
 
-    public abstract void adjustView(UGXFileInfo info);
+    public abstract void adjustView(Object data);
 
     public abstract void closeView();
 

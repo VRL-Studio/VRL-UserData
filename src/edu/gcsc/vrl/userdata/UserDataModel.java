@@ -4,7 +4,6 @@
  */
 package edu.gcsc.vrl.userdata;
 
-import edu.gcsc.vrl.ug.api.UGXFileInfo;
 import java.io.Serializable;
 
 /**
@@ -32,6 +31,7 @@ public abstract class UserDataModel implements Serializable {
         VECTOR,
         MATRIX,
         SUBSET,
+        FUNCTION,
         LINKER
     }
     
@@ -74,10 +74,9 @@ public abstract class UserDataModel implements Serializable {
      * Adjusts data for new DataInfo (e.g. for new dimension) and returns in 
      * with state the data is after modification to new Info.
      * 
-     * @param info      new file data and its parameters
-     * @return          status of data after adaption to file data.
+     * @param data      new data
      */
-    public abstract void adjustData(UGXFileInfo info);
+    public abstract void adjustData(Object data);
 
     /**
      *  creates the user data

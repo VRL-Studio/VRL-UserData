@@ -128,14 +128,17 @@ public class UserSubsetView extends UserDataView {
     }
 
     @Override
-    public void adjustView(UGXFileInfo info) {
+    public void adjustView(Object info) {
+        
         internalAdjustment = true;
 
         selectionView.removeAllItems();
         if (info != null) {
-
-            for (int i = 0; i < info.const__num_subsets(0, 0); ++i) {
-                selectionView.addItem(info.const__subset_name(0, 0, i));
+            if (!(info instanceof UGXFileInfo))
+                throw new RuntimeException("DataLinkerView: Passed data is not of required type UGXFileInfo.");
+        
+            for (int i = 0; i < ((UGXFileInfo)info).const__num_subsets(0, 0); ++i) {
+                selectionView.addItem(((UGXFileInfo)info).const__subset_name(0, 0, i));
             }
 
             if (model != null) {

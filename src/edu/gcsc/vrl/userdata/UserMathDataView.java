@@ -150,7 +150,7 @@ public class UserMathDataView extends UserDataView {
     }
 
     @Override
-    public void adjustView(UGXFileInfo info) {
+    public void adjustView(Object info) {
         if (info != null) {
             if (window != null) {
                 window.updateWindow(model);

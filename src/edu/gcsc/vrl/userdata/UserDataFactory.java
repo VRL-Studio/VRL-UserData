@@ -30,6 +30,9 @@ public class UserDataFactory {
             case SUBSET:
                 model = new UserSubsetModel();
                 break;
+            case FUNCTION:
+                model = new UserFunctionModel();
+                break;
             case LINKER:
                 model = new DataLinkerModelNumberNumber();
                 break;
@@ -53,6 +56,9 @@ public class UserDataFactory {
                 break;
             case SUBSET:
                 view = new UserSubsetView(name, model, tuple);
+                break;
+            case FUNCTION:
+                view = new UserFunctionView(name, model, tuple);
                 break;
             case LINKER:
                 view = new DataLinkerView(name, model, tuple);

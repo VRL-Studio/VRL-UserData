@@ -49,11 +49,14 @@ public class UserSubsetModel extends UserDataModel {
     }
 
     @Override
-    public void adjustData(UGXFileInfo info) {
+    public void adjustData(Object info) {
 
         if (info != null) {
-            for (int i = 0; i < info.const__num_subsets(0, 0); ++i) {
-                String newSubset = info.const__subset_name(0, 0, i);
+            if (!(info instanceof UGXFileInfo))
+                throw new RuntimeException("UserSubsetModel: Passed data is not of required type UGXFileInfo.");
+        
+            for (int i = 0; i < ((UGXFileInfo)info).const__num_subsets(0, 0); ++i) {
+                String newSubset = ((UGXFileInfo)info).const__subset_name(0, 0, i);
 
                 // in this case we can stay with the old selected subset
                 if (newSubset.equals(data)) {
@@ -65,8 +68,8 @@ public class UserSubsetModel extends UserDataModel {
             }
 
             // reset data
-            if (info.const__num_subsets(0, 0) > 0) {
-                data = info.const__subset_name(0, 0, 0);
+            if (((UGXFileInfo)info).const__num_subsets(0, 0) > 0) {
+                data = ((UGXFileInfo)info).const__subset_name(0, 0, 0);
             }
             else {
                 data = "";

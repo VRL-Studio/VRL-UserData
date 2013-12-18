@@ -114,13 +114,16 @@ public abstract class UserMathDataModel extends UserDataModel {
     }
 
     @Override
-    public void adjustData(UGXFileInfo info) {
-
+    public void adjustData(Object info) {
+        
         if (info != null) {
+            if (!(info instanceof UGXFileInfo))
+                throw new RuntimeException("UserMathDataModel: Passed data is not of required type UGXFileInfo.");
+        
             if (getStatus() == Status.INVALID) {
                 setStatus(Status.WARNING);
             }
-            int dim = info.const__grid_world_dimension(0);
+            int dim = ((UGXFileInfo)info).const__grid_world_dimension(0);
             setStatus(setDimensionWithAdjust(dim));
         } else {
             setStatus(Status.INVALID);
