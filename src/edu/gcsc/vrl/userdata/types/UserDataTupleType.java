@@ -5,14 +5,17 @@
 package edu.gcsc.vrl.userdata.types;
 
 import edu.gcsc.vrl.ug.api.UGXFileInfo;
-import edu.gcsc.vrl.userdata.FunctionDefinitionObservable;
-import edu.gcsc.vrl.userdata.FunctionDefinitionObserver;
+import edu.gcsc.vrl.userdata.FunctionSubsetCoordinator;
+import edu.gcsc.vrl.userdata.FunctionSubsetCoordinatorFunctionObserver;
+import edu.gcsc.vrl.userdata.FunctionSubsetCoordinatorSubsetObserver;
 import edu.gcsc.vrl.userdata.LoadUGXFileObservable;
 import edu.gcsc.vrl.userdata.LoadUGXFileObserver;
 import edu.gcsc.vrl.userdata.UserDataFactory;
 import edu.gcsc.vrl.userdata.UserDataModel;
 import edu.gcsc.vrl.userdata.UserDataTuple;
 import edu.gcsc.vrl.userdata.UserDataView;
+import edu.gcsc.vrl.userdata.UserDependentSubsetModel;
+import edu.gcsc.vrl.userdata.UserDependentSubsetView;
 import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.reflection.CustomParamData;
 import eu.mihosoft.vrl.reflection.LayoutType;
@@ -31,7 +34,7 @@ import javax.swing.Box;
  * @author Andreas Vogel <andreas.vogel@gcsc.uni-frankfurt.de>
  */
 @TypeInfo(type = UserDataTuple.class, input = true, output = false, style = "default")
-public class UserDataTupleType extends TypeRepresentationBase implements Serializable, LoadUGXFileObserver, FunctionDefinitionObserver {
+public class UserDataTupleType extends TypeRepresentationBase implements Serializable, LoadUGXFileObserver, FunctionSubsetCoordinatorFunctionObserver, FunctionSubsetCoordinatorSubsetObserver {
 
     protected static class Data {
 
@@ -47,10 +50,18 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
     protected String ugx_tag = null;
     protected String ugx_globalTag = null;
     protected String fct_tag = null;
+    
+    // store position in array of UserDataTuples
+    // requested at FunctionSubsetCoordinator
+    int fctObserverIndex;
+    int ssObserverIndex;
 
     public UserDataTupleType() {
         // hide connector 
         setHideConnector(true);
+        
+        fctObserverIndex = -1;
+        ssObserverIndex = -1;
     }
 
     public void init() {
@@ -277,8 +288,8 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
                 case 's':
                     newData.category = UserDataModel.Category.SUBSET;
                     break;
-                case 'f':
-                    newData.category = UserDataModel.Category.FUNCTION;
+                case 'S':
+                    newData.category = UserDataModel.Category.DEPENDENT_SUBSET;
                     break;
                 case 'l':
                     newData.category = UserDataModel.Category.LINKER;
@@ -359,13 +370,14 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
             LoadUGXFileObservable.getInstance().addObserver(this, ugx_globalTag);
         }
         
-        // register at the observable for function definition if fct_tag given
+        // register at the FunctionSubsetCoordinator if fct_tag given
         if (fct_tag != null)
         {
             int id = this.getParentMethod().getParentObject().getObjectID();
             Object o = ((VisualCanvas) getMainCanvas()).getInspector().getObject(id);
             int windowID = 0;
-            FunctionDefinitionObservable.getInstance().addObserver(this, fct_tag, o, windowID);
+            fctObserverIndex = FunctionSubsetCoordinator.getInstance().requestFunctionIndex(this, fct_tag, o, windowID);
+            ssObserverIndex = FunctionSubsetCoordinator.getInstance().requestSubsetIndex(this, fct_tag, o, windowID);
         }
 
         if (!getMainCanvas().isLoadingSession()) {
@@ -380,7 +392,14 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
         }
         
         if (fct_tag != null)
-            FunctionDefinitionObservable.getInstance().deleteObserver(this);
+        {
+            int id = this.getParentMethod().getParentObject().getObjectID();
+            Object o = ((VisualCanvas) getMainCanvas()).getInspector().getObject(id);
+            int windowID = 0;
+            
+            FunctionSubsetCoordinator.getInstance().revokeFunctionIndex(fct_tag, o, windowID, fctObserverIndex);
+            FunctionSubsetCoordinator.getInstance().revokeSubsetIndex(fct_tag, o, windowID, ssObserverIndex);
+        }
 
         for (Data theData : datas) {
             theData.view.closeView();
@@ -396,8 +415,10 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
         // adjust Data for new FileInfo in model and view
         for (Data theData : datas) {
             
-            if (/*theData.category != UserDataModel.Category.SUBSET
-                &&*/ theData.category != UserDataModel.Category.FUNCTION)
+            // bit of a hack to incorporate DEPENDENT_SUBSET into UserDataTuple;
+            // it is necessary to exclude this case here, because its update
+            // method does not expect a UGXFileInfo!
+            if (theData.category != UserDataModel.Category.DEPENDENT_SUBSET)
             {   
                 theData.model.adjustData(info);
                 theData.view.adjustView(info);
@@ -407,22 +428,69 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
         }
     }
     
-    // inherited from FunctionDefinitionObserver
+    
+    // Implementation of FunctionSubsetCoordinatorFunctionObserver
     @Override
-    public void update(List<FunctionDefinitionObservable.FctData> newData)
+    public void updateFunctions(List<String> fctData)
     {
-        // adjust data for new FileInfo in model and view
         for (Data theData : datas)
         {
-            if (/*theData.category == UserDataModel.Category.SUBSET
-                || */theData.category == UserDataModel.Category.FUNCTION)
+            // only for DEPENDENT_SUBSET!
+            if (theData.category == UserDataModel.Category.DEPENDENT_SUBSET)
             {
-                theData.model.adjustData(newData);
-                theData.view.adjustView(newData);
+                ((UserDependentSubsetModel)theData.model).adjustFunctionData(fctData);
+                ((UserDependentSubsetView)theData.view).adjustFunctionView(fctData);
             }
+            
             storeCustomParamData();
         }
     }
+
+    @Override
+    public int getSelectedFunction()
+    {
+        // forward this
+        for (Data theData : datas)
+        {
+            // only for DEPENDENT_SUBSET!
+            if (theData.category == UserDataModel.Category.DEPENDENT_SUBSET)
+                return ((UserDependentSubsetModel)theData.model).getSelectedFunctionIndex();
+        }
+        
+        throw new RuntimeException("UserDataTupleType: A selected function has been "
+            + "requested from a FunctionSubsetCoordinatorFunctionObserver, but no "
+            + "UserDependentSubsetModel exists in this tuple!");
+    }
+    
+    public void notifySubsetObserver()
+    {
+        int id = this.getParentMethod().getParentObject().getObjectID();
+        Object o = ((VisualCanvas) getMainCanvas()).getInspector().getObject(id);
+        int windowID = 0;
+            
+        FunctionSubsetCoordinator.getInstance().notifySubsetObserver(fctObserverIndex, fct_tag, o, windowID);
+    }
+    
+    // Implementation of FunctionSubsetCoordinatorSubsetObserver
+    @Override
+    public void updateSubsets(List<String> ssData)
+    {
+        for (Data theData : datas)
+        {
+            // only for DEPENDENT_SUBSET!
+            if (theData.category == UserDataModel.Category.DEPENDENT_SUBSET)
+            {
+                ((UserDependentSubsetModel)theData.model).adjustSubsetData(ssData);
+                ((UserDependentSubsetView)theData.view).adjustSubsetView(ssData);
+            }
+            
+            storeCustomParamData();
+        }
+    }
+
+    
+    
+    
     
     @Override
     public String getValueAsCode() {
