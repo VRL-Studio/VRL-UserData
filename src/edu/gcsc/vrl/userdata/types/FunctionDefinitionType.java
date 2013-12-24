@@ -92,7 +92,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
             @Override
             public void keyReleased(KeyEvent e)
             {
-                if (subsetList.getSelectedIndices() != null && fctNameField.getText() != null)
+                if (subsetList.getSelectedIndices() != null && fctNameField.getText() != null && !fctNameField.getText().equals(""))
                 {
                     // construct selectedValuesList by hand since 
                     // getSelectedValuesList() depends on 1.7 and may raise an exception
@@ -135,7 +135,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
             @Override
             public void valueChanged(ListSelectionEvent e)
             {
-                if (subsetList.getSelectedIndices() != null && fctNameField.getText() != null)
+                if (subsetList.getSelectedIndices() != null && fctNameField.getText() != null && !fctNameField.getText().equals(""))
                 {
                     // construct selectedValuesList by hand since 
                     // getSelectedValuesList() depends on 1.7 and may raise an exception
@@ -314,10 +314,10 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
                 subsetListModel.addElement(((UGXFileInfo)info).const__subset_name(0, 0, i));
 
             // reset fctData
-            fctData.subsetList = null;
+            if (fctData != null) fctData.subsetList = null;
 
             // reset view in subset list
-            subsetList.setSelectedIndex(subsetList.getMaxSelectionIndex()+1);
+            subsetList.clearSelection();
             
             /* this is more complicated, maybe later
             for (int i = 0; i < ((UGXFileInfo)info).const__num_subsets(0, 0); ++i)

@@ -52,10 +52,10 @@ public class FunctionDefinitionObservable
      */
     public static class FctData
     {
-        public FctData(String fn, List<String> ssi)
+        public FctData(String fn, List<String> ss)
         {
             fctName = fn;
-            subsetList = new ArrayList<String>(ssi);
+            subsetList = new ArrayList<String>(ss);
         }
         private FctData()
         {
@@ -267,7 +267,7 @@ public class FunctionDefinitionObservable
         // set the data
         FctTagData fctTagData = getTag(fct_tag, object, windowID, true);
         fctTagData.data.set(arrayIndex, data);
-
+        
         // notify the obersvers of this fct_tag
         notifyObservers(fct_tag, object, windowID);
     }

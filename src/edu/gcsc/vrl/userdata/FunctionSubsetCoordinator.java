@@ -186,7 +186,7 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
         
         // get access to FunctionDefinitionObservable and find subsets for this function
         List<String> subsets;
-        if (selFctIndex > 0)
+        if (selFctIndex >= 0)
         {
             subsets = FunctionDefinitionObservable.getInstance()
                 .requestSubsetsForFunction(selFctIndex, fct_tag, object, windowID);
@@ -224,5 +224,7 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
                 notifySubsetObserver(i, fct_tag, object, windowID);
             }
         }
+        
+        
     }
 }

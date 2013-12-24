@@ -98,6 +98,7 @@ public class UserDependentSubsetModel extends UserDataModel
          selectedSubsetIndices = ssIndices;
          
          if (ssNames == null || ssNames.isEmpty()) setStatus(Status.INVALID);
+         else setStatus(Status.VALID);
     }
     
     
