@@ -2,7 +2,6 @@ package edu.gcsc.vrl.userdata;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
@@ -10,11 +9,33 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class UserDependentSubsetModel extends UserDataModel
 {
-    private String selectedFunction = "";
-    private int selectedFunctionIndex = -1;
-    private List<String> selectedSubsets = new ArrayList<String>();
-    private int[] selectedSubsetIndices = new int[]{};
-    //private List<AtomicInteger>selectedSubsetIndices = new ArrayList<AtomicInteger>();
+    private int nFct;
+    private String[] selectedFunctions;
+    private int[] selectedFunctionIndices;
+    private List<String> selectedSubsets;
+    private int[] selectedSubsetIndices;
+    
+    public UserDependentSubsetModel(int _nFct)
+    {
+        nFct = _nFct;
+        selectedFunctions = new String[nFct];
+        selectedFunctionIndices = new int[nFct];
+        for (int i=0; i<nFct; i++)
+        {
+            selectedFunctions[i] = "";
+            selectedFunctionIndices[i] = -1;
+        }
+        selectedSubsets = new ArrayList<String>();
+        selectedSubsetIndices = new int[]{};
+    }
+    
+    /**
+     * @return number of functions to be selected
+     */
+    public int getNFct()
+    {
+        return nFct;
+    }
     
     // inherited from UserDataModel
     /**
@@ -25,15 +46,24 @@ public class UserDependentSubsetModel extends UserDataModel
     @Override
     public Object getData()
     {
-        throw new RuntimeException("UserDependentSubsetModel: Call to getData() which is not allowed.");
+        throw new RuntimeException("UserDependentSubsetModel: Call to getData() which is not allowed.\n");
     }
     
     /**
-     * @return selected function name
+     * @return selected function names
      */
-    public String getSelectedFunction()
+    public String[] getSelectedFunctions()
     {
-        return selectedFunction;
+        return selectedFunctions;
+    }
+     
+    /**
+     * @param arrayIndex index of function selector in JComboBox array    
+     * @return  selected function names
+     */
+    public String getSelectedFunction(int arrayIndex)
+    {
+        return selectedFunctions[arrayIndex];
     }
             
     /**
@@ -45,11 +75,11 @@ public class UserDependentSubsetModel extends UserDataModel
     }
             
     /**
-     * @return selected function index
+     * @return selected function indices
      */
-    public int getSelectedFunctionIndex()
+    public int[] getSelectedFunctionIndices()
     {
-        return selectedFunctionIndex;
+        return selectedFunctionIndices;
     }
     
     /**
@@ -69,21 +99,50 @@ public class UserDependentSubsetModel extends UserDataModel
     @Override
     public void setData(Object newData)
     {
-         throw new RuntimeException("UserDependentSubsetModel: Call to setData() which is not allowed.");
+         throw new RuntimeException("UserDependentSubsetModel: Call to setData() which is not allowed.\n");
     }
 
     
     /**
      * Set information about selected function.
-     * @param fctName   function name as string
-     * @param fctIndex   function index in definition
+     * @param fctNames   function names as array of string
+     * @param fctIndices   function index in definition
      */
-    public void setSelectedFunction(String fctName, int fctIndex)
+    public void setSelectedFunctions(String[] fctNames, int[] fctIndices)
     {
-         selectedFunction = fctName;
-         selectedFunctionIndex = fctIndex;
+         selectedFunctions = fctNames;
+         selectedFunctionIndices = fctIndices;
          
-         if (fctName != null && !fctName.equals("")) setStatus(Status.VALID);
+         if (fctNames == null) return;
+         if (fctNames.length != nFct)
+         {
+             throw new RuntimeException("UserDependentSubsetModel: Number of selected functions "
+                                        + "must be exactly "+nFct+", but is "+fctNames.length+".\n");
+         }
+         for (int i=0; i<nFct; i++)
+             if (fctNames[i] == null || fctNames[i].equals("")) return;
+         
+         setStatus(Status.VALID);
+    }
+    
+    
+    /**
+     * Set information about selected function.
+     * @param arrayIndex index of function selector in JComboBox array
+     * @param fctName    function name as string
+     * @param fctIndex   index of fctName in definition
+     */
+    public void setSelectedFunction(int arrayIndex, String fctName, int fctIndex)
+    {
+         selectedFunctions[arrayIndex] = fctName;
+         selectedFunctionIndices[arrayIndex] = fctIndex;
+         
+         if (fctName == null) return;
+         
+         for (int i=0; i<nFct; i++)
+             if (selectedFunctions[i] == null || selectedFunctions[i].equals("")) return;
+         
+         setStatus(Status.VALID);
     }
 
     
@@ -111,11 +170,11 @@ public class UserDependentSubsetModel extends UserDataModel
         if (model instanceof UserDependentSubsetModel)
         {
             UserDependentSubsetModel m = (UserDependentSubsetModel) model;
-            setSelectedFunction(m.getSelectedFunction(), m.getSelectedFunctionIndex());
+            setSelectedFunctions(m.getSelectedFunctions(), m.getSelectedFunctionIndices());
             setSelectedSubsets(m.getSelectedSubsets(), m.getSelectedSubsetIndices());
             setStatus(m.getStatus());
         }
-        else throw new RuntimeException("UserData could not be set from other UserDataModel.");
+        else throw new RuntimeException("UserData could not be set from other UserDataModel.\n");
     }
     
     /**
@@ -126,7 +185,7 @@ public class UserDependentSubsetModel extends UserDataModel
     @Override
     public void adjustData(Object data)
     {
-         throw new RuntimeException("UserDependentSubsetModel: Call to adjustData() which is not allowed.");
+         throw new RuntimeException("UserDependentSubsetModel: Call to adjustData() which is not allowed.\n");
     }
     
     /**
@@ -142,31 +201,76 @@ public class UserDependentSubsetModel extends UserDataModel
             return;
         }
         
-        for (String fct: fctList)
+        // check whether new function definitions still contain all previously
+        // selected functions; if that is the case, do not change status
+        boolean allFunctionsPresent = true;
+        for (String selFct: selectedFunctions)
         {
-            if (fct.equals(selectedFunction))
+            if (selFct.equals("")) continue;   // no sense looking for non-selected functions
+            boolean fctPresent = false;
+            for (String fct: fctList)
             {
-                if (getStatus() != Status.VALID) setStatus(Status.WARNING);
+                if (fct.equals(selFct))
+                {
+                    fctPresent = true;
+                    break;
+                }
+            }
+            if (!fctPresent)
+            {
+                allFunctionsPresent = false;
+                break;
+            }
+        }
+        
+        if (allFunctionsPresent) return;
+        
+        // control reaches this code only if new function definition
+        // does not contain all currently selected functions, then:
+        // if possible: select the same indices as before and warn
+        int maxSelInd = 0;
+        for (int sfi: selectedFunctionIndices)
+            if (maxSelInd < sfi) maxSelInd = sfi;
+        
+        if (fctList.size() > maxSelInd)
+        {
+            boolean allFctDefOK = true;
+            for (int i=0; i<nFct; i++)
+            {
+                if (selectedFunctionIndices[i] < 0) continue;   // no sense looking for non-selected functions
+                if (fctList.get(selectedFunctionIndices[i]) == null
+                    || fctList.get(selectedFunctionIndices[i]).equals(""))
+                {
+                    allFctDefOK = false;
+                    break;
+                }
+            }
+            if (allFctDefOK)
+            {
+                for (int i=0; i<nFct; i++)
+                    if (selectedFunctionIndices[i] >= 0) selectedFunctions[i] = fctList.get(selectedFunctionIndices[i]);
+                if (getStatus() != Status.INVALID) setStatus(Status.WARNING);
                 return;
             }
         }
-
-        // control reaches this code only if new function definition
-        // does not contain currently selected function, then:
-        if (fctList.size() > 0 && fctList.get(0) != null)
+        
+        // if this also fails, then pick the first index for every selection
+        if (!fctList.isEmpty() && fctList.get(0) != null && !fctList.get(0).equals(""))
         {
-            selectedFunction = fctList.get(0);
-            selectedFunctionIndex = 0;
-
-            setStatus(Status.WARNING);
+            for (int i=0; i<nFct; i++)
+            {
+                selectedFunctions[i] = fctList.get(0);
+                selectedFunctionIndices[i] = 0;
+            }
         }
-        else
+    
+        // if everything fails (no function definition): set invalid
+        for (int i=0; i<nFct; i++)
         {
-            selectedFunction = "";
-            selectedFunctionIndex = -1;
-
-            setStatus(Status.INVALID);
+            selectedFunctions[i] = "";
+            selectedFunctionIndices[i] = -1;
         }
+        setStatus(Status.INVALID);
     }
 
     
@@ -233,12 +337,12 @@ public class UserDependentSubsetModel extends UserDataModel
     
     public class FSDataType
     {
-        public FSDataType(String _selFct, List<String> _selSs)
+        public FSDataType(String[] _selFct, List<String> _selSs)
         {
             selFct = _selFct;
             selSs = _selSs;
         }
-        String selFct;
+        String[] selFct;
         List<String> selSs;
     }
     
@@ -250,7 +354,7 @@ public class UserDependentSubsetModel extends UserDataModel
     @Override
     public Object createUserData()
     {
-        return new FSDataType(selectedFunction, selectedSubsets);
+        return new FSDataType(selectedFunctions, selectedSubsets);
     }
 
     /**

@@ -12,6 +12,7 @@ import edu.gcsc.vrl.userdata.FunctionDefinitionObservable;
 import edu.gcsc.vrl.userdata.LoadUGXFileObservable;
 import edu.gcsc.vrl.userdata.LoadUGXFileObserver;
 import eu.mihosoft.vrl.annotation.TypeInfo;
+import eu.mihosoft.vrl.reflection.CustomParamData;
 import eu.mihosoft.vrl.reflection.LayoutType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.reflection.VisualCanvas;
@@ -44,7 +45,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
     protected VTextField fctNameField = null;
     protected JList subsetList = null;
     DefaultListModel subsetListModel = null;
-    private FunctionDefinitionObservable.FctData fctData = null;
+    FunctionDefinition fd;
     
     // index for identification of array position in function def array
     // (to be provided by FunctionDefinitionObservable)
@@ -58,6 +59,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
     {
         // hide connector 
         setHideConnector(true);
+        fd = new FunctionDefinition();
     }
     
     
@@ -76,7 +78,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         // elements are horizontally aligned
         Box horizBox = Box.createHorizontalBox();
         horizBox.setAlignmentX(LEFT_ALIGNMENT);
-        add(horizBox);
+        //add(horizBox);
         
         // function naming field
         fctNameField = new VTextField("");
@@ -92,19 +94,20 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
             @Override
             public void keyReleased(KeyEvent e)
             {
-                if (subsetList.getSelectedIndices() != null && fctNameField.getText() != null && !fctNameField.getText().equals(""))
+                if (subsetList.getSelectedIndices() != null && fctNameField.getText() != null)
                 {
                     // construct selectedValuesList by hand since 
                     // getSelectedValuesList() depends on 1.7 and may raise an exception
                     List<String> selSubsets = new ArrayList<String>();
                     for (int i: subsetList.getSelectedIndices()) selSubsets.add((String) subsetList.getModel().getElementAt(i));
-                    fctData = new FunctionDefinitionObservable.FctData(fctNameField.getText(), selSubsets);
+                    fd.setFctData(new FunctionDefinitionObservable.FctData(fctNameField.getText(), selSubsets));
+                    storeCustomParamData();
                     notifyFunctionDefinitionObservable();
                 }
             }
         });
         
-        horizBox.add(fctNameField);
+        add(fctNameField);
         
         // subset selection list
         subsetListModel = new DefaultListModel();
@@ -135,18 +138,19 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
             @Override
             public void valueChanged(ListSelectionEvent e)
             {
-                if (subsetList.getSelectedIndices() != null && fctNameField.getText() != null && !fctNameField.getText().equals(""))
+                if (subsetList.getSelectedIndices() != null && fctNameField.getText() != null)
                 {
                     // construct selectedValuesList by hand since 
                     // getSelectedValuesList() depends on 1.7 and may raise an exception
                     List<String> selSubsets = new ArrayList<String>();
                     for (int i: subsetList.getSelectedIndices()) selSubsets.add((String) subsetList.getModel().getElementAt(i));
-                    fctData = new FunctionDefinitionObservable.FctData(fctNameField.getText(), selSubsets);
+                    fd.setFctData(new FunctionDefinitionObservable.FctData(fctNameField.getText(), selSubsets));
+                    storeCustomParamData();
                     notifyFunctionDefinitionObservable();
                 }
             }
         });
-        horizBox.add(subsetList);
+        add(subsetList);
     }
     
     /*
@@ -195,6 +199,43 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         }
     }
     
+    
+    @Override
+    public void evaluateCustomParamData()
+    {
+        super.evaluateCustomParamData();
+System.out.print("arrayIndex: "+arrayIndex+"\n");
+        FunctionDefinition tmp = (FunctionDefinition) getCustomData().get("FctDef:" + arrayIndex);
+        if (tmp != null)
+        {
+System.out.print("found FunctionDefinition "+arrayIndex+"\n");
+System.out.print("function name: "+fd.getFctData().fctName+"\n");
+for (String s: fd.getFctData().subsetList) System.out.print(s);
+            fd = tmp;
+            adjustView();
+        }
+        else
+        {
+//                throw new RuntimeException("UserDataTupleType:evaluateCustomParamData:"
+//                        + " cannot read custom data correctly.");
+        }
+
+    }
+
+    public void storeCustomParamData()
+    {
+        CustomParamData pData = getCustomData();
+
+        if (pData == null) pData = new CustomParamData();
+        
+        pData.put("FctDef:" + arrayIndex, fd);
+        
+        setCustomData(pData);
+    }
+    
+    
+    
+    
      /**
      * This method is called after this typerepresentation has been added to a
      * method representation (including setting connector etc.). It may be used
@@ -225,6 +266,8 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
             int windowID = 0;
             arrayIndex = FunctionDefinitionObservable.getInstance().receiveArrayIndex(fct_tag, o, windowID);
         }
+        
+        if (!getMainCanvas().isLoadingSession()) storeCustomParamData();
     }
     
     /**
@@ -284,8 +327,8 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         int windowID = 0;
         
         // inform the singleton that function definitions have been made
-        if (fctData != null)
-            FunctionDefinitionObservable.getInstance().setFunctionDefinitions(fctData, fct_tag, o, windowID, arrayIndex);
+        if (fd.getFctData() != null)
+            FunctionDefinitionObservable.getInstance().setFunctionDefinitions(fd.getFctData(), fct_tag, o, windowID, arrayIndex);
         else
             FunctionDefinitionObservable.getInstance().setInvalidData(fct_tag, o, windowID);
     }
@@ -296,11 +339,12 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
     public void update(UGXFileInfo info)
     {
         // adjust data for new FileInfo
-        adjustData(info);
+        adjustView(info);
+        storeCustomParamData();
     }
     
     
-    private void adjustData(UGXFileInfo info)
+    private void adjustView(UGXFileInfo info)
     {
         // adjust model
         if (info != null)
@@ -314,7 +358,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
                 subsetListModel.addElement(((UGXFileInfo)info).const__subset_name(0, 0, i));
 
             // reset fctData
-            if (fctData != null) fctData.subsetList = null;
+            if (fd.getFctData() != null) fd.getFctData().subsetList = null;
 
             // reset view in subset list
             subsetList.clearSelection();
@@ -341,6 +385,57 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
             subsetListModel.addElement("-- no grid --");
             //model.setStatus(Status.INVALID);
             //adjustView(model.getStatus());
+        }
+
+        // set the maximum size to preferred size in order to avoid stretched drop-downs
+        Dimension max = subsetList.getMaximumSize();
+        Dimension pref = subsetList.getPreferredSize();
+        max.height = pref.height;
+        subsetList.setMaximumSize(max);
+
+        subsetList.revalidate();
+    }
+    
+    private void adjustView()
+    {
+        fctNameField.setText("");
+        subsetListModel.removeAllElements();
+            
+        if (fd == null)
+        {
+            subsetListModel.addElement("-- no grid --");
+            //model.setStatus(Status.INVALID);
+            //adjustView(model.getStatus());
+        }
+        else if (fd.getFctData().subsetList.isEmpty())
+        {
+            subsetListModel.addElement("-- no subsets --");
+        }
+        else   
+        {
+            fctNameField.setText(fd.getFctData().fctName);
+            
+            for (String ss: fd.getFctData().subsetList)
+                subsetListModel.addElement(ss);
+
+            // reset view in subset list
+            subsetList.clearSelection();
+            
+            /* this is more complicated, maybe later
+            for (int i = 0; i < ((UGXFileInfo)info).const__num_subsets(0, 0); ++i)
+            {
+                String newSubset = ((UGXFileInfo)info).const__subset_name(0, 0, i);
+
+                // in this case we can stay with the old selected subset
+                if (newSubset.equals(data))
+                {
+                    if (getStatus() != UserDataModel.Status.VALID) {
+                        setStatus(UserDataModel.Status.WARNING);
+                    }
+                    return;
+                }
+            }
+            */
         }
 
         // set the maximum size to preferred size in order to avoid stretched drop-downs

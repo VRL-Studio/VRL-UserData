@@ -5,16 +5,12 @@
 package edu.gcsc.vrl.userdata.types;
 
 import edu.gcsc.vrl.ug.api.UGXFileInfo;
-import edu.gcsc.vrl.userdata.FunctionSubsetCoordinator;
-import edu.gcsc.vrl.userdata.FunctionSubsetCoordinatorFunctionObserver;
-import edu.gcsc.vrl.userdata.FunctionSubsetCoordinatorSubsetObserver;
 import edu.gcsc.vrl.userdata.LoadUGXFileObservable;
 import edu.gcsc.vrl.userdata.LoadUGXFileObserver;
 import edu.gcsc.vrl.userdata.UserDataFactory;
 import edu.gcsc.vrl.userdata.UserDataModel;
 import edu.gcsc.vrl.userdata.UserDataTuple;
 import edu.gcsc.vrl.userdata.UserDataView;
-import edu.gcsc.vrl.userdata.UserDependentSubsetModel;
 import edu.gcsc.vrl.userdata.UserDependentSubsetView;
 import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.reflection.CustomParamData;
@@ -26,7 +22,6 @@ import eu.mihosoft.vrl.visual.VBoxLayout;
 import groovy.lang.Script;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 import javax.swing.Box;
 
 /**
@@ -43,6 +38,7 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
         boolean separateBehind = false;
         UserDataModel model = null;
         UserDataView view = null;
+        int suppInfo;   // for the UserDependentSubset
     }
     // list of userdata
     protected ArrayList<Data> datas = new ArrayList<Data>();
@@ -80,8 +76,8 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
         for (Data data : datas) {
 
             // create new model
-            data.model = UserDataFactory.createModel(data.category);
-
+            data.model = UserDataFactory.createModel(data.category, data.suppInfo);
+            
             // set userdata to external triggering depending on presence of ugx_tag
             if (ugx_tag == null && ugx_globalTag == null && fct_tag == null) {
                 data.model.setExternTriggered(false);
@@ -246,7 +242,7 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
                 }
             }
         }
-
+        
         if (type == null || type.isEmpty()) {
             throw new RuntimeException("UserDataTupleType: no or empty 'type' info in options.");
         }
@@ -261,8 +257,10 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
         // parse category and name
         datas.clear();
         int nameCnt = 0;
-        for (int i = 0; i < twoParts[0].length(); ++i) {
-
+        int i = -1;
+        while (i+1 < twoParts[0].length())
+        {
+            i++;
             Data newData = new Data();
 
             switch (twoParts[0].charAt(i)) {
@@ -282,6 +280,15 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
                     newData.category = UserDataModel.Category.SUBSET;
                     break;
                 case 'S':
+                    i++;
+                    int nFct = -2;
+                    if (i < twoParts[0].length()) nFct = Character.digit(twoParts[0].charAt(i),10);
+                    if (nFct < 1) // -1 if conversion failed, -2 if no char to convert
+                    {
+                        throw new RuntimeException("A decimal digit > 0 representing the number of functions involved "
+                                                    + "is required after definition of a UserDependentSubset type ('S').\n");
+                    }
+                    newData.suppInfo = nFct;
                     newData.category = UserDataModel.Category.DEPENDENT_SUBSET;
                     break;
                 case 'l':
@@ -407,12 +414,12 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
 
         // adjust Data for new FileInfo in model and view
         for (Data theData : datas) {
-            
+
             // bit of a hack to incorporate DEPENDENT_SUBSET into UserDataTuple;
             // it is necessary to exclude this case here, because its update
             // method does not expect a UGXFileInfo!
             if (theData.category != UserDataModel.Category.DEPENDENT_SUBSET)
-            {   
+            {
                 theData.model.adjustData(info);
                 theData.view.adjustView(info);
             }

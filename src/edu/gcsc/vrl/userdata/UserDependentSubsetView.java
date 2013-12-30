@@ -2,8 +2,11 @@ package edu.gcsc.vrl.userdata;
 
 import edu.gcsc.vrl.userdata.UserDataModel.Status;
 import edu.gcsc.vrl.userdata.types.UserDataTupleType;
+import eu.mihosoft.vrl.reflection.LayoutType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.reflection.VisualCanvas;
+import eu.mihosoft.vrl.visual.VBoxLayout;
+import eu.mihosoft.vrl.visual.VButton;
 import java.awt.Color;
 import java.awt.Component;
 import static java.awt.Component.LEFT_ALIGNMENT;
@@ -29,12 +32,16 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
     protected UserDataModel model;
     protected UserDataTupleType tuple;
     protected String name;    
-    protected JComboBox fctSelection = null;
+    protected JComboBox[] fctSelection;
     protected JList ssSelection = null;
-    DefaultListModel ssSelectionModel = null;
+    protected DefaultListModel ssSelectionModel = null;
+    protected SubsetSelectionWindow window = null;
+    protected VButton button = null;
     protected Box horizBox;
     protected Color defaultColor = null;
+    protected Color defaultTextColor = null;
     protected boolean internalAdjustment = false;
+    protected int nFct;
     
     // store position in array of UserDataTuples
     // requested at FunctionSubsetCoordinator
@@ -47,38 +54,126 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
         this.model = theModel;
         this.tuple = theTuple;
         
+        this.nFct = ((UserDependentSubsetModel) model).getNFct();
+        fctSelection = new JComboBox[nFct];
+        
         this.observerIndex = -1;
         this.fct_tag = tuple.getFctTag();
         
-        // create the box that will accomodate both ComboBoxes
+        // create the box that will accomodate both functions and subsets
         horizBox = Box.createHorizontalBox();
         horizBox.setAlignmentX(LEFT_ALIGNMENT);
+        // create vertical box for function selections
+        Box vBox = Box.createVerticalBox();
+        for (int i=0; i<nFct; i++)
+        {
+            fctSelection[i] = new JComboBox();
+            fctSelection[i].setAlignmentX(Component.LEFT_ALIGNMENT);
+            defaultColor = fctSelection[i].getBackground();
+            fctSelection[i].setActionCommand(""+i);
+            fctSelection[i].addActionListener(new ActionListener()
+            {
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    int j = Integer.parseInt(e.getActionCommand());
+                    if (fctSelection[j].getSelectedItem() != null && !internalAdjustment)
+                    {
+                        ((UserDependentSubsetModel)model).setSelectedFunction(
+                            j, (String) fctSelection[j].getSelectedItem(), fctSelection[j].getSelectedIndex());
+
+                        // update subset list accordingly
+                        // (must be done by UserDataTuple, for it holds the array index)
+                        notifySubsetObserver();
+
+                        adjustView(model.getStatus());
+
+                        tuple.setDataOutdated();
+                        tuple.storeCustomParamData();
+                    }
+                }
+            });
+            vBox.add(fctSelection[i]);
+        }
         
-        fctSelection = new JComboBox();
-        fctSelection.setAlignmentX(Component.LEFT_ALIGNMENT);
-        defaultColor = fctSelection.getBackground();
-        fctSelection.addActionListener(new ActionListener()
+        horizBox.add(vBox);
+        
+        /*
+        button = new VButton(name);
+        defaultColor = button.getBackground();
+        defaultTextColor = button.getForeground();
+        button.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if (fctSelection.getSelectedItem() != null && !internalAdjustment)
+                if (window == null || window.isDisposed())
                 {
-                    ((UserDependentSubsetModel)model).setSelectedFunction(
-                        (String) fctSelection.getSelectedItem(), fctSelection.getSelectedIndex());
-                    
-                    // update subset list accordingly
-                    // (must be done by UserDataTuple, for it holds the array index)
-                    notifySubsetObserver();
+                    window = new SubsetSelectionWindow(this);
+                    window.getTitleBar().addMouseListener(new MouseAdapter()
+                    {
+                        @Override
+                        public void mousePressed(MouseEvent e)
+                        {
+                            button.setForeground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
+                                    CanvasWindow.UPPER_ACTIVE_TITLE_COLOR_KEY));
+                        }
 
-                    adjustView(model.getStatus());
+                        @Override
+                        public void mouseReleased(MouseEvent e)
+                        {
+                            button.setForeground(defaultTextColor);
+                        }
+                    });
 
-                    tuple.setDataOutdated();
-                    tuple.storeCustomParamData();
+                    tuple.getMainCanvas().addWindow(window);
                 }
+
+                if (model.getStatus() != UserDataModel.Status.INVALID) model.setStatus(Status.VALID);
+                
+                adjustView(model.getStatus());
+
+                Point loc = VSwingUtil.getAbsPos(tuple);
+
+                Point buttonLoc = new Point(loc.x + button.getX(),
+                        loc.y + button.getY());
+
+                window.setLocation(buttonLoc);
+
+                tuple.getMainCanvas().setComponentZOrder(window, 0);
             }
-        });        
-        horizBox.add(fctSelection);
+        });
+
+        // tuning tooltip to be shown all the time on mouse-over
+        button.addMouseListener(new MouseAdapter()
+        {
+            private int defaultDismissDelay;
+            private int defaultInitialDelay;
+            private int defaultReshowDelay;
+
+            @Override
+            public void mouseEntered(MouseEvent me)
+            {
+                defaultDismissDelay = ToolTipManager.sharedInstance().getDismissDelay();
+                defaultInitialDelay = ToolTipManager.sharedInstance().getInitialDelay();
+                defaultReshowDelay = ToolTipManager.sharedInstance().getReshowDelay();
+                ToolTipManager.sharedInstance().setDismissDelay(60000000);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                ToolTipManager.sharedInstance().setReshowDelay(0);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent me)
+            {
+                ToolTipManager.sharedInstance().setDismissDelay(defaultDismissDelay);
+                ToolTipManager.sharedInstance().setInitialDelay(defaultInitialDelay);
+                ToolTipManager.sharedInstance().setReshowDelay(defaultReshowDelay);
+            }
+        });
+        
+        
+        horizBox.add(button);
+        */
         
         ssSelectionModel = new DefaultListModel();
         ssSelection = new JList(ssSelectionModel);
@@ -147,10 +242,17 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
 
             if (model.getStatus() == UserDataModel.Status.INVALID)
             {
-                fctSelection.removeAllItems();
-                fctSelection.addItem("-- no fct def --");
+                for (int i=0; i<nFct; i++)
+                {
+                    fctSelection[i].removeAllItems();
+                    fctSelection[i].addItem("-- no fct def --");
+                }
             }
-            else fctSelection.setSelectedItem(((UserDependentSubsetModel)model).getSelectedFunction());
+            else
+            {
+                String[] selFcts = ((UserDependentSubsetModel)model).getSelectedFunctions();
+                for (int i=0; i<nFct; i++) fctSelection[i].setSelectedItem(selFcts[i]);
+            }
             
             internalAdjustment = false;
 
@@ -183,7 +285,7 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
     @Override
     public void adjustView(Object fctDefData)
     {
-         throw new RuntimeException("UserDependentSubsetView: Call to adjustView() which is not allowed.");
+         throw new RuntimeException("UserDependentSubsetView: Call to adjustView() which is not allowed.\n");
     }
     
     
@@ -195,47 +297,68 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
     public void adjustFunctionView(List<String> fctList)
     {
         internalAdjustment = true;
-
-        fctSelection.removeAllItems();
         
-        if (fctList != null && !fctList.isEmpty())
+        for (int i=0; i<nFct; i++) fctSelection[i].removeAllItems();
+        
+        List<String> thisList = fctList;        
+
+        // delete empty string from list
+        if (thisList != null)
         {
-            for (String fct : fctList) fctSelection.addItem(fct);
-
-            if (model != null)
+            for (int i=0; i<thisList.size(); i++)
+                if (thisList.get(i).equals("")) thisList.remove(i);
+        }
+        
+        if (thisList != null && !thisList.isEmpty())
+        {
+            for (int i=0; i<nFct; i++)
             {
-                fctSelection.setSelectedItem(((UserDependentSubsetModel)model).getSelectedFunction());
-                // update subset list accordingly
-                notifySubsetObserver();
-            }
+                // add all fct items to combobox
+                for (String fct : thisList) fctSelection[i].addItem(fct);
 
-            if (fctSelection.getSelectedItem() == null) 
-            {
-                ((UserDependentSubsetModel)model).setSelectedFunction("", -1);
-                ((UserDependentSubsetModel)model).adjustSubsetData(null);
-                adjustSubsetView(null);
-                if (model.getStatus() != UserDataModel.Status.INVALID) model.setStatus(UserDataModel.Status.WARNING);
-                adjustView(model.getStatus());
+                if (model != null)
+                {
+                    fctSelection[i].setSelectedItem(((UserDependentSubsetModel)model).getSelectedFunction(i));
+                    
+                    // update subset list accordingly
+                    notifySubsetObserver();
+                }
+                
+                // if nothing is selected (can that happen at all?)
+                if (fctSelection[i].getSelectedItem() == null) 
+                {
+                    ((UserDependentSubsetModel)model).setSelectedFunction(i,"", -1);
+                    ((UserDependentSubsetModel)model).adjustSubsetData(null);
+                    adjustSubsetView(null);
+                    model.setStatus(UserDataModel.Status.INVALID);
+                    adjustView(model.getStatus());
+                }
             }
         }
         else
         {
-            fctSelection.addItem("-- no fct def --");
-            List<String> emptyList = new ArrayList<String>();
-            ((UserDependentSubsetModel)model).adjustSubsetData(emptyList);
-            adjustSubsetView(emptyList);
-            model.setStatus(Status.INVALID);
-            adjustView(model.getStatus());
+            for (int i=0; i<nFct; i++)
+            {
+                fctSelection[i].addItem("-- no fct def --");
+                List<String> emptyList = new ArrayList<String>();
+                ((UserDependentSubsetModel)model).adjustSubsetData(emptyList);
+                adjustSubsetView(emptyList);
+                model.setStatus(Status.INVALID);
+                adjustView(model.getStatus());
+            }
         }
 
         // set the maximum size to preferred size in order to avoid stretched drop-downs
-        Dimension max = fctSelection.getMaximumSize();
-        Dimension pref = fctSelection.getPreferredSize();
-        max.height = pref.height;
-        fctSelection.setMaximumSize(pref);
-
-        fctSelection.revalidate();
-
+        for (int i=0; i<nFct; i++)
+        {
+            Dimension max = fctSelection[i].getMaximumSize();
+            Dimension pref = fctSelection[i].getPreferredSize();
+            max.height = pref.height;
+            fctSelection[i].setMaximumSize(pref);
+        
+            fctSelection[i].revalidate();
+        }
+        
         internalAdjustment = false;
     }
     
@@ -299,18 +422,18 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
         switch (status)
         {
             case VALID:
-                fctSelection.setBackground(defaultColor);
+                for (int i=0; i<nFct; i++) fctSelection[i].setBackground(defaultColor);
                 ssSelection.setBackground(defaultColor);
                 break;
             case WARNING:
-                fctSelection.setBackground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
+                for (int i=0; i<nFct; i++) fctSelection[i].setBackground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
                         TypeRepresentationBase.WARNING_VALUE_COLOR_KEY));
                 ssSelection.setBackground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
                         TypeRepresentationBase.WARNING_VALUE_COLOR_KEY));
                 break;
             case INVALID:
             default:
-                fctSelection.setBackground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
+                for (int i=0; i<nFct; i++) fctSelection[i].setBackground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
                         TypeRepresentationBase.INVALID_VALUE_COLOR_KEY));
                 ssSelection.setBackground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
                         TypeRepresentationBase.INVALID_VALUE_COLOR_KEY));
@@ -324,6 +447,8 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
     public void addAsObserver()
     {
         // register at the FunctionSubsetCoordinator if fct_tag given
+        System.out.print(">>>>>>>>>>>> FCT_TAG: "+fct_tag+"\n");
+                
         if (fct_tag != null)
         {
             int id = tuple.getParentMethod().getParentObject().getObjectID();
@@ -333,8 +458,8 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
         }
         else
         {
-            throw new RuntimeException("Requested an Object of type UserDependentSubsetView (\"S\") in UserDataTuple,\n"
-                                        + "but no fct_tag specified in the options!");
+            throw new RuntimeException("Requested an Object of type UserDependentSubsetView (\"S\") in UserDataTuple,"
+                                        + "but no fct_tag specified in the options!\n");
         }
     }
     
@@ -356,15 +481,17 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
     @Override
     public void updateFunctions(List<String> fctData)
     {
+        System.out.print(">>>>>>>>>>>> updating functions:\n");
+        for (String s: fctData) System.out.print(">>>>>>>>>>>>>>"+s+"\n");
         ((UserDependentSubsetModel)model).adjustFunctionData(fctData);
         adjustFunctionView(fctData);
     }
 
     @Override
-    public int getSelectedFunction()
+    public int[] getSelectedFunctionIndices()
     {
         // forward this
-        return ((UserDependentSubsetModel)model).getSelectedFunctionIndex();
+        return ((UserDependentSubsetModel)model).getSelectedFunctionIndices();
     }
     
     public void notifySubsetObserver()

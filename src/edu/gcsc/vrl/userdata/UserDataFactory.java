@@ -12,7 +12,7 @@ import edu.gcsc.vrl.userdata.types.UserDataTupleType;
  */
 public class UserDataFactory {
 
-    public static UserDataModel createModel(UserDataModel.Category cat) {
+    public static UserDataModel createModel(UserDataModel.Category cat, int suppInfo) {
         UserDataModel model = null;
         switch (cat) {
             case NUMBER:
@@ -31,14 +31,14 @@ public class UserDataFactory {
                 model = new UserSubsetModel();
                 break;
             case DEPENDENT_SUBSET:
-                model = new UserDependentSubsetModel();
+                model = new UserDependentSubsetModel(suppInfo);
                 break;
             case LINKER:
                 model = new DataLinkerModelNumberNumber();
                 break;
             default:
                 throw new RuntimeException("UserDataFactory: Unknown "
-                        + " category for UserDataModel requested.");
+                        + " category for UserDataModel requested.\n");
         }
         return model;
     }
@@ -65,7 +65,7 @@ public class UserDataFactory {
                 break;
             default:
                 throw new RuntimeException("UserDataFactory: Unknown "
-                        + " category for UserDataView requested.");
+                        + " category for UserDataView requested.\n");
         }
         return view;
     }

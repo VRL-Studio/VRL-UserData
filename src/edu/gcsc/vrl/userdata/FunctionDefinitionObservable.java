@@ -57,7 +57,7 @@ public class FunctionDefinitionObservable
             fctName = fn;
             subsetList = new ArrayList<String>(ss);
         }
-        private FctData()
+        public FctData()
         {
             this("", new ArrayList<String>());
         }
@@ -166,7 +166,7 @@ public class FunctionDefinitionObservable
         Identifier id = new Identifier(fct_tag, object, windowID);
         if (!arrayIndexMap.containsKey(id)) arrayIndexMap.put(id, new AtomicInteger(0));
         if (!fctTagMap.containsKey(id)) fctTagMap.put(id, new FctTagData());
-        fctTagMap.get(id).data.add(new FctData("-- no fct def --",new ArrayList<String>()));
+        fctTagMap.get(id).data.add(new FctData("",new ArrayList<String>()));
         
         notifyObservers(fct_tag, object, windowID);
         
@@ -204,6 +204,7 @@ public class FunctionDefinitionObservable
      */
     public synchronized void addObserver(FunctionDefinitionObserver obs, String fct_tag, Object object, int windowID)
     {
+        System.out.print(">>>>>>>>>>>> adding fct def obs\n");
         getTag(fct_tag, object, windowID, true).observers.add(obs);
         obs.update(getTag(fct_tag, object, windowID, false).data, fct_tag, object, windowID);
     }
