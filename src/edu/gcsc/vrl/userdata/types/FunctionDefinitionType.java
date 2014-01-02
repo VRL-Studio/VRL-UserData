@@ -204,13 +204,9 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
     public void evaluateCustomParamData()
     {
         super.evaluateCustomParamData();
-System.out.print("arrayIndex: "+arrayIndex+"\n");
         FunctionDefinition tmp = (FunctionDefinition) getCustomData().get("FctDef:" + arrayIndex);
         if (tmp != null)
         {
-System.out.print("found FunctionDefinition "+arrayIndex+"\n");
-System.out.print("function name: "+fd.getFctData().fctName+"\n");
-for (String s: fd.getFctData().subsetList) System.out.print(s);
             fd = tmp;
             adjustView();
         }

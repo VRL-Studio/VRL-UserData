@@ -204,7 +204,6 @@ public class FunctionDefinitionObservable
      */
     public synchronized void addObserver(FunctionDefinitionObserver obs, String fct_tag, Object object, int windowID)
     {
-        System.out.print(">>>>>>>>>>>> adding fct def obs\n");
         getTag(fct_tag, object, windowID, true).observers.add(obs);
         obs.update(getTag(fct_tag, object, windowID, false).data, fct_tag, object, windowID);
     }

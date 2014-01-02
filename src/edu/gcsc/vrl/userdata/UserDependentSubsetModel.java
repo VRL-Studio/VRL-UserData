@@ -262,6 +262,7 @@ public class UserDependentSubsetModel extends UserDataModel
                 selectedFunctions[i] = fctList.get(0);
                 selectedFunctionIndices[i] = 0;
             }
+            return;
         }
     
         // if everything fails (no function definition): set invalid

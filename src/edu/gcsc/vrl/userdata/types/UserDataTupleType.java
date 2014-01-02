@@ -288,6 +288,14 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
                         throw new RuntimeException("A decimal digit > 0 representing the number of functions involved "
                                                     + "is required after definition of a UserDependentSubset type ('S').\n");
                     }
+                    
+                    // construct name data
+                    newData.name = nameArray[nameCnt++].trim();
+                    for (int j=1; j<nFct; j++)
+                    {
+                        if (nameCnt < nameArray.length)
+                            newData.name = newData.name + "," + nameArray[nameCnt++].trim();     
+                    }
                     newData.suppInfo = nFct;
                     newData.category = UserDataModel.Category.DEPENDENT_SUBSET;
                     break;
@@ -303,14 +311,14 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
                     throw new RuntimeException("UserDataTupleType: invalid type identifier");
             }
 
-            if (nameCnt < nameArray.length) {
+            if (nameCnt < nameArray.length && twoParts[0].charAt(i-1) != 'S') {
                 newData.name = nameArray[nameCnt++].trim();
             }
             datas.add(newData);
         }
 
 
-        if (datas.size() != nameArray.length) {
+        if (nameCnt != nameArray.length) {
             throw new RuntimeException("UserDataTupleType: number of categories does "
                     + "not match number of names.");
         }
@@ -383,6 +391,27 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
         if (!getMainCanvas().isLoadingSession()) {
             storeCustomParamData();
         }
+    }
+    
+    /**
+    * This method is called after this typerepresentation has been removed from
+    * method representation (including unsetting connector etc.). It may be
+    * used to perform custom finalization based on option evaluation etc.
+    */
+    @Override
+    public void removedFromMethodRepresentation()
+    {
+        // if a DEPENDENT_SUBSET object is present, revoke it as FunctionSubsetCoordinatorObserver
+        for (Data theData : datas)
+        {
+            if (theData.category == UserDataModel.Category.DEPENDENT_SUBSET)
+            {   
+                ((UserDependentSubsetView)theData.view).removeAsObserver();
+                break;
+            }
+        }
+        
+        super.removedFromMethodRepresentation();
     }
 
     @Override

@@ -2,10 +2,8 @@ package edu.gcsc.vrl.userdata;
 
 import edu.gcsc.vrl.userdata.UserDataModel.Status;
 import edu.gcsc.vrl.userdata.types.UserDataTupleType;
-import eu.mihosoft.vrl.reflection.LayoutType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.reflection.VisualCanvas;
-import eu.mihosoft.vrl.visual.VBoxLayout;
 import eu.mihosoft.vrl.visual.VButton;
 import java.awt.Color;
 import java.awt.Component;
@@ -19,6 +17,7 @@ import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -31,16 +30,16 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
 {
     protected UserDataModel model;
     protected UserDataTupleType tuple;
-    protected String name;    
+    protected String[] name;
     protected JComboBox[] fctSelection;
     protected JList ssSelection = null;
     protected DefaultListModel ssSelectionModel = null;
-    protected SubsetSelectionWindow window = null;
+    //protected SubsetSelectionWindow window = null;
     protected VButton button = null;
     protected Box horizBox;
     protected Color defaultColor = null;
     protected Color defaultTextColor = null;
-    protected boolean internalAdjustment = false;
+    protected boolean internalAdjustment;
     protected int nFct;
     
     // store position in array of UserDataTuples
@@ -50,11 +49,16 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
     
     public UserDependentSubsetView(String theName, UserDataModel theModel, UserDataTupleType theTuple)
     {
-        this.name = theName;
+        this.name = theName.split(",");
+
         this.model = theModel;
         this.tuple = theTuple;
         
         this.nFct = ((UserDependentSubsetModel) model).getNFct();
+        // this should be prevented by the construction of "theName" in UserDataTupleType
+        if (name.length != nFct)
+            throw new RuntimeException("UserDependentSubsetView: Not enough function designators given.");
+        
         fctSelection = new JComboBox[nFct];
         
         this.observerIndex = -1;
@@ -63,8 +67,10 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
         // create the box that will accomodate both functions and subsets
         horizBox = Box.createHorizontalBox();
         horizBox.setAlignmentX(LEFT_ALIGNMENT);
+        
         // create vertical box for function selections
         Box vBox = Box.createVerticalBox();
+        
         for (int i=0; i<nFct; i++)
         {
             fctSelection[i] = new JComboBox();
@@ -93,7 +99,12 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
                     }
                 }
             });
-            vBox.add(fctSelection[i]);
+            
+            Box hBoxLv2 = Box.createHorizontalBox();
+            hBoxLv2.setAlignmentX(LEFT_ALIGNMENT);
+            hBoxLv2.add(new JLabel(name[i]));
+            hBoxLv2.add(fctSelection[i]);
+            vBox.add(hBoxLv2);
         }
         
         horizBox.add(vBox);
@@ -294,8 +305,9 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
      * 
      * @param fctList list of defined functions
      */
-    public void adjustFunctionView(List<String> fctList)
+    public synchronized void adjustFunctionView(List<String> fctList)
     {
+        boolean saveIntAdjState = internalAdjustment;
         internalAdjustment = true;
         
         for (int i=0; i<nFct; i++) fctSelection[i].removeAllItems();
@@ -318,10 +330,8 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
 
                 if (model != null)
                 {
-                    fctSelection[i].setSelectedItem(((UserDependentSubsetModel)model).getSelectedFunction(i));
-                    
-                    // update subset list accordingly
-                    notifySubsetObserver();
+                    fctSelection[i].setSelectedIndex(((UserDependentSubsetModel)model).getSelectedFunctionIndices()[i]);
+                    //fctSelection[i].setSelectedItem(((UserDependentSubsetModel)model).getSelectedFunction(i));
                 }
                 
                 // if nothing is selected (can that happen at all?)
@@ -334,6 +344,9 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
                     adjustView(model.getStatus());
                 }
             }
+            
+            // update subset list accordingly
+            notifySubsetObserver();
         }
         else
         {
@@ -359,7 +372,7 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
             fctSelection[i].revalidate();
         }
         
-        internalAdjustment = false;
+        internalAdjustment = saveIntAdjState;
     }
     
     
@@ -370,6 +383,7 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
      */
     public void adjustSubsetView(List<String> ssList)
     {
+        boolean saveIntAdjState = internalAdjustment;
         internalAdjustment = true;
 
         ssSelectionModel.removeAllElements();
@@ -413,7 +427,7 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
 
         ssSelection.revalidate();
 
-        internalAdjustment = false;
+        internalAdjustment = saveIntAdjState;
     }
 
     @Override
@@ -447,8 +461,6 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
     public void addAsObserver()
     {
         // register at the FunctionSubsetCoordinator if fct_tag given
-        System.out.print(">>>>>>>>>>>> FCT_TAG: "+fct_tag+"\n");
-                
         if (fct_tag != null)
         {
             int id = tuple.getParentMethod().getParentObject().getObjectID();
@@ -481,8 +493,6 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
     @Override
     public void updateFunctions(List<String> fctData)
     {
-        System.out.print(">>>>>>>>>>>> updating functions:\n");
-        for (String s: fctData) System.out.print(">>>>>>>>>>>>>>"+s+"\n");
         ((UserDependentSubsetModel)model).adjustFunctionData(fctData);
         adjustFunctionView(fctData);
     }

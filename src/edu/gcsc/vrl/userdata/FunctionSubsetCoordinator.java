@@ -118,7 +118,6 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
                                               FunctionSubsetCoordinatorSubsetObserver sObs,
                                               String fct_tag, Object object, int windowID)
     {
-        System.out.print(">>>>>>>>>>>> Requesting array index\n");
         Identifier id = new Identifier(fct_tag, object, windowID);
         
         if (!indexMap.containsKey(id)) indexMap.put(id, new AtomicInteger(0));
@@ -190,34 +189,55 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
         
         if (selFctIndices.length < 1)
             throw new RuntimeException("FunctionSubsetCoordinator: selFctIndices has no entries!");
-        
+  
         List<String> subsets;
         if (selFctIndices[0] >= 0)
         {
             // iteratively construct subset list by removing subsets not contained
             // in the subsets list of a selected function
-            subsets = FunctionDefinitionObservable.getInstance()
-                    .requestSubsetsForFunction(selFctIndices[0], fct_tag, object, windowID);
+            subsets = new ArrayList<String>(FunctionDefinitionObservable.getInstance()
+                    .requestSubsetsForFunction(selFctIndices[0], fct_tag, object, windowID));
+/*System.out.println(">>> subsets: --------");
+for (String s: subsets) System.out.println(">>> "+s);
+System.out.println("");*/
             for (int sfi=1; sfi < selFctIndices.length; sfi++)
             {
-                List<String> currSsl = FunctionDefinitionObservable.getInstance()
-                    .requestSubsetsForFunction(selFctIndices[sfi], fct_tag, object, windowID);
-
-                for (int i=0; i<subsets.size(); i++)
+                List<String> currSsl;
+                if (selFctIndices[sfi] >= 0)
+                {
+                    currSsl = new ArrayList<String>(FunctionDefinitionObservable.getInstance()
+                        .requestSubsetsForFunction(selFctIndices[sfi], fct_tag, object, windowID));
+                }
+                else  currSsl = new ArrayList<String>();
+                
+/*System.out.println(">>> currSsl: --------");
+for (String s: currSsl) System.out.println(">>> "+s);
+System.out.println("");*/
+                int i = 0;
+                while (i < subsets.size())
                 {
                     boolean found = false;
                     for (int j=0; j<currSsl.size(); j++)
                     {
                         if (subsets.get(i).equals(currSsl.get(j)))
                         {
+/*System.out.println(">>>> found item '"+subsets.get(i)+"'");*/
                             found = true;
+                            i++;
                             currSsl.remove(j);
                             break;
                         }
                     }
-                    if (!found) subsets.remove(i);
+                    if (!found)
+                    {
+/*System.out.println(">>>> item '"+subsets.get(i)+"' not found, removing");*/
+                        subsets.remove(i);
+                    }
                 }
             }
+/*System.out.println(">>> subsets: --------");
+for (String s: subsets) System.out.println(">>> "+s);
+System.out.println("");*/
         }
         // empty list if no function selected
         else subsets = new ArrayList<String>();
@@ -237,7 +257,6 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
     public void update(List<FunctionDefinitionObservable.FctData> data,
                        String fct_tag, Object object, int windowID)
     {
-        System.out.print(">>>>>>>>>>>> updating fct def obs\n");
         Identifier id = new Identifier(fct_tag, object, windowID);
         
         // construct function names list and notify fctObservers
@@ -250,7 +269,7 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
             for (int i = 0; i < indexMap.get(id).get(); i++)
             {
                 couplingMap.get(id).get(i).fObs.updateFunctions(fcts);
-                notifySubsetObserver(i, fct_tag, object, windowID);
+                //notifySubsetObserver(i, fct_tag, object, windowID);   // should be done in observer
             }
         }
         
