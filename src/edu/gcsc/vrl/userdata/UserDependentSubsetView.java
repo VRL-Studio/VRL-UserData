@@ -8,6 +8,7 @@ import eu.mihosoft.vrl.visual.VButton;
 import java.awt.Color;
 import java.awt.Component;
 import static java.awt.Component.LEFT_ALIGNMENT;
+import static java.awt.Component.RIGHT_ALIGNMENT;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -101,7 +102,7 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
             });
             
             Box hBoxLv2 = Box.createHorizontalBox();
-            hBoxLv2.setAlignmentX(LEFT_ALIGNMENT);
+            hBoxLv2.setAlignmentX(RIGHT_ALIGNMENT);
             hBoxLv2.add(new JLabel(name[i]));
             hBoxLv2.add(fctSelection[i]);
             vBox.add(hBoxLv2);

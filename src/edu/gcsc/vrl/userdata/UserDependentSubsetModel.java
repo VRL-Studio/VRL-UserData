@@ -343,8 +343,8 @@ public class UserDependentSubsetModel extends UserDataModel
             selFct = _selFct;
             selSs = _selSs;
         }
-        String[] selFct;
-        List<String> selSs;
+        public String[] selFct;
+        public List<String> selSs;
     }
     
     

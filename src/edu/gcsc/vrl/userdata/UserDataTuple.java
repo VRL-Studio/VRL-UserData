@@ -37,9 +37,6 @@ public class UserDataTuple implements Serializable {
         data.clear();
     }
 
-    /**
-     * @param subset the subset to set
-     */
     public void add(Object userData) {
         data.add(userData);
     }
