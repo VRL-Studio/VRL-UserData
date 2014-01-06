@@ -165,6 +165,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
     {
         
     }
+    */
     
     @Override
     protected void evaluateContract()
@@ -172,8 +173,6 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         if (isValidValue()) super.evaluateContract();
     }
     
-
-    */
 
     /**
     * Requests evaluation of the value options that are usually specified in
