@@ -58,25 +58,22 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
     /**
      * Identifier for tags. If several function / subset displayer arrays exist
      * (e.g. multiple windows of the same plugin),
-     * they are distinguished by fct_tag, objectID and windowID.
+     * they are distinguished by fct_tag and windowID.
      */
     private class Identifier
     {
-        public Identifier(String fct_tag, Object object, int windowID)
+        public Identifier(String fct_tag, int windowID)
         {
             this.fct_tag = fct_tag;
-            this.object = object;
             this.windowID = windowID;
         }
         private final String fct_tag;
-        private final Object object;
         private final int windowID;
 
         @Override
         public int hashCode()
         {
-            int result = 31*31*fct_tag.hashCode();
-            result += 31*object.hashCode();
+            int result = 31*fct_tag.hashCode();
             result += windowID;
             return result;
         }
@@ -89,7 +86,7 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
             if (obj.getClass() != getClass()) return false;
             
             Identifier rhs = (Identifier) obj;
-            return (fct_tag.equals(rhs.fct_tag)) && (object == rhs.object) && (windowID == rhs.windowID);
+            return (fct_tag.equals(rhs.fct_tag)) && (windowID == rhs.windowID);
         }
     }    
     
@@ -110,15 +107,14 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
      * @param fObs      the requesting functionObserver
      * @param sObs      the requesting subsetObserver
      * @param fct_tag   the function tag the function dsiplayer belongs to
-     * @param object    the object bound to the observable
      * @param windowID  the window containing the object
      * @return          the FctDefType's position in the FctDef array
      */
     public synchronized int requestArrayIndex(FunctionSubsetCoordinatorFunctionObserver fObs,
                                               FunctionSubsetCoordinatorSubsetObserver sObs,
-                                              String fct_tag, Object object, int windowID)
+                                              String fct_tag, int windowID)
     {
-        Identifier id = new Identifier(fct_tag, object, windowID);
+        Identifier id = new Identifier(fct_tag, windowID);
         
         if (!indexMap.containsKey(id)) indexMap.put(id, new AtomicInteger(0));
         if (!couplingMap.containsKey(id)) couplingMap.put(id, new ArrayList<FSCoupling>());
@@ -137,7 +133,7 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
         couplingMap.get(id).get(index).sObs = sObs;
         
         // register at FunctionDefinitionObservable when both fct and ss index are distributed
-        FunctionDefinitionObservable.getInstance().addObserver(this, fct_tag, object, windowID);
+        FunctionDefinitionObservable.getInstance().addObserver(this, fct_tag, windowID);
         
         return index;
     }
@@ -149,13 +145,12 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
      * The Observers of one fct_tag must be removed in reverse order of their
      * addition, otherwise there will be index conflicts!
      * @param fct_tag       function tag the FctDefType belongs to
-     * @param object        the object bound to the observable
      * @param windowID      the window containing the object
      * @param arrayIndex    the index to be revoked
      */
-    public synchronized void revokeArrayIndex(String fct_tag, Object object, int windowID, int arrayIndex)
+    public synchronized void revokeArrayIndex(String fct_tag, int windowID, int arrayIndex)
     {
-        Identifier id = new Identifier(fct_tag, object, windowID);
+        Identifier id = new Identifier(fct_tag, windowID);
         indexMap.get(id).decrementAndGet();
         
         // remove from couplingMap iff corresponding subsetObserver has already
@@ -176,12 +171,11 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
      * 
      * @param couplingIndex     the index of the function/subset pair in the coupling data
      * @param fct_tag           the fct_tag
-     * @param object            the object bound to the observable
      * @param windowID          the window containing the object
      */
-    public synchronized void notifySubsetObserver(int couplingIndex, String fct_tag, Object object, int windowID)
+    public synchronized void notifySubsetObserver(int couplingIndex, String fct_tag, int windowID)
     {
-        Identifier id = new Identifier(fct_tag, object, windowID);
+        Identifier id = new Identifier(fct_tag, windowID);
         int[] selFctIndices = couplingMap.get(id).get(couplingIndex).fObs.getSelectedFunctionIndices();
         
         if (selFctIndices == null)
@@ -196,7 +190,7 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
             // iteratively construct subset list by removing subsets not contained
             // in the subsets list of a selected function
             subsets = new ArrayList<String>(FunctionDefinitionObservable.getInstance()
-                    .requestSubsetsForFunction(selFctIndices[0], fct_tag, object, windowID));
+                    .requestSubsetsForFunction(selFctIndices[0], fct_tag, windowID));
 /*System.out.println(">>> subsets: --------");
 for (String s: subsets) System.out.println(">>> "+s);
 System.out.println("");*/
@@ -206,7 +200,7 @@ System.out.println("");*/
                 if (selFctIndices[sfi] >= 0)
                 {
                     currSsl = new ArrayList<String>(FunctionDefinitionObservable.getInstance()
-                        .requestSubsetsForFunction(selFctIndices[sfi], fct_tag, object, windowID));
+                        .requestSubsetsForFunction(selFctIndices[sfi], fct_tag, windowID));
                 }
                 else  currSsl = new ArrayList<String>();
                 
@@ -250,14 +244,13 @@ System.out.println("");*/
      * Updates the observer with the new data.
      * @param data      new data to update with.
      * @param fct_tag   fct_tag the data is associated to
-     * @param object    object the data is associated to
      * @param windowID  windowID the data is associated to
      */
     @Override
     public void update(List<FunctionDefinitionObservable.FctData> data,
-                       String fct_tag, Object object, int windowID)
+                       String fct_tag, int windowID)
     {
-        Identifier id = new Identifier(fct_tag, object, windowID);
+        Identifier id = new Identifier(fct_tag, windowID);
         
         // construct function names list and notify fctObservers
         ArrayList<String> fcts = new ArrayList<String>();
@@ -269,7 +262,7 @@ System.out.println("");*/
             for (int i = 0; i < indexMap.get(id).get(); i++)
             {
                 couplingMap.get(id).get(i).fObs.updateFunctions(fcts);
-                //notifySubsetObserver(i, fct_tag, object, windowID);   // should be done in observer
+                //notifySubsetObserver(i, fct_tag, windowID);   // should be done in observer
             }
         }
         

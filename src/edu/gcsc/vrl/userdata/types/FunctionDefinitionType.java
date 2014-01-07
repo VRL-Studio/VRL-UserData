@@ -257,9 +257,8 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         if (fct_tag != null)
         {
             int id = this.getParentMethod().getParentObject().getObjectID();
-            Object o = ((VisualCanvas) getMainCanvas()).getInspector().getObject(id);
             int windowID = 0;
-            arrayIndex = FunctionDefinitionObservable.getInstance().receiveArrayIndex(fct_tag, o, windowID);
+            arrayIndex = FunctionDefinitionObservable.getInstance().receiveArrayIndex(fct_tag, windowID);
         }
         
         if (!getMainCanvas().isLoadingSession()) storeCustomParamData();
@@ -277,9 +276,8 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         if (fct_tag != null)
         {
             int id = this.getParentMethod().getParentObject().getObjectID();
-            Object o = ((VisualCanvas) getMainCanvas()).getInspector().getObject(id);
             int windowID = 0;
-            FunctionDefinitionObservable.getInstance().revokeArrayIndex(fct_tag, o, windowID, arrayIndex);
+            FunctionDefinitionObservable.getInstance().revokeArrayIndex(fct_tag, windowID, arrayIndex);
         }
         
         super.removedFromMethodRepresentation();
@@ -298,9 +296,8 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         if (fct_tag != null)
         {
             int id = this.getParentMethod().getParentObject().getObjectID();
-            Object o = ((VisualCanvas) getMainCanvas()).getInspector().getObject(id);
             int windowID = 0;
-            FunctionDefinitionObservable.getInstance().setInvalidData(fct_tag, o, windowID);
+            FunctionDefinitionObservable.getInstance().setInvalidData(fct_tag, windowID);
         }
         
         super.dispose();
@@ -318,14 +315,13 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
     protected void notifyFunctionDefinitionObservable()
     {
         int id = this.getParentMethod().getParentObject().getObjectID();
-        Object o = ((VisualCanvas) getMainCanvas()).getInspector().getObject(id);
         int windowID = 0;
         
         // inform the singleton that function definitions have been made
         if (fd.getFctData() != null)
-            FunctionDefinitionObservable.getInstance().setFunctionDefinitions(fd.getFctData(), fct_tag, o, windowID, arrayIndex);
+            FunctionDefinitionObservable.getInstance().setFunctionDefinitions(fd.getFctData(), fct_tag, windowID, arrayIndex);
         else
-            FunctionDefinitionObservable.getInstance().setInvalidData(fct_tag, o, windowID);
+            FunctionDefinitionObservable.getInstance().setInvalidData(fct_tag, windowID);
     }
 
     

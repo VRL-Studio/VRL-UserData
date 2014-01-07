@@ -83,21 +83,18 @@ public class FunctionDefinitionObservable
      */
     private class Identifier
     {
-        public Identifier(String fct_tag, Object object, int windowID)
+        public Identifier(String fct_tag, int windowID)
         {
             this.fct_tag = fct_tag;
-            this.object = object;
             this.windowID = windowID;
         }
         private final String fct_tag;
-        private final Object object;
         private final int windowID;
 
         @Override
         public int hashCode()
         {
-            int result = 31*31*fct_tag.hashCode();
-            result += 31*object.hashCode();
+            int result = 31*fct_tag.hashCode();
             result += windowID;
             return result;
         }
@@ -110,7 +107,7 @@ public class FunctionDefinitionObservable
             if (obj.getClass() != getClass()) return false;
             
             Identifier rhs = (Identifier) obj;
-            return (fct_tag.equals(rhs.fct_tag)) && (object == rhs.object) && (windowID == rhs.windowID);
+            return (fct_tag.equals(rhs.fct_tag)) && (windowID == rhs.windowID);
         }
     }    
     
@@ -135,16 +132,16 @@ public class FunctionDefinitionObservable
      * @param create    flag indicating if fct_tag should be created
      * @return          file fct_tag info
      */
-    private synchronized FctTagData getTag(String fct_tag, Object object, int windowID, boolean create)
+    private synchronized FctTagData getTag(String fct_tag, int windowID, boolean create)
     {
-        Identifier id = new Identifier(fct_tag, object, windowID);
+        Identifier id = new Identifier(fct_tag, windowID);
 
         if (fctTagMap.containsKey(id)) return fctTagMap.get(id);
 
         if (create)
         {
             fctTagMap.put(id, new FctTagData());
-            return getTag(fct_tag, object, windowID, false);
+            return getTag(fct_tag, windowID, false);
         }
 
         return null;
@@ -157,18 +154,17 @@ public class FunctionDefinitionObservable
      * array, this is provided here.
      * 
      * @param fct_tag   the function tag the FctDefType belongs to
-     * @param object    the object bound to the observable
      * @param windowID  the window containing the object
      * @return          the FctDefType's position in the FctDef array
      */
-    public synchronized int receiveArrayIndex(String fct_tag, Object object, int windowID)
+    public synchronized int receiveArrayIndex(String fct_tag, int windowID)
     {
-        Identifier id = new Identifier(fct_tag, object, windowID);
+        Identifier id = new Identifier(fct_tag, windowID);
         if (!arrayIndexMap.containsKey(id)) arrayIndexMap.put(id, new AtomicInteger(0));
         if (!fctTagMap.containsKey(id)) fctTagMap.put(id, new FctTagData());
         fctTagMap.get(id).data.add(new FctData("",new ArrayList<String>()));
         
-        notifyObservers(fct_tag, object, windowID);
+        notifyObservers(fct_tag, windowID);
         
         return arrayIndexMap.get(id).getAndIncrement();
     }
@@ -177,19 +173,18 @@ public class FunctionDefinitionObservable
      * Removes the array index of specified by its owner, the FctDefType.
      * This must be called by the FctDefType, when it is removed from view.
      * @param fct_tag       function tag the FctDefType belongs to
-     * @param object        the object bound to the observable
      * @param windowID      the window containing the object
      * @param arrayIndex    the index to be revoked
      */
-    public synchronized void revokeArrayIndex(String fct_tag, Object object, int windowID, int arrayIndex)
+    public synchronized void revokeArrayIndex(String fct_tag, int windowID, int arrayIndex)
     {
-        Identifier id = new Identifier(fct_tag, object, windowID);
+        Identifier id = new Identifier(fct_tag, windowID);
         Integer a = null;
         
         arrayIndexMap.get(id).decrementAndGet();
         fctTagMap.get(id).data.remove(arrayIndex);
         
-        notifyObservers(fct_tag, object, windowID);
+        notifyObservers(fct_tag, windowID);
     }
     
     
@@ -199,13 +194,12 @@ public class FunctionDefinitionObservable
      * 
      * @param obs       the observer to be added
      * @param fct_tag   the fct_tag identifying the observable
-     * @param object    the object bound to the observable
      * @param windowID  the window containing the object
      */
-    public synchronized void addObserver(FunctionDefinitionObserver obs, String fct_tag, Object object, int windowID)
+    public synchronized void addObserver(FunctionDefinitionObserver obs, String fct_tag, int windowID)
     {
-        getTag(fct_tag, object, windowID, true).observers.add(obs);
-        obs.update(getTag(fct_tag, object, windowID, false).data, fct_tag, object, windowID);
+        getTag(fct_tag, windowID, true).observers.add(obs);
+        obs.update(getTag(fct_tag, windowID, false).data, fct_tag, windowID);
     }
 
     
@@ -224,12 +218,11 @@ public class FunctionDefinitionObservable
      * Removes all observer of a ugx_tag from this Observable. 
      * 
      * @param fct_tag   the fct_tag
-     * @param object    the object bound to the observable
      * @param windowID  the window containing the object
      */
-    public synchronized void deleteObservers(String fct_tag, Object object, int windowID)
+    public synchronized void deleteObservers(String fct_tag, int windowID)
     {
-        Identifier id = new Identifier(fct_tag, object, windowID);
+        Identifier id = new Identifier(fct_tag, windowID);
         if (fctTagMap.containsKey(id)) fctTagMap.get(id).observers.clear();
     }
 
@@ -237,20 +230,19 @@ public class FunctionDefinitionObservable
      * Notifies all observers of a fct_tag about the currently given data.
      * 
      * @param fct_tag   the fct_tag
-     * @param object    the object bound to the observable
      * @param windowID  the window containing the object
      */
-    public synchronized void notifyObservers(String fct_tag, Object object, int windowID)
+    public synchronized void notifyObservers(String fct_tag, int windowID)
     {
         // get data for fct_tag
-        FctTagData fctTagData = getTag(fct_tag, object, windowID, false);
+        FctTagData fctTagData = getTag(fct_tag, windowID, false);
 
         // if no such fct_tag present, return (i.e. no observer)
         if (fctTagData != null)
         {
             // notify observers of this fct_tag
             for (FunctionDefinitionObserver obs : fctTagData.observers)
-                obs.update(fctTagData.data, fct_tag, object, windowID);
+                obs.update(fctTagData.data, fct_tag, windowID);
         }
     }
 
@@ -258,42 +250,40 @@ public class FunctionDefinitionObservable
      * Sets the function definition data for a fct_tag.
      * @param data          the function / subset data
      * @param fct_tag       the fct_tag
-     * @param object        the object bound to the observable
      * @param windowID      the window containing the object
      * @param arrayIndex    the array index of the FunctionDefinition calling the method
      */
-    public synchronized void setFunctionDefinitions(FctData data, String fct_tag, Object object, int windowID, int arrayIndex)
+    public synchronized void setFunctionDefinitions(FctData data, String fct_tag, int windowID, int arrayIndex)
     {
         // set the data
-        FctTagData fctTagData = getTag(fct_tag, object, windowID, true);
+        FctTagData fctTagData = getTag(fct_tag, windowID, true);
         fctTagData.data.set(arrayIndex, data);
         
         // notify the obersvers of this fct_tag
-        notifyObservers(fct_tag, object, windowID);
+        notifyObservers(fct_tag, windowID);
     }
 
     /**
      * Sets that a ugx_tag has an invalid file.
      * 
      * @param fct_tag   the fct_tag
-     * @param object    the object bound to the observable
      * @param windowID  the window containing the object
      */
-    public synchronized void setInvalidData(String fct_tag, Object object, int windowID)
+    public synchronized void setInvalidData(String fct_tag, int windowID)
     {
-        FctTagData fctTagData = getTag(fct_tag, object, windowID, true);
+        FctTagData fctTagData = getTag(fct_tag, windowID, true);
 
         //  set to new (empty) data
         fctTagData.data = null;
 
         // notify the observers of this fct_tag
-        notifyObservers(fct_tag, object, windowID);
+        notifyObservers(fct_tag, windowID);
     }
     
-    public List<String> requestSubsetsForFunction(int fctIndex, String fct_tag, Object object, int windowID)
+    public List<String> requestSubsetsForFunction(int fctIndex, String fct_tag, int windowID)
     {
        // get data for fct_tag
-        FctTagData fctTagData = getTag(fct_tag, object, windowID, false);
+        FctTagData fctTagData = getTag(fct_tag, windowID, false);
 
         // if no such fct_tag present, return empty list
         if (fctTagData == null) return new ArrayList<String>();

@@ -465,9 +465,8 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
         if (fct_tag != null)
         {
             int id = tuple.getParentMethod().getParentObject().getObjectID();
-            Object o = ((VisualCanvas) tuple.getMainCanvas()).getInspector().getObject(id);
             int windowID = 0;
-            observerIndex = FunctionSubsetCoordinator.getInstance().requestArrayIndex(this, this, fct_tag, o, windowID);
+            observerIndex = FunctionSubsetCoordinator.getInstance().requestArrayIndex(this, this, fct_tag, windowID);
         }
         else
         {
@@ -482,10 +481,9 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
         if (fct_tag != null)
         {
             int id = tuple.getParentMethod().getParentObject().getObjectID();
-            Object o = ((VisualCanvas) tuple.getMainCanvas()).getInspector().getObject(id);
             int windowID = 0;
             
-            FunctionSubsetCoordinator.getInstance().revokeArrayIndex(fct_tag, o, windowID, observerIndex);
+            FunctionSubsetCoordinator.getInstance().revokeArrayIndex(fct_tag, windowID, observerIndex);
         }
     }
     
@@ -510,10 +508,9 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
         if (observerIndex != -1)
         {
             int id = tuple.getParentMethod().getParentObject().getObjectID();
-            Object o = ((VisualCanvas) tuple.getMainCanvas()).getInspector().getObject(id);
             int windowID = 0;
 
-            FunctionSubsetCoordinator.getInstance().notifySubsetObserver(observerIndex, fct_tag, o, windowID);
+            FunctionSubsetCoordinator.getInstance().notifySubsetObserver(observerIndex, fct_tag, windowID);
         }
     }
     
