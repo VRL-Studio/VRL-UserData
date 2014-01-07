@@ -15,6 +15,11 @@ public class UserDependentSubsetModel extends UserDataModel
     private List<String> selectedSubsets;
     private int[] selectedSubsetIndices;
     
+    public UserDependentSubsetModel()
+    {
+        this(0);
+    }
+    
     public UserDependentSubsetModel(int _nFct)
     {
         nFct = _nFct;
@@ -46,7 +51,8 @@ public class UserDependentSubsetModel extends UserDataModel
     @Override
     public Object getData()
     {
-        throw new RuntimeException("UserDependentSubsetModel: Call to getData() which is not allowed.\n");
+        return new FSDataType(nFct, selectedFunctions, selectedFunctionIndices,
+                              selectedSubsets, selectedSubsetIndices);
     }
     
     /**
@@ -99,7 +105,13 @@ public class UserDependentSubsetModel extends UserDataModel
     @Override
     public void setData(Object newData)
     {
-         throw new RuntimeException("UserDependentSubsetModel: Call to setData() which is not allowed.\n");
+        if (newData instanceof FSDataType)
+        {
+            FSDataType fsd = (FSDataType) newData;
+            nFct = fsd.nFct;
+            setSelectedFunctions(fsd.selFct, fsd.selFctInd);
+            setSelectedSubsets(fsd.selSs, fsd.selSsInd);
+        }
     }
 
     
@@ -338,13 +350,21 @@ public class UserDependentSubsetModel extends UserDataModel
     
     public class FSDataType
     {
-        public FSDataType(String[] _selFct, List<String> _selSs)
+        public FSDataType(int _nFct, String[] _selFct, int[] _selFctInd,
+                          List<String> _selSs, int[] _selSsInd)
         {
+            nFct = _nFct;
             selFct = _selFct;
+            selFctInd = _selFctInd;
             selSs = _selSs;
+            selSsInd = _selSsInd;
         }
+        
+        public int nFct;
         public String[] selFct;
+        public int[] selFctInd;
         public List<String> selSs;
+        public int[] selSsInd;
     }
     
     
@@ -355,7 +375,8 @@ public class UserDependentSubsetModel extends UserDataModel
     @Override
     public Object createUserData()
     {
-        return new FSDataType(selectedFunctions, selectedSubsets);
+        return new FSDataType(nFct, selectedFunctions, selectedFunctionIndices,
+                              selectedSubsets, selectedSubsetIndices);
     }
 
     /**

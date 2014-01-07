@@ -192,14 +192,17 @@ public class FunctionDefinitionObservable
      * Add an observer to this Observable. The observer listens to a ugx_tag.
      * The observer will be updated with the current data automatically.
      * 
-     * @param obs       the observer to be added
-     * @param fct_tag   the fct_tag identifying the observable
-     * @param windowID  the window containing the object
+     * @param obs           the observer to be added
+     * @param fct_tag       the fct_tag identifying the observable
+     * @param windowID      the window containing the object
+     * @param requestUpdate whether observer is to be updated after adding
      */
-    public synchronized void addObserver(FunctionDefinitionObserver obs, String fct_tag, int windowID)
+    public synchronized void addObserver(FunctionDefinitionObserver obs, String fct_tag, int windowID, boolean requestUpdate)
     {
         getTag(fct_tag, windowID, true).observers.add(obs);
-        obs.update(getTag(fct_tag, windowID, false).data, fct_tag, windowID);
+        
+        if (requestUpdate)
+            obs.update(getTag(fct_tag, windowID, false).data, fct_tag, windowID);
     }
 
     
@@ -280,9 +283,25 @@ public class FunctionDefinitionObservable
         notifyObservers(fct_tag, windowID);
     }
     
+    public List<String> requestFunctions(String fct_tag, int windowID)
+    {
+        // get data for fct_tag
+        FctTagData fctTagData = getTag(fct_tag, windowID, false);
+
+        // if no such fct_tag present, return empty list
+        if (fctTagData == null) return new ArrayList<String>();
+        
+        // construct function names list
+        ArrayList<String> fcts = new ArrayList<String>();
+        for (FctData fctData: fctTagData.data)
+            fcts.add(fctData.fctName);
+        
+        return fcts;
+    }
+    
     public List<String> requestSubsetsForFunction(int fctIndex, String fct_tag, int windowID)
     {
-       // get data for fct_tag
+        // get data for fct_tag
         FctTagData fctTagData = getTag(fct_tag, windowID, false);
 
         // if no such fct_tag present, return empty list

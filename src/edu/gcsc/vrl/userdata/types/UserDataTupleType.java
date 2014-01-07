@@ -117,6 +117,7 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
                 for (int i = 0; i < datas.size(); ++i) {
                     Data data = datas.get(i);
                     data.model.setData(tuple.getData(i));
+                    data.view.adjustView(data.model);
                 }
             }
         }
@@ -132,8 +133,7 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
 
             try {
                 tuple.add(data.model.createUserData());
-            } catch (Exception e) {
-            }
+            } catch (Exception e) {e.printStackTrace();}
         }
 
         return tuple;
@@ -357,15 +357,15 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
             throw new RuntimeException("UserDataTupleType: simultaneous usage of"
                     + " 'ugx_tag' and 'ugx_globalTag' not allowed.");
         }
-
-        // init also the views 
-        init();
     }
 
     @Override
     public void addedToMethodRepresentation() {
         super.addedToMethodRepresentation();
-
+        
+        // init the views 
+        init();
+        
         // register at the observable for ugx-file-loads if ugx_tag given
         if (ugx_tag != null) {
             int id = this.getParentMethod().getParentObject().getObjectID();
@@ -440,7 +440,7 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
     // inherited from LoadUGXFileObserver
     @Override
     public void update(UGXFileInfo info) {
-
+        int i = 0;
         // adjust Data for new FileInfo in model and view
         for (Data theData : datas) {
 

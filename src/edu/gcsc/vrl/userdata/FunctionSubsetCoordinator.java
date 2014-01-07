@@ -17,7 +17,7 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
      */
     private FunctionSubsetCoordinator()
     {
-        this.couplingMap = new HashMap<Identifier, List<FSCoupling> >();
+        this.couplingMap = new HashMap<Identifier, Map<Integer, FSCoupling> >();
         this.indexMap = new HashMap<Identifier, AtomicInteger>();
     }
     private static volatile FunctionSubsetCoordinator instance = null;
@@ -91,7 +91,7 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
     }    
     
     // For every tag, this map holds the FSCoupling data associated.
-    private final transient Map<Identifier, List<FSCoupling> > couplingMap;
+    private final transient Map<Identifier, Map<Integer,FSCoupling>> couplingMap;
     
     // The function/subset selection is realized in an array of pairs
     // (function,subsets), the index for the pair makes access to a
@@ -99,8 +99,6 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
     // requestArrayIndex() and by the displayer.
     // The map holds the current number of distributed indices per identifier.
     private final transient Map<Identifier, AtomicInteger> indexMap;
-   
-   
     /**
      * Produces a new index for a function/subset displayer instance.
      * 
@@ -110,32 +108,30 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
      * @param windowID  the window containing the object
      * @return          the FctDefType's position in the FctDef array
      */
-    public synchronized int requestArrayIndex(FunctionSubsetCoordinatorFunctionObserver fObs,
+    public synchronized int requestKey(FunctionSubsetCoordinatorFunctionObserver fObs,
                                               FunctionSubsetCoordinatorSubsetObserver sObs,
                                               String fct_tag, int windowID)
     {
         Identifier id = new Identifier(fct_tag, windowID);
         
         if (!indexMap.containsKey(id)) indexMap.put(id, new AtomicInteger(0));
-        if (!couplingMap.containsKey(id)) couplingMap.put(id, new ArrayList<FSCoupling>());
+        if (!couplingMap.containsKey(id)) couplingMap.put(id, new HashMap<Integer,FSCoupling>());
         
-        // if a coupling entry does not exist yet, (because no subsetObserver
-        // has requested it) create it first
-        int index = indexMap.get(id).getAndIncrement();
-        if (couplingMap.get(id).size() <= index)
-            couplingMap.get(id).add(new FSCoupling());
-        
-        // error if current fctIndex is still too large (should not happen)
-        if (couplingMap.get(id).size() <= index)
-            throw new RuntimeException("FunctionSubsetCoordinator: requested couplingMap index is out of range.");
+        // create a coupling entry
+        Integer index = new Integer(indexMap.get(id).getAndIncrement());
+        couplingMap.get(id).put(index, new FSCoupling());
         
         couplingMap.get(id).get(index).fObs = fObs;
         couplingMap.get(id).get(index).sObs = sObs;
         
-        // register at FunctionDefinitionObservable when both fct and ss index are distributed
-        FunctionDefinitionObservable.getInstance().addObserver(this, fct_tag, windowID);
+        // register at FunctionDefinitionObservable
+        FunctionDefinitionObservable.getInstance().addObserver(this, fct_tag, windowID, false);
         
-        return index;
+        // update view
+        List<String> fcts = FunctionDefinitionObservable.getInstance().requestFunctions(fct_tag, windowID);
+        fObs.updateFunctions(fcts);
+        
+        return index.intValue();
     }
     
     
@@ -146,22 +142,19 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
      * addition, otherwise there will be index conflicts!
      * @param fct_tag       function tag the FctDefType belongs to
      * @param windowID      the window containing the object
-     * @param arrayIndex    the index to be revoked
+     * @param key    the index to be revoked
      */
-    public synchronized void revokeArrayIndex(String fct_tag, int windowID, int arrayIndex)
+    public synchronized void revokeKey(String fct_tag, int windowID, int key)
     {
+        Integer index = new Integer(key);
         Identifier id = new Identifier(fct_tag, windowID);
-        indexMap.get(id).decrementAndGet();
         
-        // remove from couplingMap iff corresponding subsetObserver has already
-        // revoked its index
-        FSCoupling fsc = couplingMap.get(id).get(arrayIndex);
-        if (fsc.sObs == null)
-        {
-            couplingMap.get(id).remove(arrayIndex);
+        // remove from couplingMap
+        couplingMap.get(id).remove(index);
+        
+        // unregister from FctDefObsvbl iff no coupling entry left
+        if (couplingMap.get(id).isEmpty())
             FunctionDefinitionObservable.getInstance().deleteObserver(this);
-        }
-        else fsc.fObs = null;
     }
     
     

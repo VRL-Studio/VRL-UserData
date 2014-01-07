@@ -3,7 +3,6 @@ package edu.gcsc.vrl.userdata;
 import edu.gcsc.vrl.userdata.UserDataModel.Status;
 import edu.gcsc.vrl.userdata.types.UserDataTupleType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
-import eu.mihosoft.vrl.reflection.VisualCanvas;
 import eu.mihosoft.vrl.visual.VButton;
 import java.awt.Color;
 import java.awt.Component;
@@ -464,9 +463,8 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
         // register at the FunctionSubsetCoordinator if fct_tag given
         if (fct_tag != null)
         {
-            int id = tuple.getParentMethod().getParentObject().getObjectID();
             int windowID = 0;
-            observerIndex = FunctionSubsetCoordinator.getInstance().requestArrayIndex(this, this, fct_tag, windowID);
+            observerIndex = FunctionSubsetCoordinator.getInstance().requestKey(this, this, fct_tag, windowID);
         }
         else
         {
@@ -480,10 +478,9 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
         // register at the FunctionSubsetCoordinator if fct_tag given
         if (fct_tag != null)
         {
-            int id = tuple.getParentMethod().getParentObject().getObjectID();
             int windowID = 0;
             
-            FunctionSubsetCoordinator.getInstance().revokeArrayIndex(fct_tag, windowID, observerIndex);
+            FunctionSubsetCoordinator.getInstance().revokeKey(fct_tag, windowID, observerIndex);
         }
     }
     
@@ -507,7 +504,6 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
     {
         if (observerIndex != -1)
         {
-            int id = tuple.getParentMethod().getParentObject().getObjectID();
             int windowID = 0;
 
             FunctionSubsetCoordinator.getInstance().notifySubsetObserver(observerIndex, fct_tag, windowID);

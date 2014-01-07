@@ -33,6 +33,8 @@ import javax.swing.DefaultListSelectionModel;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.text.Position;
+import org.apache.xmlrpc.webserver.HttpServletResponseImpl;
 
 /**
  *
@@ -153,21 +155,35 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         add(subsetList);
     }
     
-    /*
     @Override
     public void setViewValue(Object o)
     {
-        
+        if (o instanceof FunctionDefinition)
+        {
+            // copy fct def data here
+            FunctionDefinition fctDef = (FunctionDefinition) o;
+            fd = fctDef;
+            
+            // the available subsets might not be up to date
+            if (ugx_tag != null)
+            {
+                int id = this.getParentMethod().getParentObject().getObjectID();
+                Object obj = ((VisualCanvas) getMainCanvas()).getInspector().getObject(id);
+                int windowID = 0;
+                LoadUGXFileObservable.getInstance().notifyObserver(this, ugx_tag, obj, windowID);
+            }
+            else adjustView();
+        }
     }
 
     @Override
     public Object getViewValue()
     {
-        
+        return fd;
     }
-    */
     
-    @Override
+    
+     @Override
     protected void evaluateContract()
     {
         if (isValidValue()) super.evaluateContract();
@@ -228,10 +244,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         setCustomData(pData);
     }
     
-    
-    
-    
-     /**
+    /**
      * This method is called after this typerepresentation has been added to a
      * method representation (including setting connector etc.). It may be used
      * to perform custom initialization based on option evaluation etc.
@@ -314,7 +327,6 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
     
     protected void notifyFunctionDefinitionObservable()
     {
-        int id = this.getParentMethod().getParentObject().getObjectID();
         int windowID = 0;
         
         // inform the singleton that function definitions have been made
@@ -347,86 +359,66 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
             
             for (int i = 0; i < ((UGXFileInfo)info).const__num_subsets(0, 0); ++i)
                 subsetListModel.addElement(((UGXFileInfo)info).const__subset_name(0, 0, i));
-
-            // reset fctData
-            if (fd.getFctData() != null) fd.getFctData().subsetList = null;
-
-            // reset view in subset list
-            subsetList.clearSelection();
-            
-            /* this is more complicated, maybe later
-            for (int i = 0; i < ((UGXFileInfo)info).const__num_subsets(0, 0); ++i)
-            {
-                String newSubset = ((UGXFileInfo)info).const__subset_name(0, 0, i);
-
-                // in this case we can stay with the old selected subset
-                if (newSubset.equals(data))
-                {
-                    if (getStatus() != UserDataModel.Status.VALID) {
-                        setStatus(UserDataModel.Status.WARNING);
-                    }
-                    return;
-                }
-            }
-            */
         }
         else
         {
             subsetListModel.removeAllElements();
             subsetListModel.addElement("-- no grid --");
-            //model.setStatus(Status.INVALID);
-            //adjustView(model.getStatus());
         }
 
-        // set the maximum size to preferred size in order to avoid stretched drop-downs
-        Dimension max = subsetList.getMaximumSize();
-        Dimension pref = subsetList.getPreferredSize();
-        max.height = pref.height;
-        subsetList.setMaximumSize(max);
-
-        subsetList.revalidate();
+        // adjust selections
+        adjustView();
     }
     
     private void adjustView()
     {
         fctNameField.setText("");
-        subsetListModel.removeAllElements();
             
-        if (fd == null)
+        if (fd == null || fd.getFctData().subsetList.isEmpty())
         {
-            subsetListModel.addElement("-- no grid --");
-            //model.setStatus(Status.INVALID);
-            //adjustView(model.getStatus());
-        }
-        else if (fd.getFctData().subsetList.isEmpty())
-        {
-            subsetListModel.addElement("-- no subsets --");
+            subsetList.clearSelection();
         }
         else   
         {
             fctNameField.setText(fd.getFctData().fctName);
             
+            // find indices of fd's subsets in subsetList
+            List<Integer> indexList = new ArrayList<Integer>();
+            boolean allFound = true;
             for (String ss: fd.getFctData().subsetList)
-                subsetListModel.addElement(ss);
-
-            // reset view in subset list
-            subsetList.clearSelection();
-            
-            /* this is more complicated, maybe later
-            for (int i = 0; i < ((UGXFileInfo)info).const__num_subsets(0, 0); ++i)
             {
-                String newSubset = ((UGXFileInfo)info).const__subset_name(0, 0, i);
-
-                // in this case we can stay with the old selected subset
-                if (newSubset.equals(data))
+                if (subsetList.getModel().getSize() > 0)
                 {
-                    if (getStatus() != UserDataModel.Status.VALID) {
-                        setStatus(UserDataModel.Status.WARNING);
+                    int firstMatch = subsetList.getNextMatch(ss, 0, Position.Bias.Forward);
+                    while (firstMatch != -1 && !ss.equals(subsetList.getModel().getElementAt(firstMatch)))
+                        firstMatch = subsetList.getNextMatch(ss, firstMatch, Position.Bias.Forward);
+                    
+                    if (firstMatch != -1) indexList.add(new Integer(firstMatch));
+                    else
+                    {
+                        // we need to remove this subset from the selection,
+                        // as it seems no longer to be available
+                        fd.getFctData().subsetList.remove(ss);
+                        allFound = false;
                     }
-                    return;
                 }
             }
-            */
+            
+            // set the selection
+            if (!indexList.isEmpty())
+            {
+                int[] indices = new int[indexList.size()];
+                for (int i=0; i<indexList.size(); i++) indices[i] = indexList.get(i).intValue();
+
+                subsetList.setSelectedIndices(indices);
+            }
+            
+            // warn if not all selected functions found
+            if (!allFound)
+                eu.mihosoft.vrl.system.VMessage.warning("Missing subsets", "Not all subsets stored in FunctionDefinitionType are present in the current UGX file.");
+            
+            // notify observable
+            notifyFunctionDefinitionObservable();
         }
 
         // set the maximum size to preferred size in order to avoid stretched drop-downs

@@ -265,9 +265,25 @@ public class LoadUGXFileObservable {
                 }
             }
         }
-
     }
+    
+    /**
+     * Notifies a specific observer of a ugx_tag about the currently given data
+     * 
+     * @param obs       the observer
+     * @param ugx_tag   the ugx_tag
+     * @param object    the object containing the observer
+     * @param windowID  the window containing the object
+     */
+    public synchronized void notifyObserver(LoadUGXFileObserver obs, String ugx_tag, Object object, int windowID)
+    {
+        // try getting data for ugx_tag
+        UGXFileTag ugxTag = getTag(ugx_tag, object, windowID, false);
 
+        if (ugxTag != null) obs.update(ugxTag.data);
+    }
+    
+    
     /**
      * sets a filename for a ugx_tag. The file will be analysed and the contained 
      * data will be broadcasted to all observer of the ugx_tag.
