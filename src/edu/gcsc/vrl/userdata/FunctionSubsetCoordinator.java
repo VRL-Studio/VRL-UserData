@@ -252,9 +252,9 @@ System.out.println("");*/
         
         if (indexMap.containsKey(id))
         {
-            for (int i = 0; i < indexMap.get(id).get(); i++)
+            for (FSCoupling fsc: couplingMap.get(id).values())
             {
-                couplingMap.get(id).get(i).fObs.updateFunctions(fcts);
+                fsc.fObs.updateFunctions(fcts);
                 //notifySubsetObserver(i, fct_tag, windowID);   // should be done in observer
             }
         }

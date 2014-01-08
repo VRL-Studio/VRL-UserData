@@ -54,7 +54,7 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
         this.model = theModel;
         this.tuple = theTuple;
         
-        this.nFct = ((UserDependentSubsetModel) model).getNFct();
+        nFct = ((UserDependentSubsetModel) model).getNFct();
         // this should be prevented by the construction of "theName" in UserDataTupleType
         if (name.length != nFct)
             throw new RuntimeException("UserDependentSubsetView: Not enough function designators given.");
@@ -246,6 +246,13 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
     public void adjustView(UserDataModel theModel)
     {
         this.model = theModel;
+        if (nFct != ((UserDependentSubsetModel) model).getNFct())
+        {
+            throw new RuntimeException("UserDependentSubsetView: Number of "
+                    + "functions in view and model are not identical: model has "
+                    + ((UserDependentSubsetModel) model).getNFct() + ", view "
+                    + nFct + ". (UserDatatuple )" + tuple.getValueOptions());
+        }
         
         if (fctSelection != null)
         {

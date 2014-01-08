@@ -182,6 +182,7 @@ public class UserDependentSubsetModel extends UserDataModel
         if (model instanceof UserDependentSubsetModel)
         {
             UserDependentSubsetModel m = (UserDependentSubsetModel) model;
+            nFct = m.getNFct();
             setSelectedFunctions(m.getSelectedFunctions(), m.getSelectedFunctionIndices());
             setSelectedSubsets(m.getSelectedSubsets(), m.getSelectedSubsetIndices());
             setStatus(m.getStatus());

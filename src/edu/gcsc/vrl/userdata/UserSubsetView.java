@@ -80,7 +80,9 @@ public class UserSubsetView extends UserDataView {
             textView.addActionListener(new ActionListener() {
 
                 @Override
-                public void actionPerformed(ActionEvent e) {
+                public void actionPerformed(ActionEvent e)
+                {
+                    if (internalAdjustment) return;
                     model.setData(textView.getText());
                     tuple.setDataOutdated();
                     tuple.storeCustomParamData();

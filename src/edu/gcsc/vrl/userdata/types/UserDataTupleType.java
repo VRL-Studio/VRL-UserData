@@ -46,6 +46,7 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
     protected String ugx_tag = null;
     protected String ugx_globalTag = null;
     protected String fct_tag = null;
+    protected boolean evalReqPerformed = false;
 
     public UserDataTupleType()
     {
@@ -193,15 +194,17 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
         for (int i = 0; i < datas.size(); i++) {
 
             Data data = datas.get(i);
+            //if (data.category != UserDataModel.Category.DEPENDENT_SUBSET)
+            {
+                UserDataModel tmpModel = (UserDataModel) getCustomData().get("UserDataTuple:" + i);
+                if (tmpModel != null) {
 
-            UserDataModel tmpModel = (UserDataModel) getCustomData().get("UserDataTuple:" + i);
-            if (tmpModel != null) {
-
-                data.model.setModel(tmpModel);
-                data.view.adjustView(data.model);
-            } else {
-//                throw new RuntimeException("UserDataTupleType:evaluateCustomParamData:"
-//                        + " cannot read custom data correctly.");
+                    data.model.setModel(tmpModel);
+                    data.view.adjustView(data.model);
+                } else {
+    //                throw new RuntimeException("UserDataTupleType:evaluateCustomParamData:"
+    //                        + " cannot read custom data correctly.");
+                }
             }
         }
 
@@ -209,6 +212,9 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
 
     public void storeCustomParamData() {
 
+        // never meddle with the loading of stored params
+        if (getMainCanvas().isLoadingSession()) return;
+            
         CustomParamData pData = getCustomData();
 
         if (pData == null) {
@@ -216,10 +222,10 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
         }
 
 
-        for (int i = 0; i < datas.size(); i++) {
-
+        for (int i = 0; i < datas.size(); i++)
+        {
             Data data = datas.get(i);
-
+            //if (data.category != UserDataModel.Category.DEPENDENT_SUBSET)
             pData.put("UserDataTuple:" + i, data.model);
         }
 
@@ -231,6 +237,9 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
 
         super.evaluationRequest(script);
 
+        // do this only once
+        if (evalReqPerformed) return;
+        
         String type = null;
 
         if (getValueOptions() != null) {
@@ -357,6 +366,8 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
             throw new RuntimeException("UserDataTupleType: simultaneous usage of"
                     + " 'ugx_tag' and 'ugx_globalTag' not allowed.");
         }
+        
+        evalReqPerformed = true;
     }
 
     @Override
@@ -440,7 +451,6 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
     // inherited from LoadUGXFileObserver
     @Override
     public void update(UGXFileInfo info) {
-        int i = 0;
         // adjust Data for new FileInfo in model and view
         for (Data theData : datas) {
 

@@ -32,7 +32,6 @@ public abstract class UserDataModel implements Serializable {
         MATRIX,
         SUBSET,
         DEPENDENT_SUBSET,
-        DEPENDENT_FUNCTION,
         LINKER
     }
     
