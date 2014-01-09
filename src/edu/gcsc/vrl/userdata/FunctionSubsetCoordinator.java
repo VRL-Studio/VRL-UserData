@@ -1,6 +1,7 @@
 package edu.gcsc.vrl.userdata;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -240,7 +241,7 @@ System.out.println("");*/
      * @param windowID  windowID the data is associated to
      */
     @Override
-    public void update(List<FunctionDefinitionObservable.FctData> data,
+    public void update(Collection<FunctionDefinitionObservable.FctData> data,
                        String fct_tag, int windowID)
     {
         Identifier id = new Identifier(fct_tag, windowID);

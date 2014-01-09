@@ -404,26 +404,6 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
         }
     }
     
-    /**
-    * This method is called after this typerepresentation has been removed from
-    * method representation (including unsetting connector etc.). It may be
-    * used to perform custom finalization based on option evaluation etc.
-    */
-    @Override
-    public void removedFromMethodRepresentation()
-    {
-        // if a DEPENDENT_SUBSET object is present, revoke it as FunctionSubsetCoordinatorObserver
-        for (Data theData : datas)
-        {
-            if (theData.category == UserDataModel.Category.DEPENDENT_SUBSET)
-            {   
-                ((UserDependentSubsetView)theData.view).removeAsObserver();
-                break;
-            }
-        }
-        
-        super.removedFromMethodRepresentation();
-    }
 
     @Override
     public void dispose() {

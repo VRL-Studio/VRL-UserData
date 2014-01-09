@@ -1,6 +1,6 @@
 package edu.gcsc.vrl.userdata;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  *
@@ -15,5 +15,5 @@ public interface FunctionDefinitionObserver
      * @param fct_tag   fct_tag the data is associated to
      * @param windowID  windowID the data is associated to
      */
-    public void update(List<FunctionDefinitionObservable.FctData> data, String fct_tag, int windowID);
+    public void update(Collection<FunctionDefinitionObservable.FctData> data, String fct_tag, int windowID);
 }

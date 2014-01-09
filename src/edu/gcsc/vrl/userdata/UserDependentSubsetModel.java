@@ -1,6 +1,6 @@
 package edu.gcsc.vrl.userdata;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -9,97 +9,84 @@ import java.util.List;
  */
 public class UserDependentSubsetModel extends UserDataModel
 {
-    private int nFct;
-    private String[] selectedFunctions;
-    private int[] selectedFunctionIndices;
-    private List<String> selectedSubsets;
-    private int[] selectedSubsetIndices;
     
     public UserDependentSubsetModel()
     {
-        this(0);
+        //
     }
     
-    public UserDependentSubsetModel(int _nFct)
+    public UserDependentSubsetModel(int nFct)
     {
-        nFct = _nFct;
-        selectedFunctions = new String[nFct];
-        selectedFunctionIndices = new int[nFct];
+        String[] selectedFunctions = new String[nFct];
+        int[] selectedFunctionIndices = new int[nFct];
         for (int i=0; i<nFct; i++)
         {
             selectedFunctions[i] = "";
             selectedFunctionIndices[i] = -1;
         }
-        selectedSubsets = new ArrayList<String>();
-        selectedSubsetIndices = new int[]{};
+        String[] selectedSubsets = new String[]{};
+        int[] selectedSubsetIndices = new int[]{};
+        
+        this.selections = new FSDataType(selectedFunctions, selectedFunctionIndices,
+                              selectedSubsets, selectedSubsetIndices);
+        this.nFct = nFct;
     }
     
-    /**
-     * @return number of functions to be selected
-     */
-    public int getNFct()
+   
+    public static class FSDataType implements Serializable
     {
-        return nFct;
+        private static final long serialVersionUID = 1L;
+    
+        // make class conform to javabeans standard (necessary for xml export)
+        public FSDataType() {}
+        
+        public FSDataType(String[] _selFct, int[] _selFctInd,
+                          String[] _selSs, int[] _selSsInd)
+        {
+            selFct = _selFct;
+            selFctInd = _selFctInd;
+            selSs = _selSs;
+            selSsInd = _selSsInd;
+        }
+        
+        String[] selFct;
+        int[] selFctInd;
+        String[] selSs;
+        int[] selSsInd;
+
+        public String[] getSelFct() {return selFct;}
+        public void setSelFct(String[] selFct) {this.selFct = selFct;}
+
+        public int[] getSelFctInd() {return selFctInd;}
+        public void setSelFctInd(int[] selFctInd) {this.selFctInd = selFctInd;}
+
+        public String[] getSelSs() {return selSs;}
+        public void setSelSs(String[] selSs) {this.selSs = selSs;}
+
+        public int[] getSelSsInd() {return selSsInd;}
+        public void setSelSsInd(int[] selSsInd) {this.selSsInd = selSsInd;}
     }
+    
+    int nFct;
+    UserDependentSubsetModel.FSDataType selections;
+    
+    
+    public int getnFct() {return nFct;}
+    public void setnFct(int nFct) {this.nFct = nFct;}
+    
+    public FSDataType getSelections() {return selections;}
+    public void setSelections(FSDataType selections) {this.selections = selections;}
+    
     
     // inherited from UserDataModel
     /**
-     * Not to be used.
-     * Use getSelectedFunction() and getSelectedSubset() instead.
-     * @return error
+     * @return selected functions and subsets
      */
     @Override
-    public Object getData()
-    {
-        return new FSDataType(nFct, selectedFunctions, selectedFunctionIndices,
-                              selectedSubsets, selectedSubsetIndices);
-    }
-    
-    /**
-     * @return selected function names
-     */
-    public String[] getSelectedFunctions()
-    {
-        return selectedFunctions;
-    }
+    public Object getData() {return selections;}
      
     /**
-     * @param arrayIndex index of function selector in JComboBox array    
-     * @return  selected function names
-     */
-    public String getSelectedFunction(int arrayIndex)
-    {
-        return selectedFunctions[arrayIndex];
-    }
-            
-    /**
-     * @return selected subset name
-     */
-    public List<String> getSelectedSubsets()
-    {
-        return selectedSubsets;
-    }
-            
-    /**
-     * @return selected function indices
-     */
-    public int[] getSelectedFunctionIndices()
-    {
-        return selectedFunctionIndices;
-    }
-    
-    /**
-     * Find the index belonging to the selected subset.
-     * @return selected index
-     */
-    public int[] getSelectedSubsetIndices()
-    {
-        return selectedSubsetIndices;
-    }
-    
-    /**
-     * Not to be used.
-     * Use setSelectedFunction() and setSelectedSubset() instead.
+     * Set selected functions and subsets.
      * @param newData
      */
     @Override
@@ -107,13 +94,37 @@ public class UserDependentSubsetModel extends UserDataModel
     {
         if (newData instanceof FSDataType)
         {
-            FSDataType fsd = (FSDataType) newData;
-            nFct = fsd.nFct;
-            setSelectedFunctions(fsd.selFct, fsd.selFctInd);
-            setSelectedSubsets(fsd.selSs, fsd.selSsInd);
+            this.selections = (FSDataType) newData;
+            this.nFct = selections.getSelFct().length;
         }
     }
-
+    
+    /**
+     * @return  selected function names
+     */
+    public String[] getSelectedFunctions()
+    {
+        return selections.getSelFct();
+    }
+    
+    /**
+     * @return  selected function indices
+     */
+    public int[] getSelectedFunctionIndices()
+    {
+        return selections.getSelFctInd();
+    }
+    
+    
+    /**
+     * @param arrayIndex index of function selector in JComboBox array    
+     * @return  selected function name at arrayIndex
+     */
+    public String getSelectedFunction(int arrayIndex)
+    {
+        return selections.getSelFct()[arrayIndex];
+    }
+    
     
     /**
      * Set information about selected function.
@@ -122,8 +133,8 @@ public class UserDependentSubsetModel extends UserDataModel
      */
     public void setSelectedFunctions(String[] fctNames, int[] fctIndices)
     {
-         selectedFunctions = fctNames;
-         selectedFunctionIndices = fctIndices;
+         selections.setSelFct(fctNames);
+         selections.setSelFctInd(fctIndices);
          
          if (fctNames == null) return;
          if (fctNames.length != nFct)
@@ -146,31 +157,48 @@ public class UserDependentSubsetModel extends UserDataModel
      */
     public void setSelectedFunction(int arrayIndex, String fctName, int fctIndex)
     {
-         selectedFunctions[arrayIndex] = fctName;
-         selectedFunctionIndices[arrayIndex] = fctIndex;
+         selections.getSelFct()[arrayIndex] = fctName;
+         selections.getSelFctInd()[arrayIndex] = fctIndex;
          
          if (fctName == null) return;
          
          for (int i=0; i<nFct; i++)
-             if (selectedFunctions[i] == null || selectedFunctions[i].equals("")) return;
+             if (selections.getSelFct()[i] == null || selections.getSelFct()[i].equals("")) return;
          
          setStatus(Status.VALID);
     }
-
     
+    /**
+    * @return selected subset name
+    */
+    public String[] getSelectedSubsets()
+    {
+        return selections.getSelSs();
+    }
+    
+    /**
+    * @return selected subset indices
+    */
+    public int[] getSelectedSubsetIndices()
+    {
+        return selections.getSelSsInd();
+    }
+
+
     /**
      * Set information about selected subset.
      * @param ssNames       function names as string
      * @param ssIndices     function index in definition   
      */
-    public void setSelectedSubsets(List<String> ssNames, int[] ssIndices)
+    public void setSelectedSubsets(String[] ssNames, int[] ssIndices)
     {
-         selectedSubsets = ssNames;
-         selectedSubsetIndices = ssIndices;
+         selections.setSelSs(ssNames);
+         selections.setSelSsInd(ssIndices);
          
-         if (ssNames == null || ssNames.isEmpty()) setStatus(Status.INVALID);
+         if (ssNames == null || ssNames.length == 0) setStatus(Status.INVALID);
          else setStatus(Status.VALID);
     }
+
     
     
     /**
@@ -182,9 +210,8 @@ public class UserDependentSubsetModel extends UserDataModel
         if (model instanceof UserDependentSubsetModel)
         {
             UserDependentSubsetModel m = (UserDependentSubsetModel) model;
-            nFct = m.getNFct();
-            setSelectedFunctions(m.getSelectedFunctions(), m.getSelectedFunctionIndices());
-            setSelectedSubsets(m.getSelectedSubsets(), m.getSelectedSubsetIndices());
+            this.selections = m.selections;
+            this.nFct = selections.getSelFct().length;
             setStatus(m.getStatus());
         }
         else throw new RuntimeException("UserData could not be set from other UserDataModel.\n");
@@ -202,9 +229,9 @@ public class UserDependentSubsetModel extends UserDataModel
     }
     
     /**
-     * Adjusts function data according to given functions.
+     * Adjusts function selections according to given functions.
      * 
-     * @param fctList     new fct data
+     * @param fctList     new fct selections
      */
     public void adjustFunctionData(List<String> fctList)
     {
@@ -217,7 +244,7 @@ public class UserDependentSubsetModel extends UserDataModel
         // check whether new function definitions still contain all previously
         // selected functions; if that is the case, do not change status
         boolean allFunctionsPresent = true;
-        for (String selFct: selectedFunctions)
+        for (String selFct: selections.getSelFct())
         {
             if (selFct.equals("")) continue;   // no sense looking for non-selected functions
             boolean fctPresent = false;
@@ -242,7 +269,7 @@ public class UserDependentSubsetModel extends UserDataModel
         // does not contain all currently selected functions, then:
         // if possible: select the same indices as before and warn
         int maxSelInd = 0;
-        for (int sfi: selectedFunctionIndices)
+        for (int sfi: selections.getSelFctInd())
             if (maxSelInd < sfi) maxSelInd = sfi;
         
         if (fctList.size() > maxSelInd)
@@ -250,9 +277,9 @@ public class UserDependentSubsetModel extends UserDataModel
             boolean allFctDefOK = true;
             for (int i=0; i<nFct; i++)
             {
-                if (selectedFunctionIndices[i] < 0) continue;   // no sense looking for non-selected functions
-                if (fctList.get(selectedFunctionIndices[i]) == null
-                    || fctList.get(selectedFunctionIndices[i]).equals(""))
+                if (selections.getSelFctInd()[i] < 0) continue;   // no sense looking for non-selected functions
+                if (fctList.get(selections.getSelFctInd()[i]) == null
+                    || fctList.get(selections.getSelFctInd()[i]).equals(""))
                 {
                     allFctDefOK = false;
                     break;
@@ -261,7 +288,7 @@ public class UserDependentSubsetModel extends UserDataModel
             if (allFctDefOK)
             {
                 for (int i=0; i<nFct; i++)
-                    if (selectedFunctionIndices[i] >= 0) selectedFunctions[i] = fctList.get(selectedFunctionIndices[i]);
+                    if (selections.getSelFctInd()[i] >= 0) selections.getSelFct()[i] = fctList.get(selections.getSelFctInd()[i]);
                 if (getStatus() != Status.INVALID) setStatus(Status.WARNING);
                 return;
             }
@@ -272,8 +299,8 @@ public class UserDependentSubsetModel extends UserDataModel
         {
             for (int i=0; i<nFct; i++)
             {
-                selectedFunctions[i] = fctList.get(0);
-                selectedFunctionIndices[i] = 0;
+                selections.getSelFct()[i] = fctList.get(0);
+                selections.getSelFctInd()[i] = 0;
             }
             return;
         }
@@ -281,8 +308,8 @@ public class UserDependentSubsetModel extends UserDataModel
         // if everything fails (no function definition): set invalid
         for (int i=0; i<nFct; i++)
         {
-            selectedFunctions[i] = "";
-            selectedFunctionIndices[i] = -1;
+            selections.getSelFct()[i] = "";
+            selections.getSelFctInd()[i] = -1;
         }
         setStatus(Status.INVALID);
     }
@@ -290,9 +317,9 @@ public class UserDependentSubsetModel extends UserDataModel
     
     
     /**
-     * Adjusts subset data according to given subsets.
+     * Adjusts subset selections according to given subsets.
      * 
-     * @param ssList     new file data
+     * @param ssList     new file selections
      */
     public void adjustSubsetData(List<String> ssList)
     {
@@ -305,9 +332,9 @@ public class UserDependentSubsetModel extends UserDataModel
         // compare selectedSubsetsList with given List,
         // check occurence of each selected element 
         boolean allFound = true;
-        int[] ssiList = getSelectedSubsetIndices();
+        int[] ssiList = selections.getSelSsInd();
         int selssi = -1;
-        for (String sel: selectedSubsets)
+        for (String sel: selections.getSelSs())
         {
             selssi++;
             boolean found = false;
@@ -326,7 +353,7 @@ public class UserDependentSubsetModel extends UserDataModel
         }
         if (allFound)
         {
-            setSelectedSubsets(selectedSubsets, ssiList);
+            setSelectedSubsets(selections.getSelSs(), ssiList);
             return;
         }
 
@@ -334,54 +361,33 @@ public class UserDependentSubsetModel extends UserDataModel
         // does not contain currently selected subsets, then:
         if (ssList.size() > 0 && ssList.get(0) != null)
         {
-            selectedSubsets.clear();
-            selectedSubsets.add(ssList.get(0));
-            selectedSubsetIndices = new int[]{0};
+            selections.setSelSs(new String[]{ssList.get(0)});
+            selections.setSelSsInd(new int[]{0});
             
             if (!(getStatus() == Status.INVALID)) setStatus(Status.WARNING);
         }
         else
         {
-            selectedSubsets.clear();                
-            selectedSubsetIndices = new int[]{};
+            selections.setSelSs(new String[]{});                
+            selections.setSelSsInd(new int[]{});
             
             setStatus(Status.INVALID);
         }
     }
     
-    public class FSDataType
-    {
-        public FSDataType(int _nFct, String[] _selFct, int[] _selFctInd,
-                          List<String> _selSs, int[] _selSsInd)
-        {
-            nFct = _nFct;
-            selFct = _selFct;
-            selFctInd = _selFctInd;
-            selSs = _selSs;
-            selSsInd = _selSsInd;
-        }
-        
-        public int nFct;
-        public String[] selFct;
-        public int[] selFctInd;
-        public List<String> selSs;
-        public int[] selSsInd;
-    }
-    
     
     /**
-     *  creates the user data
-     * @return  the created user data
+     *  creates the user selections
+     * @return  the created user selections
      */
     @Override
     public Object createUserData()
     {
-        return new FSDataType(nFct, selectedFunctions, selectedFunctionIndices,
-                              selectedSubsets, selectedSubsetIndices);
+        return selections;
     }
 
     /**
-     * checks if user data can be created
+     * checks if user selections can be created
      * @return empty message if everything ok, error message else
      */
     @Override

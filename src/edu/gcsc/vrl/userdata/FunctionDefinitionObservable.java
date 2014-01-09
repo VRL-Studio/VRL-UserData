@@ -1,5 +1,6 @@
 package edu.gcsc.vrl.userdata;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ public class FunctionDefinitionObservable
     private FunctionDefinitionObservable()
     {
         this.fctTagMap = new HashMap<Identifier, FctTagData>();
+        this.arrayIndexMap = new HashMap<Identifier, AtomicInteger>();
     }
     private static volatile FunctionDefinitionObservable instance = null;
 
@@ -50,8 +52,10 @@ public class FunctionDefinitionObservable
      * Data Container class. Holds the function data
      * (i.e. functions and subsets they are defined on).
      */
-    public static class FctData
+    public static class FctData implements Serializable
     {
+        private static final long serialVersionUID = 1L;
+    
         public FctData(String fn, List<String> ss)
         {
             fctName = fn;
@@ -61,6 +65,12 @@ public class FunctionDefinitionObservable
         {
             this("", new ArrayList<String>());
         }
+        
+        public String getFctName() {return fctName;}
+        public void setFctName(String fctName) {this.fctName = fctName;}
+
+        public List<String> getSubsetList() {return subsetList;}
+        public void setSubsetList(List<String> subsetList) {this.subsetList = subsetList;}
         
         public String fctName = null;
         public List<String> subsetList = null;
@@ -73,7 +83,7 @@ public class FunctionDefinitionObservable
     private class FctTagData
     {
         public Collection<FunctionDefinitionObserver> observers = new HashSet<FunctionDefinitionObserver>();
-        public List<FctData> data = new ArrayList<FctData>();
+        public HashMap<Integer, FctData> data = new HashMap<Integer, FctData>();
     }
     
     
@@ -113,7 +123,7 @@ public class FunctionDefinitionObservable
     
     // For every tag, this map holds the FctTagData associated; it contains a
     // list of all observers of that tag and the actual data associated with it.
-    private transient Map<Identifier, FctTagData> fctTagMap = new HashMap<Identifier, FctTagData>();
+    private transient Map<Identifier, FctTagData> fctTagMap;
     
     // The function definition is realized in an array of pairs
     // (function,subsets it is defined on), the array index makes access to a
@@ -121,7 +131,7 @@ public class FunctionDefinitionObservable
     // This map stores the current number of arrayIndices for one function
     // definition array (perhaps, one single int would be enough, since only one
     // function definition array is to be expected).
-    private transient Map<Identifier, AtomicInteger> arrayIndexMap = new HashMap<Identifier, AtomicInteger>();
+    private transient Map<Identifier, AtomicInteger> arrayIndexMap;
    
     /**
      * Returns the FctTagData for a fct_tag. If create is set to true a new
@@ -162,11 +172,14 @@ public class FunctionDefinitionObservable
         Identifier id = new Identifier(fct_tag, windowID);
         if (!arrayIndexMap.containsKey(id)) arrayIndexMap.put(id, new AtomicInteger(0));
         if (!fctTagMap.containsKey(id)) fctTagMap.put(id, new FctTagData());
-        fctTagMap.get(id).data.add(new FctData("",new ArrayList<String>()));
+        
+        // create a fctTagMap entry
+        Integer index = new Integer(arrayIndexMap.get(id).getAndIncrement());        
+        fctTagMap.get(id).data.put(index, new FctData("",new ArrayList<String>()));
         
         notifyObservers(fct_tag, windowID);
         
-        return arrayIndexMap.get(id).getAndIncrement();
+        return index;
     }
 
     /**
@@ -179,9 +192,7 @@ public class FunctionDefinitionObservable
     public synchronized void revokeArrayIndex(String fct_tag, int windowID, int arrayIndex)
     {
         Identifier id = new Identifier(fct_tag, windowID);
-        Integer a = null;
         
-        arrayIndexMap.get(id).decrementAndGet();
         fctTagMap.get(id).data.remove(arrayIndex);
         
         notifyObservers(fct_tag, windowID);
@@ -202,7 +213,7 @@ public class FunctionDefinitionObservable
         getTag(fct_tag, windowID, true).observers.add(obs);
         
         if (requestUpdate)
-            obs.update(getTag(fct_tag, windowID, false).data, fct_tag, windowID);
+            obs.update(getTag(fct_tag, windowID, false).data.values(), fct_tag, windowID);
     }
 
     
@@ -245,7 +256,7 @@ public class FunctionDefinitionObservable
         {
             // notify observers of this fct_tag
             for (FunctionDefinitionObserver obs : fctTagData.observers)
-                obs.update(fctTagData.data, fct_tag, windowID);
+                obs.update(fctTagData.data.values(), fct_tag, windowID);
         }
     }
 
@@ -260,7 +271,7 @@ public class FunctionDefinitionObservable
     {
         // set the data
         FctTagData fctTagData = getTag(fct_tag, windowID, true);
-        fctTagData.data.set(arrayIndex, data);
+        fctTagData.data.put(arrayIndex, data);
         
         // notify the obersvers of this fct_tag
         notifyObservers(fct_tag, windowID);
@@ -271,13 +282,14 @@ public class FunctionDefinitionObservable
      * 
      * @param fct_tag   the fct_tag
      * @param windowID  the window containing the object
+     * @param index     index in the function definition array
      */
-    public synchronized void setInvalidData(String fct_tag, int windowID)
+    public synchronized void setInvalid(String fct_tag, int windowID, int index)
     {
         FctTagData fctTagData = getTag(fct_tag, windowID, true);
 
-        //  set to new (empty) data
-        fctTagData.data = null;
+        // remove fct def for this index
+        fctTagData.data.put(index, null);
 
         // notify the observers of this fct_tag
         notifyObservers(fct_tag, windowID);
@@ -293,7 +305,7 @@ public class FunctionDefinitionObservable
         
         // construct function names list
         ArrayList<String> fcts = new ArrayList<String>();
-        for (FctData fctData: fctTagData.data)
+        for (FctData fctData: fctTagData.data.values())
             fcts.add(fctData.fctName);
         
         return fcts;

@@ -12,7 +12,6 @@ import edu.gcsc.vrl.userdata.FunctionDefinitionObservable;
 import edu.gcsc.vrl.userdata.LoadUGXFileObservable;
 import edu.gcsc.vrl.userdata.LoadUGXFileObserver;
 import eu.mihosoft.vrl.annotation.TypeInfo;
-import eu.mihosoft.vrl.reflection.CustomParamData;
 import eu.mihosoft.vrl.reflection.LayoutType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.reflection.VisualCanvas;
@@ -42,11 +41,14 @@ import javax.swing.text.Position;
 @TypeInfo(type = FunctionDefinition.class, input = true, output = false, style = "default")
 public class FunctionDefinitionType extends TypeRepresentationBase implements Serializable, LoadUGXFileObserver
 {
+    private static final long serialVersionUID = 1L;
+    
     protected String name = null;
     protected VTextField fctNameField = null;
     protected JList subsetList = null;
     DefaultListModel subsetListModel = null;
     FunctionDefinition fd;
+    boolean internalAdjustment;
     
     // index for identification of array position in function def array
     // (to be provided by FunctionDefinitionObservable)
@@ -102,7 +104,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
                     List<String> selSubsets = new ArrayList<String>();
                     for (int i: subsetList.getSelectedIndices()) selSubsets.add((String) subsetList.getModel().getElementAt(i));
                     fd.setFctData(new FunctionDefinitionObservable.FctData(fctNameField.getText(), selSubsets));
-                    storeCustomParamData();
+                    //storeCustomParamData();
                     notifyFunctionDefinitionObservable();
                 }
             }
@@ -139,6 +141,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
             @Override
             public void valueChanged(ListSelectionEvent e)
             {
+                if (internalAdjustment) return;
                 if (subsetList.getSelectedIndices() != null && fctNameField.getText() != null)
                 {
                     // construct selectedValuesList by hand since 
@@ -146,7 +149,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
                     List<String> selSubsets = new ArrayList<String>();
                     for (int i: subsetList.getSelectedIndices()) selSubsets.add((String) subsetList.getModel().getElementAt(i));
                     fd.setFctData(new FunctionDefinitionObservable.FctData(fctNameField.getText(), selSubsets));
-                    storeCustomParamData();
+                    //storeCustomParamData();
                     notifyFunctionDefinitionObservable();
                 }
             }
@@ -171,7 +174,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
                 int windowID = 0;
                 LoadUGXFileObservable.getInstance().notifyObserver(this, ugx_tag, obj, windowID);
             }
-            else adjustView();
+            else adjustView(); // this also notifies observable
         }
     }
 
@@ -213,7 +216,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         }
     }
     
-    
+    /*
     @Override
     public void evaluateCustomParamData()
     {
@@ -242,6 +245,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         
         setCustomData(pData);
     }
+    */
     
     /**
      * This method is called after this typerepresentation has been added to a
@@ -273,26 +277,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
             arrayIndex = FunctionDefinitionObservable.getInstance().receiveArrayIndex(fct_tag, windowID);
         }
         
-        if (!getMainCanvas().isLoadingSession()) storeCustomParamData();
-    }
-    
-    /**
-    * This method is called after this typerepresentation has been removed from
-    * method representation (including unsetting connector etc.). It may be
-    * used to perform custom finalization based on option evaluation etc.
-    */
-    @Override
-    public void removedFromMethodRepresentation()
-    {
-        // revoke index from functionDefinitionObservable (array index)
-        if (fct_tag != null)
-        {
-            int id = this.getParentMethod().getParentObject().getObjectID();
-            int windowID = 0;
-            FunctionDefinitionObservable.getInstance().revokeArrayIndex(fct_tag, windowID, arrayIndex);
-        }
-        
-        super.removedFromMethodRepresentation();
+        //if (!getMainCanvas().isLoadingSession()) storeCustomParamData();
     }
 
      
@@ -307,9 +292,8 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         
         if (fct_tag != null)
         {
-            int id = this.getParentMethod().getParentObject().getObjectID();
             int windowID = 0;
-            FunctionDefinitionObservable.getInstance().setInvalidData(fct_tag, windowID);
+            FunctionDefinitionObservable.getInstance().revokeArrayIndex(fct_tag, windowID, arrayIndex);
         }
         
         super.dispose();
@@ -332,7 +316,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         if (fd.getFctData() != null)
             FunctionDefinitionObservable.getInstance().setFunctionDefinitions(fd.getFctData(), fct_tag, windowID, arrayIndex);
         else
-            FunctionDefinitionObservable.getInstance().setInvalidData(fct_tag, windowID);
+            FunctionDefinitionObservable.getInstance().setInvalid(fct_tag, windowID, arrayIndex);
     }
 
     
@@ -342,13 +326,14 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
     {
         // adjust data for new FileInfo
         adjustView(info);
-        storeCustomParamData();
+        //storeCustomParamData();
     }
     
     
     private void adjustView(UGXFileInfo info)
     {
-        // adjust model
+        // adjust displayed subset list
+        internalAdjustment = true;
         if (info != null)
         {
             if (!(info instanceof UGXFileInfo))
@@ -364,6 +349,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
             subsetListModel.removeAllElements();
             subsetListModel.addElement("-- no grid --");
         }
+        internalAdjustment = false;
 
         // adjust selections
         adjustView();
@@ -404,6 +390,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
             }
             
             // set the selection
+            internalAdjustment = true;
             if (!indexList.isEmpty())
             {
                 int[] indices = new int[indexList.size()];
@@ -411,10 +398,15 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
 
                 subsetList.setSelectedIndices(indices);
             }
+            internalAdjustment = false;
             
             // warn if not all selected functions found
             if (!allFound)
-                eu.mihosoft.vrl.system.VMessage.warning("Missing subsets", "Not all subsets stored in FunctionDefinitionType are present in the current UGX file.");
+            {
+                eu.mihosoft.vrl.system.VMessage.warning("Missing subsets", "Not "
+                        + "all subsets stored in FunctionDefinitionType are "
+                        + "present in the current UGX file.");
+            }
             
             // notify observable
             notifyFunctionDefinitionObservable();

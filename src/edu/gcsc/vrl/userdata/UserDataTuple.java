@@ -20,6 +20,11 @@ public class UserDataTuple implements Serializable {
     private static final long serialVersionUID = 1L;
     private ArrayList<Object> data = new ArrayList<Object>();
 
+    // if active, error while loading, apparently,
+    // xml export not working 100% correctly then
+    //public ArrayList<Object> getData() {return data;}
+    //public void setData(ArrayList<Object> data) {this.data = data;}
+
     public UserDataTuple() {
     }
 

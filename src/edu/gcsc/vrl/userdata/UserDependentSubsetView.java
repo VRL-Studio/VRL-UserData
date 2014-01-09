@@ -54,10 +54,14 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
         this.model = theModel;
         this.tuple = theTuple;
         
-        nFct = ((UserDependentSubsetModel) model).getNFct();
+        nFct = ((UserDependentSubsetModel) model).getnFct();
         // this should be prevented by the construction of "theName" in UserDataTupleType
         if (name.length != nFct)
-            throw new RuntimeException("UserDependentSubsetView: Not enough function designators given.");
+        {
+            throw new RuntimeException("UserDependentSubsetView: Number of function "
+                    + "designators incorrect: Model has "+nFct+", but "
+                    + name.length+" given here.");
+        }
         
         fctSelection = new JComboBox[nFct];
         
@@ -89,7 +93,6 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
                             j, (String) fctSelection[j].getSelectedItem(), fctSelection[j].getSelectedIndex());
 
                         // update subset list accordingly
-                        // (must be done by UserDataTuple, for it holds the array index)
                         notifySubsetObserver();
 
                         adjustView(model.getStatus());
@@ -219,8 +222,9 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
                 {
                     // construct selectedValuesList by hand since 
                     // getSelectedValuesList() depends on 1.7 and may raise an exception
-                    List<String> selSubsets = new ArrayList<String>();
-                    for (int i: ssSelection.getSelectedIndices()) selSubsets.add((String) ssSelection.getModel().getElementAt(i));
+                    int[] selInd = ssSelection.getSelectedIndices();
+                    String[] selSubsets = new String[selInd.length];
+                    for (int i=0; i<selInd.length; i++) selSubsets[i] = ((String) ssSelection.getModel().getElementAt(selInd[i]));
                     ((UserDependentSubsetModel)model).setSelectedSubsets(selSubsets, ssSelection.getSelectedIndices());
 
                     adjustView(model.getStatus());
@@ -246,11 +250,11 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
     public void adjustView(UserDataModel theModel)
     {
         this.model = theModel;
-        if (nFct != ((UserDependentSubsetModel) model).getNFct())
+        if (nFct != ((UserDependentSubsetModel) model).getnFct())
         {
             throw new RuntimeException("UserDependentSubsetView: Number of "
                     + "functions in view and model are not identical: model has "
-                    + ((UserDependentSubsetModel) model).getNFct() + ", view "
+                    + ((UserDependentSubsetModel) model).getnFct() + ", view "
                     + nFct + ". (UserDatatuple )" + tuple.getValueOptions());
         }
         
@@ -273,6 +277,9 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
             }
             
             internalAdjustment = false;
+            
+            // update subset list accordingly
+            notifySubsetObserver();
 
             adjustView(model.getStatus());
         }
@@ -338,7 +345,6 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
                 if (model != null)
                 {
                     fctSelection[i].setSelectedIndex(((UserDependentSubsetModel)model).getSelectedFunctionIndices()[i]);
-                    //fctSelection[i].setSelectedItem(((UserDependentSubsetModel)model).getSelectedFunction(i));
                 }
                 
                 // if nothing is selected (can that happen at all?)
@@ -420,7 +426,7 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
 
             if (ssSelection.getSelectedIndices().length == 0) 
             {
-                ((UserDependentSubsetModel)model).setSelectedSubsets(new ArrayList<String>(), new int[]{});
+                ((UserDependentSubsetModel)model).setSelectedSubsets(new String[]{}, new int[]{});
                 if (model.getStatus() != UserDataModel.Status.INVALID) model.setStatus(UserDataModel.Status.WARNING);
                 adjustView(model.getStatus());
             }
