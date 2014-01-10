@@ -170,31 +170,31 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
     public synchronized void notifySubsetObserver(int couplingIndex, String fct_tag, int windowID)
     {
         Identifier id = new Identifier(fct_tag, windowID);
-        int[] selFctIndices = couplingMap.get(id).get(couplingIndex).fObs.getSelectedFunctionIndices();
+        String[] selFcts = couplingMap.get(id).get(couplingIndex).fObs.getSelectedFunctions();
         
-        if (selFctIndices == null)
+        if (selFcts == null)
             throw new RuntimeException("FunctionSubsetCoordinator: selFctIndices is null!");
         
-        if (selFctIndices.length < 1)
+        if (selFcts.length < 1)
             throw new RuntimeException("FunctionSubsetCoordinator: selFctIndices has no entries!");
   
         List<String> subsets;
-        if (selFctIndices[0] >= 0)
+        if (!"".equals(selFcts[0]))
         {
             // iteratively construct subset list by removing subsets not contained
             // in the subsets list of a selected function
             subsets = new ArrayList<String>(FunctionDefinitionObservable.getInstance()
-                    .requestSubsetsForFunction(selFctIndices[0], fct_tag, windowID));
+                    .requestSubsetsForFunction(selFcts[0], fct_tag, windowID));
 /*System.out.println(">>> subsets: --------");
 for (String s: subsets) System.out.println(">>> "+s);
 System.out.println("");*/
-            for (int sfi=1; sfi < selFctIndices.length; sfi++)
+            for (int sfi=1; sfi < selFcts.length; sfi++)
             {
                 List<String> currSsl;
-                if (selFctIndices[sfi] >= 0)
+                if (!"".equals(selFcts[sfi]))
                 {
                     currSsl = new ArrayList<String>(FunctionDefinitionObservable.getInstance()
-                        .requestSubsetsForFunction(selFctIndices[sfi], fct_tag, windowID));
+                        .requestSubsetsForFunction(selFcts[sfi], fct_tag, windowID));
                 }
                 else  currSsl = new ArrayList<String>();
                 
@@ -249,15 +249,12 @@ System.out.println("");*/
         // construct function names list and notify fctObservers
         ArrayList<String> fcts = new ArrayList<String>();
         for (FunctionDefinitionObservable.FctData fctData: data)
-            fcts.add(fctData.fctName);
+            fcts.add(fctData.getFctName());
         
         if (indexMap.containsKey(id))
         {
             for (FSCoupling fsc: couplingMap.get(id).values())
-            {
                 fsc.fObs.updateFunctions(fcts);
-                //notifySubsetObserver(i, fct_tag, windowID);   // should be done in observer
-            }
         }
         
         

@@ -3,6 +3,7 @@ package edu.gcsc.vrl.userdata;
 import edu.gcsc.vrl.userdata.UserDataModel.Status;
 import edu.gcsc.vrl.userdata.types.UserDataTupleType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
+import eu.mihosoft.vrl.system.VMessage;
 import eu.mihosoft.vrl.visual.VButton;
 import java.awt.Color;
 import java.awt.Component;
@@ -344,9 +345,22 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
 
                 if (model != null)
                 {
-                    fctSelection[i].setSelectedIndex(((UserDependentSubsetModel)model).getSelectedFunctionIndices()[i]);
+                    try
+                    {
+                        fctSelection[i].setSelectedIndex(((UserDependentSubsetModel)model).getSelectedFunctionIndices()[i]);
+                    }
+                    // if one of the indices is out of bounds
+                    // (should not happen, as model is always updated beforehand)
+                    catch (java.lang.IllegalArgumentException ex)
+                    {
+                        VMessage.warning("Illegal Argument in UserDependentSubsetModel",
+                                "The model holds a function index as selected which does not exist in the corresponding view"
+                                        + "(index is " + ((UserDependentSubsetModel)model).getSelectedFunctionIndices()[i]
+                                        + ", but only " + fctSelection[i].getItemCount()
+                                        + " item(s) in the view. "
+                                        + "This is an error, strictly-speaking. Please report it.");
+                    }
                 }
-                
                 // if nothing is selected (can that happen at all?)
                 if (fctSelection[i].getSelectedItem() == null) 
                 {
@@ -507,10 +521,10 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
     }
 
     @Override
-    public int[] getSelectedFunctionIndices()
+    public String[] getSelectedFunctions()
     {
         // forward this
-        return ((UserDependentSubsetModel)model).getSelectedFunctionIndices();
+        return ((UserDependentSubsetModel)model).getSelectedFunctions();
     }
     
     public void notifySubsetObserver()

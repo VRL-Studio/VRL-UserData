@@ -19,5 +19,5 @@ public interface FunctionSubsetCoordinatorFunctionObserver
      *  The method allows access to the currently selected function index.
      * @return index of selected function
      */
-    public int[] getSelectedFunctionIndices();
+    public String[] getSelectedFunctions();
 }

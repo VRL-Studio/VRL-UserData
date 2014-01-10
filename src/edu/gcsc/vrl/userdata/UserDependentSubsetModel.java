@@ -242,17 +242,21 @@ public class UserDependentSubsetModel extends UserDataModel
         }
         
         // check whether new function definitions still contain all previously
-        // selected functions; if that is the case, do not change status
+        // selected functions; if that is the case, adjust selected indices and
+        // do not change status
         boolean allFunctionsPresent = true;
-        for (String selFct: selections.getSelFct())
+        for (int i=0; i<selections.getSelFct().length; i++)
         {
+            String selFct = selections.getSelFct()[i];
             if (selFct.equals("")) continue;   // no sense looking for non-selected functions
             boolean fctPresent = false;
-            for (String fct: fctList)
+            for (int j=0; j<fctList.size(); j++)
             {
+                String fct = fctList.get(j);
                 if (fct.equals(selFct))
                 {
                     fctPresent = true;
+                    selections.getSelFctInd()[i] = j;
                     break;
                 }
             }
@@ -268,7 +272,7 @@ public class UserDependentSubsetModel extends UserDataModel
         // control reaches this code only if new function definition
         // does not contain all currently selected functions, then:
         // if possible: select the same indices as before and warn
-        int maxSelInd = 0;
+        int maxSelInd = -1;
         for (int sfi: selections.getSelFctInd())
             if (maxSelInd < sfi) maxSelInd = sfi;
         
@@ -293,19 +297,8 @@ public class UserDependentSubsetModel extends UserDataModel
                 return;
             }
         }
-        
-        // if this also fails, then pick the first index for every selection
-        if (!fctList.isEmpty() && fctList.get(0) != null && !fctList.get(0).equals(""))
-        {
-            for (int i=0; i<nFct; i++)
-            {
-                selections.getSelFct()[i] = fctList.get(0);
-                selections.getSelFctInd()[i] = 0;
-            }
-            return;
-        }
     
-        // if everything fails (no function definition): set invalid
+        // if both fail: set invalid
         for (int i=0; i<nFct; i++)
         {
             selections.getSelFct()[i] = "";

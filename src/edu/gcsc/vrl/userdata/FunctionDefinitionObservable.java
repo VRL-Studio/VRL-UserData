@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -311,7 +312,7 @@ public class FunctionDefinitionObservable
         return fcts;
     }
     
-    public List<String> requestSubsetsForFunction(int fctIndex, String fct_tag, int windowID)
+    public List<String> requestSubsetsForFunction(String fctName, String fct_tag, int windowID)
     {
         // get data for fct_tag
         FctTagData fctTagData = getTag(fct_tag, windowID, false);
@@ -319,6 +320,14 @@ public class FunctionDefinitionObservable
         // if no such fct_tag present, return empty list
         if (fctTagData == null) return new ArrayList<String>();
         
-        return fctTagData.data.get(fctIndex).subsetList;
+        Iterator<FctData> it = fctTagData.data.values().iterator();
+        while(it.hasNext())
+        {
+            FctData fd = it.next();
+            if (fd.getFctName().equals(fctName)) return fd.getSubsetList();
+        }
+        
+        // if no such function exists
+        return new ArrayList<String>();
     }
 }
