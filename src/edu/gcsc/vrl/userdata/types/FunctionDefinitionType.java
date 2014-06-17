@@ -333,6 +333,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
     private void adjustView(UGXFileInfo info)
     {
         // adjust displayed subset list
+        boolean mem_internalAdjustment = internalAdjustment;
         internalAdjustment = true;
         if (info != null)
         {
@@ -349,14 +350,17 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
             subsetListModel.removeAllElements();
             subsetListModel.addElement("-- no grid --");
         }
-        internalAdjustment = false;
-
+        internalAdjustment = mem_internalAdjustment;
+        
         // adjust selections
         adjustView();
     }
     
     private void adjustView()
     {
+        boolean mem_internalAdjustment = internalAdjustment;
+        internalAdjustment = true;
+        
         fctNameField.setText("");
             
         if (fd == null || fd.getFctData().subsetList.isEmpty())
@@ -370,6 +374,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
             // find indices of fd's subsets in subsetList
             List<Integer> indexList = new ArrayList<Integer>();
             boolean allFound = true;
+            List<String> toBeRemoved = new ArrayList<String>();
             for (String ss: fd.getFctData().subsetList)
             {
                 if (subsetList.getModel().getSize() > 0)
@@ -383,14 +388,17 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
                     {
                         // we need to remove this subset from the selection,
                         // as it seems no longer to be available
-                        fd.getFctData().subsetList.remove(ss);
+                        toBeRemoved.add(ss);
                         allFound = false;
                     }
                 }
             }
             
+            // remove subsets no longer available
+            for (String ss: toBeRemoved)
+                fd.getFctData().subsetList.remove(ss);
+            
             // set the selection
-            internalAdjustment = true;
             if (!indexList.isEmpty())
             {
                 int[] indices = new int[indexList.size()];
@@ -398,7 +406,6 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
 
                 subsetList.setSelectedIndices(indices);
             }
-            internalAdjustment = false;
             
             // warn if not all selected functions found
             if (!allFound)
@@ -419,6 +426,15 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         subsetList.setMaximumSize(max);
 
         subsetList.revalidate();
+        
+        internalAdjustment = mem_internalAdjustment;
+    }
+    
+    @Override
+    public String getValueAsCode()
+    {
+        // TODO: This is a stub. The real code will eventually have to be implemented!
+        return "null";
     }
     
 }
