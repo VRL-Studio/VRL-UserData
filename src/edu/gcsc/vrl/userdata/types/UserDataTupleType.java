@@ -12,6 +12,7 @@ import edu.gcsc.vrl.userdata.UserDataModel;
 import edu.gcsc.vrl.userdata.UserDataTuple;
 import edu.gcsc.vrl.userdata.UserDataView;
 import eu.mihosoft.vrl.annotation.TypeInfo;
+import eu.mihosoft.vrl.lang.VLangUtils;
 import eu.mihosoft.vrl.reflection.CustomParamData;
 import eu.mihosoft.vrl.reflection.LayoutType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
@@ -211,7 +212,6 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
             pData = new CustomParamData();
         }
 
-
         for (int i = 0; i < datas.size(); i++) {
 
             Data data = datas.get(i);
@@ -291,7 +291,6 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
             }
             datas.add(newData);
         }
-
 
         if (datas.size() != nameArray.length) {
             throw new RuntimeException("UserDataTupleType: number of categories does "
@@ -378,7 +377,31 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
 
     @Override
     public String getValueAsCode() {
-        // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
-        return "null as " + getType().getName();
+
+        UserDataTuple value = (UserDataTuple) getValue();
+
+//        System.out.println(" DD ");
+//        System.out.println(" DD " + getClass().getSimpleName() + ".getValueAsCode() value.getClass() = " + value.getClass());
+//        System.out.println(" DD ");
+        if (value == null) {
+            return "null as " + getType().getName();
+        }
+
+//        // to get the idea how to implement the string version
+//         new UserDataTuple().add(((UserDataTuple)getValue()).getData(0));
+        
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("new UserDataTuple()");
+
+        for (int i = 0; i < value.size(); i++) {
+            //type cast is save because  we know getValue() is not null
+            sb.append(".add(((UserDataTuple)getValue()).getData(").append(i).append("))");
+        }
+        sb.append(";");
+
+        return VLangUtils.addEscapesToCode(sb.toString());
+
+        
     }
 }
