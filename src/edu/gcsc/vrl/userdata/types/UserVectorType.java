@@ -19,11 +19,12 @@ public class UserVectorType extends UserDataTupleType implements Serializable {
 
     private static final long serialVersionUID = 1;
 
-    @Override
-    public String getValueAsCode() {
-        // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
-        return "null as " + getType().getName();
-    }
+//    should be now done by super class with getValueAsCodeHelperClassName()
+//    @Override
+//    public String getValueAsCode() {
+//        // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
+//        return "null as " + getType().getName();
+//    }
 
     @Override
     public void setValueOptions(String valueOptions) {

@@ -392,16 +392,27 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
         
         StringBuilder sb = new StringBuilder();
 
-        sb.append("new UserDataTuple()");
+        sb.append("new ").append(getValueAsCodeHelperClassName()).append("()");
 
         for (int i = 0; i < value.size(); i++) {
             //type cast is save because  we know getValue() is not null
-            sb.append(".add(((UserDataTuple)getValue()).getData(").append(i).append("))");
+//            sb.append(".add(((UserDataTuple)getValue()).getData(").append(i).append("))");
+            sb.append(".add(((").append(getValueAsCodeHelperClassName()).append(")getValue()).getData(").append(i).append("))");
         }
         sb.append(";");
 
         return VLangUtils.addEscapesToCode(sb.toString());
 
         
+    }
+
+    /**
+    This method is introduced to reduce the code duplication in getValueAsCode() in derived classes.
+    
+    @return A string with the simple class name
+    */
+    private String getValueAsCodeHelperClassName() {
+//        return "UserDataTuple";
+        return getClass().getSimpleName();
     }
 }
