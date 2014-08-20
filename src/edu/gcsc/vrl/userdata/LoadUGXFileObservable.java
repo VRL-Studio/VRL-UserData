@@ -14,7 +14,7 @@ import java.util.HashSet;
  * register at this Observable using a tag and will be notified once the data 
  * info associated with a tag has changed.
  *
- * @author andreasvogel
+ * @author Andreas Vogel <andreas.vogel@gcsc.uni-frankfurt.de>
  */
 public class LoadUGXFileObservable {
 

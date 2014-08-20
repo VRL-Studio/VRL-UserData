@@ -22,7 +22,7 @@ import javax.swing.ToolTipManager;
 
 /**
  *
- * @author andreasvogel
+ * @author Andreas Vogel <andreas.vogel@gcsc.uni-frankfurt.de>
  */
 public class DataLinkerView extends UserDataView {
 

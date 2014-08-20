@@ -13,12 +13,21 @@ import edu.gcsc.vrl.ug.api.VRLUserLinkerNumberNumber3d;
 import edu.gcsc.vrl.userdata.util.DimensionUtil;
 
 /**
- *
+ * @author Andreas Vogel <andreas.vogel@gcsc.uni-frankfurt.de>
+ * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
 public class DataLinkerModelNumberNumber extends DataLinkerModel {
 
+    private static final long serialVersionUID = 1L;
+    private Double data;
+//    
+//    
+    
     public DataLinkerModelNumberNumber() {
         category = UserDataModel.Category.NUMBER;
+        
+        data = 0.0;
+//        
 
         clear();
         enlarge(2);
@@ -30,14 +39,17 @@ public class DataLinkerModelNumberNumber extends DataLinkerModel {
      * @return the data
      */
     @Override
-    public Double getData() {
-        throw new RuntimeException("not implemented");
+    public Double getData() {      
+        return data;
+//        throw new RuntimeException("not implemented");
     }
 
     /**
      * @param data the data to set
      */
     public void setData(Double data) {
+        this.data = data;
+//        
     }
 
     @Override
@@ -47,7 +59,7 @@ public class DataLinkerModelNumberNumber extends DataLinkerModel {
         if (arrayDim == 0) {
             setData((Double) data);
         } else {
-            throw new RuntimeException("UserNumberModel.setData(Object data): "
+            throw new RuntimeException(getClass().getSimpleName()+".setData(Object data): "
                     + "Data has wrong size: " + arrayDim);
         }
 

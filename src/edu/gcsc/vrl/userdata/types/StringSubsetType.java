@@ -18,12 +18,14 @@ public class StringSubsetType extends UserDataTupleType implements Serializable 
 
     private static final long serialVersionUID = 1;
 
-//    should be now done by super class with getValueAsCodeHelperClassName()
-//    @Override
-//    public String getValueAsCode() {
-//        // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
-//        return "null as " + getType().getName();
-//    }
+    
+    @Override
+    public String getValueAsCode() {
+        System.out.println("sst");
+        System.out.println(" DD " + getClass().getSimpleName() + ".getValueAsCode() ");
+        // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
+        return "null as " + getType().getName();
+    }
 
     @Override
     public void setValueOptions(String valueOptions) {

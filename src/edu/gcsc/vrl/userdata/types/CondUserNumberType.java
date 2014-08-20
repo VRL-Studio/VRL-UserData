@@ -6,6 +6,7 @@ package edu.gcsc.vrl.userdata.types;
 
 import edu.gcsc.vrl.ug.api.*;
 import eu.mihosoft.vrl.annotation.TypeInfo;
+import eu.mihosoft.vrl.lang.VLangUtils;
 import java.io.Serializable;
 
 /**
@@ -24,6 +25,62 @@ public class CondUserNumberType extends UserDataTupleType implements Serializabl
 //        // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
 //        return "null as " + getType().getName();
 //    }
+    @Override
+    public String getValueAsCode() {
+
+        Object obj = getValue();
+
+        System.out.println("cunt");
+        System.out.println(" DD " + getClass().getSimpleName() + ".getValueAsCode() obj.getClass() = " + obj.getClass());
+
+        if (obj instanceof ConstUserNumber) {
+
+            ConstUserNumber value = (ConstUserNumber) obj;
+            System.out.println("dim = " + value.const__get_dim());
+            System.out.println("type = " + value.const__type());
+//            System.out.println("get = "+ value.get());// WIESO ein set aber KEIN GET ???
+
+            //wie kommt TYPE an das MODEL mit den daten???
+//            value.
+//            datas.get(0) <- so ??
+            System.out.println("D datas.size() = " + datas.size());
+            for (int i = 0; i < datas.size(); i++) {
+                System.out.println(" " + i + " = " + datas.get(i));
+            }
+
+            if (obj instanceof ConstUserNumber1d) {
+                System.out.println("ConstUserNumber1d");
+//                new ConstUserNumber1d(value.get());
+
+            } else if (obj instanceof ConstUserNumber2d) {
+                System.out.println("ConstUserNumber2d");
+
+            } else if (obj instanceof ConstUserNumber3d) {
+                System.out.println("ConstUserNumber3d");
+            }
+        }
+        //         UserNumber value = (UserNumber) obj;
+        //        if (value == null) {
+        return "null as " + getType().getName();
+//        }
+//
+////        // to get the idea how to implement the string version
+////         new UserDataTuple().add(((UserDataTuple)getValue()).getData(0));
+//        
+//        StringBuilder sb = new StringBuilder();
+//
+//        sb.append("new ").append(getClass().getSimpleName()).append("()");
+//
+//        for (int i = 0; i < value.size(); i++) {
+//            //type cast is save because  we know getValue() is not null
+////            sb.append(".add(((UserDataTuple)getValue()).getData(").append(i).append("))");
+//            sb.append(".add(((").append(getClass().getSimpleName()).append(")getValue()).getData(").append(i).append("))");
+//        }
+//        sb.append(";");
+//
+//        return VLangUtils.addEscapesToCode(sb.toString());
+
+    }
 
     @Override
     public void setValueOptions(String valueOptions) {
