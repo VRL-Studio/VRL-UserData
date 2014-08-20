@@ -389,132 +389,42 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
 
         Object obj = getValue();
 
-        System.out.println(" DD ");
-        System.out.println(" DD " + getClass().getSimpleName() + ".getValueAsCode() obj.getClass() = " + obj.getClass());
-        System.out.println(" DD ");
+        if (obj == null) {
+            return "null as " + getType().getName();
+        }
+
         if (obj instanceof UserDataTuple) {
-            System.out.println("UserDataTuple");
-            
             UserDataTuple value = (UserDataTuple) obj;
-            
-            System.out.println("D datas.size() = " + datas.size());
-            for (int i = 0; i < datas.size(); i++) {
-                System.out.println(" " + i + " name        = " + datas.get(i).name);
-                System.out.println(" " + i + " category    = " + datas.get(i).category);
-                System.out.println(" " + i + " model.data = " + datas.get(i).model.getData());
-            }
-            
-        }
-        if (obj instanceof UserNumber) {
-            System.out.println("UserNumber");
-        }
-        if (obj instanceof ConstUserNumber) {
-            System.out.println("ConstUserNumber");
 
-            ConstUserNumber value = (ConstUserNumber) obj;
-            System.out.println("dim = " + value.const__get_dim());
-            System.out.println("type = " + value.const__type());
-//            System.out.println("get = "+ value.get());// WIESO ein set aber KEIN GET ???
+//       // to get the idea how to implement the string version
+//         new UserDataTuple().add(((UserDataTuple)getValue()).getData(0));
+            StringBuilder sb = new StringBuilder();
 
-            //wie kommt TYPE an das MODEL mit den daten???
-//            value.
-//            datas.get(0) <- so ??
-            System.out.println("D datas.size() = " + datas.size());
-            for (int i = 0; i < datas.size(); i++) {
-                System.out.println(" " + i + " = " + datas.get(i));
+            //to get the complete name with package path
+            sb.append("new ").append(value.getClass().getPackage().getName()).
+                    append(".").append(value.getClass().getSimpleName()).append("()");
+
+            for (int i = 0; i < value.size(); i++) {
+                //type cast is save because  we know getValue() is not null
+//            sb.append(".add(((UserDataTuple)getValue()).getData(").append(i).append("))");
+                sb.append(".add((( ")
+                        .append(value.getClass().getPackage().getName())
+                        .append(".").append(value.getClass().getSimpleName())
+                        .append(" )getValue()).getData(").append(i).append("))");
             }
 
+            return VLangUtils.addEscapesToCode(sb.toString());
+
+//            System.out.println("D datas.size() = " + datas.size());
+//            for (int i = 0; i < datas.size(); i++) {
+//                System.out.println(" " + i + " name        = " + datas.get(i).name);
+//                System.out.println(" " + i + " category    = " + datas.get(i).category);
+//                System.out.println(" " + i + " model.data = " + datas.get(i).model.getData());
+//            }
+        } else {
+            System.err.println("Some derived class has NOT implemented getValueAsCode()."
+                    + "FIX IT !!");
+            return "null as " + getType().getName();
         }
-        if (obj instanceof ConstUserNumber1d) {
-            System.out.println("ConstUserNumber1d");
-//                new ConstUserNumber1d(value.get());
-            ConstUserNumber1d value = (ConstUserNumber1d) obj;
-            System.out.println("dim = " + value.const__get_dim());
-            System.out.println("type = " + value.const__type());
-//            System.out.println("get = "+ value.get());// WIESO ein set aber KEIN GET ???
-
-            //wie kommt TYPE an das MODEL mit den daten???
-//            value.
-//            datas.get(0) <- so ??
-            System.out.println("D datas.size() = " + datas.size());
-            for (int i = 0; i < datas.size(); i++) {
-                System.out.println(" " + i + " name        = " + datas.get(i).name);
-                System.out.println(" " + i + " category    = " + datas.get(i).category);
-                System.out.println(" " + i + " model.data = " + datas.get(i).model.getData());
-            }
-
-        } else if (obj instanceof ConstUserNumber2d) {
-            System.out.println("ConstUserNumber2d");
-            ConstUserNumber2d value = (ConstUserNumber2d) obj;
-            System.out.println("dim = " + value.const__get_dim());
-            System.out.println("type = " + value.const__type());
-//            System.out.println("get = "+ value.get());// WIESO ein set aber KEIN GET ???
-
-            //wie kommt TYPE an das MODEL mit den daten???
-//            value.
-//            datas.get(0) <- so ??
-            System.out.println("D datas.size() = " + datas.size());
-            for (int i = 0; i < datas.size(); i++) {
-                System.out.println(" " + i + " name        = " + datas.get(i).name);
-                System.out.println(" " + i + " category    = " + datas.get(i).category);
-                System.out.println(" " + i + " model.data = " + datas.get(i).model.getData());
-            }
-
-        } else if (obj instanceof ConstUserNumber3d) {
-            System.out.println("ConstUserNumber3d");
-            ConstUserNumber3d value = (ConstUserNumber3d) obj;
-            System.out.println("dim = " + value.const__get_dim());
-            System.out.println("type = " + value.const__type());
-//            System.out.println("get = "+ value.get());// WIESO ein set aber KEIN GET ???
-
-            //wie kommt TYPE an das MODEL mit den daten???
-//            value.
-//            datas.get(0) <- so ??
-            System.out.println("D datas.size() = " + datas.size());
-            for (int i = 0; i < datas.size(); i++) {
-                System.out.println(" " + i + " name        = " + datas.get(i).name);
-                System.out.println(" " + i + " category    = " + datas.get(i).category);
-                System.out.println(" " + i + " model.data = " + datas.get(i).model.getData());
-            }
-        }
-
-        if (obj instanceof UserVector) {
-            System.out.println("UserVector");
-        }
-        if (obj instanceof ConstUserVector) {
-            System.out.println("ConstUserVector");
-        }
-        if (obj instanceof UserMatrix) {
-            System.out.println("UserMatrix");
-        }
-        if (obj instanceof ConstUserMatrix) {
-            System.out.println("ConstUserMatrix");
-        }
-
-//        System.out.println(" DD ");
-//        System.out.println(" DD class  = " + getClass().getSimpleName());
-//        System.out.println(" DD value = " + obj.getClass().getSimpleName());
-//        System.out.println(" DD ");
-//         UserDataTuple value = (UserDataTuple) obj;
-//        if (value == null) {
-        return "null as " + getType().getName();
-//        }
-//
-////        // to get the idea how to implement the string version
-////         new UserDataTuple().add(((UserDataTuple)getValue()).getData(0));
-//        
-//        StringBuilder sb = new StringBuilder();
-//
-//        sb.append("new ").append(getClass().getSimpleName()).append("()");
-//
-//        for (int i = 0; i < value.size(); i++) {
-//            //type cast is save because  we know getValue() is not null
-////            sb.append(".add(((UserDataTuple)getValue()).getData(").append(i).append("))");
-//            sb.append(".add(((").append(getClass().getSimpleName()).append(")getValue()).getData(").append(i).append("))");
-//        }
-//        sb.append(";");
-//
-//        return VLangUtils.addEscapesToCode(sb.toString());
-
     }
 }
