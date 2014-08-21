@@ -395,7 +395,21 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
             UserDataTuple value = (UserDataTuple) obj;
 
 //       // to get the idea how to implement the string version
+//            //WRONG
 //         new UserDataTuple().add(((UserDataTuple)getValue()).getData(0));
+//            
+////            to get the idea whats inside a userdatatuple at pos i
+//            for (int i = 0; i < ((UserDataTuple)getValue()).size(); i++) {          
+//                System.out.println("getData "+i+" className = "+((UserDataTuple)getValue()).getData(i).getClass().getName() );
+//            }
+//            
+//            to generate the correct string:
+//            1) we need first the value at position i
+//            2) get the specific classtype of the value at position i
+//            3) cast into these specific classtype
+//            4) call the sub/specialized getValueAsCode() of the value/userdata at position i
+//            5) add the return value of sub-getValueAsCode() to our string
+                                 
             StringBuilder sb = new StringBuilder();
 
             //to get the complete name with package path
@@ -405,10 +419,17 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
             for (int i = 0; i < value.size(); i++) {
                 //type cast is save because  we know getValue() is not null
 //            sb.append(".add(((UserDataTuple)getValue()).getData(").append(i).append("))");
+                
+                //nearly there but we want the values and not the description to get the values in Main.groovy
                 sb.append(".add((( ")
-                        .append(value.getClass().getPackage().getName())
-                        .append(".").append(value.getClass().getSimpleName())
-                        .append(" )getValue()).getData(").append(i).append("))");
+                        // the specific subtype we want to cast into  see 3)
+                        .append(value.getData(i).getClass().getPackage().getName()).append(".").append(value.getData(i).getClass().getSimpleName())
+                        //get the specific subtype see 2) and close the typecast
+                        .append(" )getValue().getData(").append(i).append("))")
+                        //call specialized getValueAsCode()
+                        .append(".getValueAsCode()")
+                        //close the add()
+                        .append(")");
             }
 
             return VLangUtils.addEscapesToCode(sb.toString());
