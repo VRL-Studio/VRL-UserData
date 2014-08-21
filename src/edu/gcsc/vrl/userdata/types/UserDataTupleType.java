@@ -4,6 +4,10 @@
  */
 package edu.gcsc.vrl.userdata.types;
 
+import edu.gcsc.vrl.ug.api.I_CondUserNumber;
+import edu.gcsc.vrl.ug.api.I_UserMatrix;
+import edu.gcsc.vrl.ug.api.I_UserNumber;
+import edu.gcsc.vrl.ug.api.I_UserVector;
 import edu.gcsc.vrl.ug.api.UGXFileInfo;
 import edu.gcsc.vrl.userdata.LoadUGXFileObservable;
 import edu.gcsc.vrl.userdata.LoadUGXFileObserver;
@@ -385,65 +389,57 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
     @Override
     public String getValueAsCode() {
 
-        Object obj = getValue();
-
-        if (obj == null) {
-            return "null as " + getType().getName();
-        }
-
-        if (obj instanceof UserDataTuple) {
-            UserDataTuple value = (UserDataTuple) obj;
-
-//       // to get the idea how to implement the string version
-//            //WRONG
-//         new UserDataTuple().add(((UserDataTuple)getValue()).getData(0));
+//        Object obj = getValue();
+//
+//        if (obj == null) {
+//            return "null as " + getType().getName();
+//        }
+//
+//        if (obj instanceof UserDataTuple) {
+//            UserDataTuple value = (UserDataTuple) obj;
+//
+//            value.
 //            
-////            to get the idea whats inside a userdatatuple at pos i
-//            for (int i = 0; i < ((UserDataTuple)getValue()).size(); i++) {          
-//                System.out.println("getData "+i+" className = "+((UserDataTuple)getValue()).getData(i).getClass().getName() );
+//            StringBuilder sb = new StringBuilder();
+//
+//            //to get the complete name with package path
+//            sb.append("new ").append(value.getClass().getPackage().getName()).
+//                    append(".").append(value.getClass().getSimpleName()).append("()");
+//
+//            for (int i = 0; i < value.size(); i++) {
+//                //type cast is save because  we know getValue() is not null
+////            sb.append(".add(((UserDataTuple)getValue()).getData(").append(i).append("))");
+//
+////                //nearly there but we want the values and not the description how to get the values in Main.groovy
+////                sb.append(".add((( ")
+////                        // the specific subtype we want to cast into  see 3)
+////                        .append(value.getData(i).getClass().getPackage().getName()).append(".").append(value.getData(i).getClass().getSimpleName())
+////                        //get the specific subtype see 2) and close the typecast
+////                        .append(" )getValue().getData(").append(i).append("))")
+////                        //call specialized getModelAsCode()
+////                        .append(".getModelAsCode()")
+////                        //close the add()
+////                        .append(")");
+//                
+//                sb.append(".add( ");
+//                
+//
+//                //close the add()
+//                sb.append(")");
+//
 //            }
-//            
-//            to generate the correct string:
-//            1) we need first the value at position i
-//            2) get the specific classtype of the value at position i
-//            3) cast into these specific classtype
-//            4) call the sub/specialized getValueAsCode() of the value/userdata at position i
-//            5) add the return value of sub-getValueAsCode() to our string
-                                 
-            StringBuilder sb = new StringBuilder();
-
-            //to get the complete name with package path
-            sb.append("new ").append(value.getClass().getPackage().getName()).
-                    append(".").append(value.getClass().getSimpleName()).append("()");
-
-            for (int i = 0; i < value.size(); i++) {
-                //type cast is save because  we know getValue() is not null
-//            sb.append(".add(((UserDataTuple)getValue()).getData(").append(i).append("))");
-                
-                //nearly there but we want the values and not the description to get the values in Main.groovy
-                sb.append(".add((( ")
-                        // the specific subtype we want to cast into  see 3)
-                        .append(value.getData(i).getClass().getPackage().getName()).append(".").append(value.getData(i).getClass().getSimpleName())
-                        //get the specific subtype see 2) and close the typecast
-                        .append(" )getValue().getData(").append(i).append("))")
-                        //call specialized getValueAsCode()
-                        .append(".getValueAsCode()")
-                        //close the add()
-                        .append(")");
-            }
-
-            return VLangUtils.addEscapesToCode(sb.toString());
-
-//            System.out.println("D datas.size() = " + datas.size());
-//            for (int i = 0; i < datas.size(); i++) {
-//                System.out.println(" " + i + " name        = " + datas.get(i).name);
-//                System.out.println(" " + i + " category    = " + datas.get(i).category);
-//                System.out.println(" " + i + " model.data = " + datas.get(i).model.getData());
-//            }
-        } else {
-            System.err.println("Some derived class has NOT implemented getValueAsCode()."
-                    + "FIX IT !!");
-            return "null as " + getType().getName();
-        }
+//
+//            return VLangUtils.addEscapesToCode(sb.toString());
+//
+////            System.out.println("D datas.size() = " + datas.size());
+////            for (int i = 0; i < datas.size(); i++) {
+////                System.out.println(" " + i + " name        = " + datas.get(i).name);
+////                System.out.println(" " + i + " category    = " + datas.get(i).category);
+////                System.out.println(" " + i + " model.data = " + datas.get(i).model.getData());
+////            }
+//        }
+//        System.err.println("Something unexpected happen in getValueAsCode()."
+//                            + "FIX IT !!");
+        return "null as " + getType().getName();
     }
 }

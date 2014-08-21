@@ -21,7 +21,7 @@ public class CondUserNumberType extends UserDataTupleType implements Serializabl
 
 //    should be now done by super class with getValueAsCodeHelperClassName()
 //    @Override
-//    public String getValueAsCode() {
+//    public String getModelAsCode() {
 //        // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
 //        return "null as " + getType().getName();
 //    }
@@ -29,35 +29,32 @@ public class CondUserNumberType extends UserDataTupleType implements Serializabl
     public String getValueAsCode() {
 
         Object obj = getValue();
+        
+        System.out.println("D "+getClass().getSimpleName()+ ".getValueAsCode()");
+        System.out.println("D obj.getClass() = "+obj.getClass());
 
-        System.out.println("cunt");
-        System.out.println(" DD " + getClass().getSimpleName() + ".getValueAsCode() obj.getClass() = " + obj.getClass());
+        if (obj == null) {
+            return "null as " + getType().getName();
+        }
 
-        if (obj instanceof ConstUserNumber) {
+        if ((obj instanceof ConstUserNumber) || (obj instanceof ConstUserNumber1d)
+                || (obj instanceof ConstUserNumber2d) || (obj instanceof ConstUserNumber3d)) {
 
             ConstUserNumber value = (ConstUserNumber) obj;
-            System.out.println("dim = " + value.const__get_dim());
-            System.out.println("type = " + value.const__type());
-//            System.out.println("get = "+ value.get());// WIESO ein set aber KEIN GET ???
-
-            //wie kommt TYPE an das MODEL mit den daten???
-//            value.
+//            System.out.println("dim = " + value.const__get_dim());
+//            System.out.println("type = " + value.const__type());
+//            System.out.println("get = "+ value.get());// WIESO ein set aber KEIN GET auf c++seite ???
+//
+//            //wie kommt TYPE an das MODEL mit den daten???
 //            datas.get(0) <- so ??
             System.out.println("D datas.size() = " + datas.size());
             for (int i = 0; i < datas.size(); i++) {
-                System.out.println(" " + i + " = " + datas.get(i));
+                System.out.println(" " + i + " name        = " + datas.get(i).name);
+                System.out.println(" " + i + " category    = " + datas.get(i).category);
+                System.out.println(" " + i + " model.data = " + datas.get(i).model.getData());
             }
+//            new ConstUserNumber().set(datas);
 
-            if (obj instanceof ConstUserNumber1d) {
-                System.out.println("ConstUserNumber1d");
-//                new ConstUserNumber1d(value.get());
-
-            } else if (obj instanceof ConstUserNumber2d) {
-                System.out.println("ConstUserNumber2d");
-
-            } else if (obj instanceof ConstUserNumber3d) {
-                System.out.println("ConstUserNumber3d");
-            }
         }
         //         UserNumber value = (UserNumber) obj;
         //        if (value == null) {

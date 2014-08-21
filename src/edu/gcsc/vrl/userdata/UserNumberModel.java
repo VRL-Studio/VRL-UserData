@@ -16,6 +16,7 @@ import edu.gcsc.vrl.ug.api.VRLUserNumber1d;
 import edu.gcsc.vrl.ug.api.VRLUserNumber2d;
 import edu.gcsc.vrl.ug.api.VRLUserNumber3d;
 import edu.gcsc.vrl.userdata.util.DimensionUtil;
+import eu.mihosoft.vrl.lang.VLangUtils;
 import javax.swing.table.TableModel;
 
 /**
@@ -168,5 +169,36 @@ public class UserNumberModel extends UserMathDataModel {
             }
         }
         return "";
+    }
+
+    @Override
+    public String getModelAsCode() {
+
+        StringBuilder sb = new StringBuilder();
+
+        Object obj = this.createUserData();
+
+        sb.append("new ")
+                .append(obj.getClass().getName())
+                .append("(");
+        //see constructor or createConstUserData() for parameter in case of a ConstUserNumber
+        if (obj instanceof I_ConstUserNumber) {
+            sb.append(data);
+        }
+
+        sb.append(")");
+
+        //see createVRLUserData() for plausiblity
+        if (obj instanceof I_VRLUserNumber) {
+            sb.append(".data(createCode(")
+                    .append(getCode()).append(",")
+                    .append(getDimension()).append(",")
+                    //means Number, see docu of createCode()
+                    .append(0).append(",")
+                    .append("false").append("))");
+        }
+        
+
+        return VLangUtils.addEscapesToCode(sb.toString());
     }
 }

@@ -7,6 +7,7 @@ package edu.gcsc.vrl.userdata.types;
 import edu.gcsc.vrl.ug.api.*;
 import edu.gcsc.vrl.userdata.UserDataTuple;
 import eu.mihosoft.vrl.annotation.TypeInfo;
+import eu.mihosoft.vrl.lang.VLangUtils;
 import java.io.Serializable;
 
 /**
@@ -19,13 +20,67 @@ public class UserVectorType extends UserDataTupleType implements Serializable {
 
     private static final long serialVersionUID = 1;
 
+//    
+//    @Override
+//    public String getModelAsCode() {
+//        System.out.println("uvt");
+//        System.out.println(" DD " + getClass().getSimpleName() + ".getModelAsCode() ");
+//        // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
+//        return "null as " + getType().getName();
+//    }
     
+    protected Data getDataOfUserData() {
+        if (getDatas().size() == 1) {
+            return getDatas().get(0);
+        } else {
+            String message = "UserDatas as User- Number/Vector/Matrix have to got one entry in datas array.";
+            System.err.println(message);
+            throw new RuntimeException(message);
+        }
+    }
+
     @Override
     public String getValueAsCode() {
+        
         System.out.println("uvt");
         System.out.println(" DD " + getClass().getSimpleName() + ".getValueAsCode() ");
-        // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
+        
+        Object obj = getValue();
+
+        if (obj == null) {
+            return "null as " + getType().getName();
+        }
+
+        if (obj instanceof I_UserVector) {
+            
+//       // to get the idea how to implement the string version
+//       // in the string version we can ask for the specific type and cast directly into it
+//       // by writting these typ into the string as cast   
+//            
+//            Object createUserData = getDataOfUserData().model.createUserData();
+//            if(createUserData instanceof ConstUserNumber1d){
+//                ((ConstUserNumber1d)createUserData).set(getDataOfUserData().model.getData());
+//            }
+            
+             StringBuilder sb = new StringBuilder();
+             
+            sb.append( "((")
+                    //the tricky cast direct into the specific typ
+                    .append(getValue().getClass().getPackage().getName()).append(".").append(getValue().getClass().getSimpleName())
+                    //let the model create the specific userdata for use
+                    .append(")getDataOfUserData().model.createUserData()).set(")
+                    //the value vor the set()
+                    .append(getDataOfUserData().model.getData())
+                    //close the set()
+                    .append(")");
+            
+            return VLangUtils.addEscapesToCode(sb.toString());
+           
+        } else{
+        
         return "null as " + getType().getName();
+        }
+
     }
 
     @Override

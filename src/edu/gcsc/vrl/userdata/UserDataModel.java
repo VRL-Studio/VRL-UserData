@@ -56,6 +56,11 @@ public abstract class UserDataModel implements Serializable {
     }
 
     /**
+     * @return a string which has the code to construct a new copy an existing model 
+     */
+     public abstract String getModelAsCode();
+     
+    /**
      * @return the dimension
      */
     public abstract int getDimension() ;
