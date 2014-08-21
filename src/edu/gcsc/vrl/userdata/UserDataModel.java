@@ -56,6 +56,11 @@ public abstract class UserDataModel implements Serializable {
     }
 
     /**
+     * @return the dimension
+     */
+    public abstract int getDimension() ;
+    
+    /**
      * @return the data
      */
     public abstract Object getData();

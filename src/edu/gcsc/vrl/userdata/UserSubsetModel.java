@@ -81,4 +81,11 @@ public class UserSubsetModel extends UserDataModel {
     public String checkUserData() {
         return "";
     }
+
+    @Override
+    public int getDimension() {
+        //a subset has no dimension, so we return just zero.
+        return 0;
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
