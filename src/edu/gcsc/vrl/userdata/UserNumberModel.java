@@ -193,7 +193,7 @@ public class UserNumberModel extends UserMathDataModel {
             sb.append(".data(createCode(")
                     .append(getCode()).append(",")
                     .append(getDimension()).append(",")
-                    //means Number, see docu of createCode()
+                    //0 means Number, see docu of createCode()
                     .append(0).append(",")
                     .append("false").append("))");
         }
