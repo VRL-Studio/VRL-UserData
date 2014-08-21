@@ -4,16 +4,7 @@
  */
 package edu.gcsc.vrl.userdata.types;
 
-import edu.gcsc.vrl.ug.api.ConstUserMatrix;
-import edu.gcsc.vrl.ug.api.ConstUserNumber;
-import edu.gcsc.vrl.ug.api.ConstUserNumber1d;
-import edu.gcsc.vrl.ug.api.ConstUserNumber2d;
-import edu.gcsc.vrl.ug.api.ConstUserNumber3d;
-import edu.gcsc.vrl.ug.api.ConstUserVector;
 import edu.gcsc.vrl.ug.api.UGXFileInfo;
-import edu.gcsc.vrl.ug.api.UserMatrix;
-import edu.gcsc.vrl.ug.api.UserNumber;
-import edu.gcsc.vrl.ug.api.UserVector;
 import edu.gcsc.vrl.userdata.LoadUGXFileObservable;
 import edu.gcsc.vrl.userdata.LoadUGXFileObserver;
 import edu.gcsc.vrl.userdata.UserDataFactory;
@@ -39,6 +30,13 @@ import javax.swing.Box;
  */
 @TypeInfo(type = UserDataTuple.class, input = true, output = false, style = "default")
 public class UserDataTupleType extends TypeRepresentationBase implements Serializable, LoadUGXFileObserver {
+
+    /**
+     * @return the datas
+     */
+    protected ArrayList<Data> getDatas() {
+        return datas;
+    }
 
     protected static class Data {
 
