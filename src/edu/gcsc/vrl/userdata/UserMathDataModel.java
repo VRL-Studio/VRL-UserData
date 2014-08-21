@@ -151,6 +151,8 @@ public abstract class UserMathDataModel extends UserDataModel {
 
     @Override
     public Object createUserData() {
+//        public Object createUserData() and NOT public I_UserDataInfo createUserData() 
+//        BECAUSE UserSubsetModel returns String
 
         I_UserDataInfo result = null;
 
