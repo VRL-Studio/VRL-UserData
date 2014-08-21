@@ -8,13 +8,16 @@ import edu.gcsc.vrl.ug.UserDataCompiler;
 import edu.gcsc.vrl.ug.api.ConstUserVector1d;
 import edu.gcsc.vrl.ug.api.ConstUserVector2d;
 import edu.gcsc.vrl.ug.api.ConstUserVector3d;
+import edu.gcsc.vrl.ug.api.I_ConstUserNumber;
 import edu.gcsc.vrl.ug.api.I_ConstUserVector;
 import edu.gcsc.vrl.ug.api.I_UserDataInfo;
+import edu.gcsc.vrl.ug.api.I_VRLUserNumber;
 import edu.gcsc.vrl.ug.api.I_VRLUserVector;
 import edu.gcsc.vrl.ug.api.VRLUserVector1d;
 import edu.gcsc.vrl.ug.api.VRLUserVector2d;
 import edu.gcsc.vrl.ug.api.VRLUserVector3d;
 import edu.gcsc.vrl.userdata.util.DimensionUtil;
+import eu.mihosoft.vrl.lang.VLangUtils;
 import eu.mihosoft.vrl.system.VMessage;
 import javax.swing.table.TableModel;
 
@@ -216,7 +219,7 @@ public class UserVectorModel extends UserMathDataModel {
     @Override
     public String checkUserData() {
         if (getInputType() == InputType.CODE) {
-           int type = 1; //means Vector, see docu of createCode()
+            int type = 1; //means Vector, see docu of createCode()
             int dim = getDimension();
 
             String codeText = getCode();
@@ -239,6 +242,38 @@ public class UserVectorModel extends UserMathDataModel {
 
     @Override
     public String getModelAsCode() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        StringBuilder sb = new StringBuilder();
+
+        Object obj = this.createUserData();
+
+        sb.append("new ")
+                .append(obj.getClass().getName())
+                .append("()");
+        //see constructor or createConstUserData() for parameter in case of a ConstUserNumber
+        if (obj instanceof I_ConstUserVector) {
+            sb.append(".setData([");
+            
+            for (int i = 0; i < data.length; i++) {
+                if (i > 0) {
+                    sb.append(", ");
+                }
+                sb.append(data[i]);
+
+            }
+            sb.append("] as double[])");
+        }
+
+        //see createVRLUserData() for plausiblity
+        if (obj instanceof I_VRLUserVector) {
+            sb.append(".data(createCode(")
+                    .append(getCode()).append(",")
+                    .append(getDimension()).append(",")
+                    // 1 means Vector, see docu of createCode()
+                    .append(1).append(",")
+                    .append("false").append("))");
+        }
+
+        return VLangUtils.addEscapesToCode(sb.toString());
     }
 }
