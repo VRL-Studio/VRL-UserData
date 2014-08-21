@@ -19,64 +19,19 @@ public class CondUserNumberType extends UserDataTupleType implements Serializabl
 
     private static final long serialVersionUID = 1;
 
-//    should be now done by super class with getValueAsCodeHelperClassName()
-//    @Override
-//    public String getModelAsCode() {
-//        // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
-//        return "null as " + getType().getName();
-//    }
+protected Data getDataOfUserData() {
+        if (getDatas().size() == 1) {
+            return getDatas().get(0);
+        } else {
+            String message = "UserDatas as User- Number/Vector/Matrix have to got one entry in datas array.";
+            System.err.println(message);
+            throw new RuntimeException(message);
+        }
+    }
+
     @Override
     public String getValueAsCode() {
-
-        Object obj = getValue();
-        
-        System.out.println("D "+getClass().getSimpleName()+ ".getValueAsCode()");
-        System.out.println("D obj.getClass() = "+obj.getClass());
-
-        if (obj == null) {
-            return "null as " + getType().getName();
-        }
-
-        if ((obj instanceof ConstUserNumber) || (obj instanceof ConstUserNumber1d)
-                || (obj instanceof ConstUserNumber2d) || (obj instanceof ConstUserNumber3d)) {
-
-            ConstUserNumber value = (ConstUserNumber) obj;
-//            System.out.println("dim = " + value.const__get_dim());
-//            System.out.println("type = " + value.const__type());
-//            System.out.println("get = "+ value.get());// WIESO ein set aber KEIN GET auf c++seite ???
-//
-//            //wie kommt TYPE an das MODEL mit den daten???
-//            datas.get(0) <- so ??
-            System.out.println("D datas.size() = " + datas.size());
-            for (int i = 0; i < datas.size(); i++) {
-                System.out.println(" " + i + " name        = " + datas.get(i).name);
-                System.out.println(" " + i + " category    = " + datas.get(i).category);
-                System.out.println(" " + i + " model.data = " + datas.get(i).model.getData());
-            }
-//            new ConstUserNumber().set(datas);
-
-        }
-        //         UserNumber value = (UserNumber) obj;
-        //        if (value == null) {
-        return "null as " + getType().getName();
-//        }
-//
-////        // to get the idea how to implement the string version
-////         new UserDataTuple().add(((UserDataTuple)getValue()).getData(0));
-//        
-//        StringBuilder sb = new StringBuilder();
-//
-//        sb.append("new ").append(getClass().getSimpleName()).append("()");
-//
-//        for (int i = 0; i < value.size(); i++) {
-//            //type cast is save because  we know getValue() is not null
-////            sb.append(".add(((UserDataTuple)getValue()).getData(").append(i).append("))");
-//            sb.append(".add(((").append(getClass().getSimpleName()).append(")getValue()).getData(").append(i).append("))");
-//        }
-//        sb.append(";");
-//
-//        return VLangUtils.addEscapesToCode(sb.toString());
-
+            return getDataOfUserData().model.getModelAsCode();
     }
 
     @Override

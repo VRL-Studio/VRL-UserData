@@ -33,22 +33,7 @@ public class UserNumberType extends UserDataTupleType implements Serializable {
 
     @Override
     public String getValueAsCode() {
-
-//        Object obj = getValue();
-//
-//        if (obj == null) {
-//            return "null as " + getType().getName();
-//        }
-//
-//        if (obj instanceof I_UserNumber) {
-//            
             return getDataOfUserData().model.getModelAsCode();
-           
-//        } else{
-//        
-//        return "null as " + getType().getName();
-//        }
-
     }
 
     @Override
