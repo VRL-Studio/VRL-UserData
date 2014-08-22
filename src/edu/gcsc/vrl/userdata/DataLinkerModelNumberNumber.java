@@ -5,12 +5,15 @@
 package edu.gcsc.vrl.userdata;
 
 import edu.gcsc.vrl.ug.UserDataCompiler;
+import edu.gcsc.vrl.ug.api.I_ConstUserNumber;
 import edu.gcsc.vrl.ug.api.I_UserNumber;
+import edu.gcsc.vrl.ug.api.I_VRLUserLinkerNumberNumber;
 import edu.gcsc.vrl.ug.api.I_VRLUserNumber;
 import edu.gcsc.vrl.ug.api.VRLUserLinkerNumberNumber1d;
 import edu.gcsc.vrl.ug.api.VRLUserLinkerNumberNumber2d;
 import edu.gcsc.vrl.ug.api.VRLUserLinkerNumberNumber3d;
 import edu.gcsc.vrl.userdata.util.DimensionUtil;
+import eu.mihosoft.vrl.lang.VLangUtils;
 
 /**
  * @author Andreas Vogel <andreas.vogel@gcsc.uni-frankfurt.de>
@@ -22,10 +25,10 @@ public class DataLinkerModelNumberNumber extends DataLinkerModel {
     private Double data;
 //    
 //    
-    
+
     public DataLinkerModelNumberNumber() {
         category = UserDataModel.Category.NUMBER;
-        
+
         data = 0.0;
 //        
 
@@ -39,7 +42,7 @@ public class DataLinkerModelNumberNumber extends DataLinkerModel {
      * @return the data
      */
     @Override
-    public Double getData() {      
+    public Double getData() {
         return data;
 //        throw new RuntimeException("not implemented");
     }
@@ -59,7 +62,7 @@ public class DataLinkerModelNumberNumber extends DataLinkerModel {
         if (arrayDim == 0) {
             setData((Double) data);
         } else {
-            throw new RuntimeException(getClass().getSimpleName()+".setData(Object data): "
+            throw new RuntimeException(getClass().getSimpleName() + ".setData(Object data): "
                     + "Data has wrong size: " + arrayDim);
         }
 
@@ -73,7 +76,7 @@ public class DataLinkerModelNumberNumber extends DataLinkerModel {
         I_UserNumber result = null;
         int dim = getDimension();
         int numArgs = 1;
-        
+
         switch (dim) {
             case 1:
                 VRLUserLinkerNumberNumber1d r = new VRLUserLinkerNumberNumber1d();
@@ -124,13 +127,63 @@ public class DataLinkerModelNumberNumber extends DataLinkerModel {
         return "";
     }
 
+    public I_VRLUserLinkerNumberNumber dataAndDeriv(I_VRLUserLinkerNumberNumber r) {
+        int type = 0; //means Number, see docu of createCode()
+
+        I_UserNumber result = null;
+        int dim = getDimension();
+        int numArgs = 1;
+
+        r.data(createCode(getTheCode(0), dim, type, false), numArgs);
+        r.deriv(0, createCode(getTheCode(1), dim, type, false));
+
+        return r;
+    }
+
     @Override
     public String getModelAsCode() {
-        
-        
-//        go for it 
-        
-        return "null as " + getClass().getName();
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        StringBuilder sb = new StringBuilder();
+
+        Object obj = this.createUserData();
+
+        sb.append("new ")
+                .append(obj.getClass().getName())
+                .append("()");
+
+        sb.append("");
+
+        //see createVRLUserData() for plausiblity
+        if (obj instanceof I_VRLUserLinkerNumberNumber) {
+            // for orientation example from createUserData()
+            //             r.data(createCode(getTheCode(0), dim, type, false), numArgs);
+            //
+            sb.append(".data(createCode(")
+                    .append('"')
+                    .append(VLangUtils.addEscapesToCode(getTheCode(0)))
+                    .append('"')
+                    .append(",")
+                    .append(getDimension()).append(",")
+                    //0 means Number, see docu of createCode()
+                    .append(0).append(",")
+                    .append("false").append("), 1)");
+
+            // for orientation example from createUserData()
+            //             r.deriv(0, createCode(getTheCode(1), dim, type, false));
+            //
+            sb.append(".deriv(0, createCode(")
+                    .append('"')
+                    .append(VLangUtils.addEscapesToCode(getTheCode(1)))
+                    .append('"')
+                    .append(",")
+                    .append(getDimension()).append(",")
+                    //0 means Number, see docu of createCode()
+                    .append(0).append(",")
+                    .append("false").append("))");
+
+        }
+
+//        return VLangUtils.addEscapesToCode(sb.toString());
+        return sb.toString();
     }
 }

@@ -92,6 +92,17 @@ public class UserSubsetModel extends UserDataModel {
 
     @Override
     public String getModelAsCode() {
-        return VLangUtils.addEscapesToCode(data);
+        
+        StringBuilder sb = new StringBuilder();
+        
+        sb
+                .append('"')
+                .append(VLangUtils.addEscapesToCode(data))
+                .append('"')
+                ;
+        
+//        return VLangUtils.addEscapesToCode(sb.toString());
+        return sb.toString();
     }
 }
+

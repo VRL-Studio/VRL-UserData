@@ -397,7 +397,8 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
             sb.append(".add(").append(getDatas().get(i).model.getModelAsCode()).append(")");
         }
 
-        return VLangUtils.addEscapesToCode(sb.toString());
+        return sb.toString();
+        //return VLangUtils.addEscapesToCode(sb.toString());
 //        return "null as " + getType().getName();
     }
 }
