@@ -8,7 +8,6 @@ import edu.gcsc.vrl.ug.api.I_UserMatrix;
 import edu.gcsc.vrl.ug.api.I_UserNumber;
 import edu.gcsc.vrl.ug.api.I_UserVector;
 import edu.gcsc.vrl.ug.api.I_VRLUserLinkerNumberNumber;
-import edu.gcsc.vrl.ug.api.VRLUserLinkerNumberNumber;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -45,7 +44,7 @@ public class UserDataTuple implements Serializable {
      */
     public UserDataTuple add(Object userData) {
         data.add(userData);
-        
+
         return this;
     }
 

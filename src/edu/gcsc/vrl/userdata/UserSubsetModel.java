@@ -5,6 +5,7 @@
 package edu.gcsc.vrl.userdata;
 
 import edu.gcsc.vrl.ug.api.UGXFileInfo;
+import eu.mihosoft.vrl.lang.VLangUtils;
 
 /**
  *
@@ -91,6 +92,6 @@ public class UserSubsetModel extends UserDataModel {
 
     @Override
     public String getModelAsCode() {
-        return data;
+        return VLangUtils.addEscapesToCode(data);
     }
 }

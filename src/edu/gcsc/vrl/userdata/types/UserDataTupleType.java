@@ -389,57 +389,15 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
     @Override
     public String getValueAsCode() {
 
-//        Object obj = getValue();
-//
-//        if (obj == null) {
-//            return "null as " + getType().getName();
-//        }
-//
-//        if (obj instanceof UserDataTuple) {
-//            UserDataTuple value = (UserDataTuple) obj;
-//
-//            value.
-//            
-//            StringBuilder sb = new StringBuilder();
-//
-//            //to get the complete name with package path
-//            sb.append("new ").append(value.getClass().getPackage().getName()).
-//                    append(".").append(value.getClass().getSimpleName()).append("()");
-//
-//            for (int i = 0; i < value.size(); i++) {
-//                //type cast is save because  we know getValue() is not null
-////            sb.append(".add(((UserDataTuple)getValue()).getData(").append(i).append("))");
-//
-////                //nearly there but we want the values and not the description how to get the values in Main.groovy
-////                sb.append(".add((( ")
-////                        // the specific subtype we want to cast into  see 3)
-////                        .append(value.getData(i).getClass().getPackage().getName()).append(".").append(value.getData(i).getClass().getSimpleName())
-////                        //get the specific subtype see 2) and close the typecast
-////                        .append(" )getValue().getData(").append(i).append("))")
-////                        //call specialized getModelAsCode()
-////                        .append(".getModelAsCode()")
-////                        //close the add()
-////                        .append(")");
-//                
-//                sb.append(".add( ");
-//                
-//
-//                //close the add()
-//                sb.append(")");
-//
-//            }
-//
-//            return VLangUtils.addEscapesToCode(sb.toString());
-//
-////            System.out.println("D datas.size() = " + datas.size());
-////            for (int i = 0; i < datas.size(); i++) {
-////                System.out.println(" " + i + " name        = " + datas.get(i).name);
-////                System.out.println(" " + i + " category    = " + datas.get(i).category);
-////                System.out.println(" " + i + " model.data = " + datas.get(i).model.getData());
-////            }
-//        }
-//        System.err.println("Something unexpected happen in getValueAsCode()."
-//                            + "FIX IT !!");
-        return "null as " + getType().getName();
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("new ").append(UserDataTuple.class.getName()).append("()");
+
+        for (int i = 0; i < getDatas().size(); i++) {
+            sb.append(".add(").append(getDatas().get(i).model.getModelAsCode()).append(")");
+        }
+
+        return VLangUtils.addEscapesToCode(sb.toString());
+//        return "null as " + getType().getName();
     }
 }

@@ -126,6 +126,11 @@ public class DataLinkerModelNumberNumber extends DataLinkerModel {
 
     @Override
     public String getModelAsCode() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        
+//        go for it 
+        
+        return "null as " + getClass().getName();
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
