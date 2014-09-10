@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import javax.swing.table.TableModel;
 
 /**
- *
+ * @author Andreas Vogel <andreas.vogel@gcsc.uni-frankfurt.de>
  * @author Michael Hoffer <info@michaelhoffer.de>
  * @author Christian Poliwoda <christian.poliwoda@gcsc.uni-frankfurt.de>
  */
@@ -23,9 +23,10 @@ public abstract class UserMathDataModel extends UserDataModel {
 
         SCALAR_CONSTANT,
         CONSTANT,
-        CODE
+        CODE,
+        LINKER
     }
-    
+
     private static final long serialVersionUID = 1L;
     protected InputType inputType;
     protected int dimension;
@@ -40,7 +41,6 @@ public abstract class UserMathDataModel extends UserDataModel {
     public UserMathDataModel() {
 
         // default values
-
         inputType = InputType.CONSTANT;
 
         dimension = 2;
@@ -88,7 +88,7 @@ public abstract class UserMathDataModel extends UserDataModel {
     public void setDimension(int dimension) {
         this.dimension = dimension;
     }
-    
+
     /**
      * @param dimension the dimension to set
      */

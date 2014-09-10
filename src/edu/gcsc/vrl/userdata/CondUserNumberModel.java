@@ -136,32 +136,54 @@ public class CondUserNumberModel extends UserMathDataModel {
 
     @Override
     public String getModelAsCode() {
-
         StringBuilder sb = new StringBuilder();
 
-        Object obj = this.createUserData();
+        //the data of the userdata we want to copy
+        int dim = getDimension();
+        UserMathDataModel.InputType inputType = getInputType();
+        String code = getCode();
+        Double data = getData();
 
-        sb.append("new ")
-                .append(obj.getClass().getName())
-                .append("(");
-        //see constructor or createConstUserData() for parameter in case of a ConstUserNumber
-        if (obj instanceof I_CondUserNumber) {
-            sb.append(getData());
-        }
+        //writes a call into code of the specific factory which generates/recreate for us a copy of the wanted userdata
+        sb.append(UserDataCopyFactoryCondNumber.class.getName())
+                .append(".createUserDataCopy(")
+                .append(dim).append(",")
+                .append('"').append(inputType).append('"').append(",")
+                .append('"').append(code).append('"').append(",")
+                .append('"').append('"').append(",")
+                .append(data)
+                .append(")");
 
-        sb.append(")");
-
-        //see createVRLUserData() for plausiblity
-        if (obj instanceof I_VRLCondUserNumber) {
-            sb.append(".data(createCode(")
-                    .append(getCode()).append(",")
-                    .append(getDimension()).append(",")
-                    //0 means Number, see docu of createCode()
-                    .append(0).append(",")
-                    .append("false").append("))");
-        }
-        
-
-        return VLangUtils.addEscapesToCode(sb.toString());
+//        return VLangUtils.addEscapesToCode(sb.toString());
+        return sb.toString();
     }
+//    public String getModelAsCode() {
+//
+//        StringBuilder sb = new StringBuilder();
+//
+//        Object obj = this.createUserData();
+//
+//        sb.append("new ")
+//                .append(obj.getClass().getName())
+//                .append("(");
+//        //see constructor or createConstUserData() for parameter in case of a ConstUserNumber
+//        if (obj instanceof I_CondUserNumber) {
+//            sb.append(getData());
+//        }
+//
+//        sb.append(")");
+//
+//        //see createVRLUserData() for plausiblity
+//        if (obj instanceof I_VRLCondUserNumber) {
+//            sb.append(".data(createCode(")
+//                    .append(getCode()).append(",")
+//                    .append(getDimension()).append(",")
+//                    //0 means Number, see docu of createCode()
+//                    .append(0).append(",")
+//                    .append("false").append("))");
+//        }
+//        
+//
+//        return VLangUtils.addEscapesToCode(sb.toString());
+//    }
 }

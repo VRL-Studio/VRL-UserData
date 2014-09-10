@@ -142,48 +142,71 @@ public class DataLinkerModelNumberNumber extends DataLinkerModel {
 
     @Override
     public String getModelAsCode() {
-
         StringBuilder sb = new StringBuilder();
 
-        Object obj = this.createUserData();
+        //the data of the userdata we want to copy
+        int dim = getDimension();
+        UserMathDataModel.InputType inputType = UserMathDataModel.InputType.LINKER;//getInputType();
+        String codeData = VLangUtils.addEscapesToCode(getTheCode(0));
+        String codeDeriv = VLangUtils.addEscapesToCode(getTheCode(1));
+        Double data = getData();
 
-        sb.append("new ")
-                .append(obj.getClass().getName())
-                .append("()");
+        //writes a call into code of the specific factory which generates/recreate for us a copy of the wanted userdata
+        sb.append(UserDataCopyFactoryNumber.class.getName())
+                .append(".createUserDataCopy(")
+                .append(dim).append(",")
+                .append('"').append(inputType).append('"').append(",")
+                .append('"').append(codeData).append('"').append(",")
+                .append('"').append(codeDeriv).append('"').append(",")
+                .append(data)
+                .append(")");
 
-        sb.append("");
-
-        //see createVRLUserData() for plausiblity
-        if (obj instanceof I_VRLUserLinkerNumberNumber) {
-            // for orientation example from createUserData()
-            //             r.data(createCode(getTheCode(0), dim, type, false), numArgs);
-            //
-            sb.append(".data(createCode(")
-                    .append('"')
-                    .append(VLangUtils.addEscapesToCode(getTheCode(0)))
-                    .append('"')
-                    .append(",")
-                    .append(getDimension()).append(",")
-                    //0 means Number, see docu of createCode()
-                    .append(0).append(",")
-                    .append("false").append("), 1)");
-
-            // for orientation example from createUserData()
-            //             r.deriv(0, createCode(getTheCode(1), dim, type, false));
-            //
-            sb.append(".deriv(0, createCode(")
-                    .append('"')
-                    .append(VLangUtils.addEscapesToCode(getTheCode(1)))
-                    .append('"')
-                    .append(",")
-                    .append(getDimension()).append(",")
-                    //0 means Number, see docu of createCode()
-                    .append(0).append(",")
-                    .append("false").append("))");
-
-        }
-
-//        return VLangUtils.addEscapesToCode(sb.toString());
+        //        return VLangUtils.addEscapesToCode(sb.toString());
         return sb.toString();
     }
+//    public String getModelAsCode() {
+//
+//        StringBuilder sb = new StringBuilder();
+//
+//        Object obj = this.createUserData();
+//
+//        sb.append("new ")
+//                .append(obj.getClass().getName())
+//                .append("()");
+//
+//        sb.append("");
+//
+//        //see createVRLUserData() for plausiblity
+//        if (obj instanceof I_VRLUserLinkerNumberNumber) {
+//            // for orientation example from createUserData()
+//            //             r.data(createCode(getTheCode(0), dim, type, false), numArgs);
+//            //
+//            sb.append(".data(createCode(")
+//                    .append('"')
+//                    .append(VLangUtils.addEscapesToCode(getTheCode(0)))
+//                    .append('"')
+//                    .append(",")
+//                    .append(getDimension()).append(",")
+//                    //0 means Number, see docu of createCode()
+//                    .append(0).append(",")
+//                    .append("false").append("), 1)");
+//
+//            // for orientation example from createUserData()
+//            //             r.deriv(0, createCode(getTheCode(1), dim, type, false));
+//            //
+//            sb.append(".deriv(0, createCode(")
+//                    .append('"')
+//                    .append(VLangUtils.addEscapesToCode(getTheCode(1)))
+//                    .append('"')
+//                    .append(",")
+//                    .append(getDimension()).append(",")
+//                    //0 means Number, see docu of createCode()
+//                    .append(0).append(",")
+//                    .append("false").append("))");
+//
+//        }
+//
+////        return VLangUtils.addEscapesToCode(sb.toString());
+//        return sb.toString();
+//    }
 }

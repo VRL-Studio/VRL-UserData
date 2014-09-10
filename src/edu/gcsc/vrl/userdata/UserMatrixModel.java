@@ -276,18 +276,26 @@ public class UserMatrixModel extends UserMathDataModel {
     @Override
     public String getModelAsCode() {
 
+        
+
         StringBuilder sb = new StringBuilder();
 
-        Object obj = this.createUserData();
+        //the data of the userdata we want to copy
+        int dim = getDimension();
+        UserMathDataModel.InputType inputType = getInputType();
+        String code = getCode();
+        Double[][] data = getData();
 
-        sb.append("new ")
-                .append(obj.getClass().getName())
-                .append("()");
-        //see constructor or createConstUserData() for parameter in case of a ConstUserNumber
-        if (obj instanceof I_ConstUserMatrix) {
-            sb.append(".setData([");
+        //writes a call into code of the specific factory which generates/recreate for us a copy of the wanted userdata
+        sb.append(UserDataCopyFactoryMatrix.class.getName())
+                .append(".createUserDataCopy(")
+                .append(dim).append(",")
+                .append('"').append(inputType).append('"').append(",")
+                .append('"').append(code).append('"').append(",")
+                .append('"').append('"').append(",")
+                .append("[");
 
-            for (int i = 0; i < data.length; i++) {
+        for (int i = 0; i < data.length; i++) {
                 sb.append("[");
                 for (int j = 0; j < data[i].length; j++) {
 
@@ -307,18 +315,55 @@ public class UserMatrixModel extends UserMathDataModel {
             }
 
             sb.append("] as double[][])");
-        }
 
-        //see createVRLUserData() for plausiblity
-        if (obj instanceof I_VRLUserMatrix) {
-            sb.append(".data(createCode(")
-                    .append(getCode()).append(",")
-                    .append(getDimension()).append(",")
-                    // 2 means Matrix, see docu of createCode()
-                    .append(2).append(",")
-                    .append("false").append("))");
-        }
-
-        return VLangUtils.addEscapesToCode(sb.toString());
+        //        return VLangUtils.addEscapesToCode(sb.toString());
+        return sb.toString();
     }
+//    public String getModelAsCode() {
+//
+//        StringBuilder sb = new StringBuilder();
+//
+//        Object obj = this.createUserData();
+//
+//        sb.append("new ")
+//                .append(obj.getClass().getName())
+//                .append("()");
+//        //see constructor or createConstUserData() for parameter in case of a ConstUserNumber
+//        if (obj instanceof I_ConstUserMatrix) {
+//            sb.append(".setData([");
+//
+//            for (int i = 0; i < data.length; i++) {
+//                sb.append("[");
+//                for (int j = 0; j < data[i].length; j++) {
+//
+//                    if (j == 0) {
+//                        sb.append("[");
+//                    }
+//                    if (j > 0) {
+//                        sb.append(", ");
+//                    }
+//                    sb.append(data[i][j]);
+//
+//                    if (j == data[i].length - 1) {
+//                        sb.append("]");
+//                    }
+//                }
+//                sb.append("]");
+//            }
+//
+//            sb.append("] as double[][])");
+//        }
+//
+//        //see createVRLUserData() for plausiblity
+//        if (obj instanceof I_VRLUserMatrix) {
+//            sb.append(".data(createCode(")
+//                    .append(getCode()).append(",")
+//                    .append(getDimension()).append(",")
+//                    // 2 means Matrix, see docu of createCode()
+//                    .append(2).append(",")
+//                    .append("false").append("))");
+//        }
+//
+//        return VLangUtils.addEscapesToCode(sb.toString());
+//    }
 }

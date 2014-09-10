@@ -4,6 +4,7 @@
  */
 package edu.gcsc.vrl.userdata;
 
+import edu.gcsc.vrl.ug.api.I_UserDataInfo;
 import edu.gcsc.vrl.userdata.types.UserDataTupleType;
 
 /**

@@ -68,8 +68,7 @@ public class UserSubsetModel extends UserDataModel {
             // reset data
             if (info.const__num_subsets(0, 0) > 0) {
                 data = info.const__subset_name(0, 0, 0);
-            }
-            else {
+            } else {
                 data = "";
             }
             setStatus(Status.WARNING);
@@ -83,24 +82,22 @@ public class UserSubsetModel extends UserDataModel {
         return "";
     }
 
-    @Override
-    public int getDimension() {
-        //a subset has no dimension, so we return just zero.
-        return 0;
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+//    @Override
+//    public int getDimension() {
+//        //a subset has no dimension, so we return just zero.
+//        return 0;
+////        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
 
     @Override
     public String getModelAsCode() {
-        
+
         StringBuilder sb = new StringBuilder();
-        
-        sb
-                .append('"')
+
+        sb.append('"')
                 .append(VLangUtils.addEscapesToCode(data))
-                .append('"')
-                ;
-        
+                .append('"');
+
 //        return VLangUtils.addEscapesToCode(sb.toString());
         return sb.toString();
     }
