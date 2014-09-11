@@ -252,8 +252,9 @@ public class UserVectorModel extends UserMathDataModel {
         Double[] data = getData();
 
         //writes a call into code of the specific factory which generates/recreate for us a copy of the wanted userdata
-        sb.append(UserDataCopyFactoryVector.class.getName())
-                .append(".createUserDataCopy(")
+        sb.append("new ")
+                .append(UserDataCopyFactoryVector.class.getName())
+                .append("().createUserDataCopy(")
                 .append(dim).append(",")
                 .append('"').append(inputType).append('"').append(",")
                 .append('"').append(code).append('"').append(",")
@@ -267,7 +268,7 @@ public class UserVectorModel extends UserMathDataModel {
             sb.append(data[i]);
 
         }
-        sb.append("] as double[]")
+        sb.append("] as Double[]")
                 .append(")");
 
         //        return VLangUtils.addEscapesToCode(sb.toString());

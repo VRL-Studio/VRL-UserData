@@ -192,6 +192,6 @@ public class LoadUGXFileType extends TypeRepresentationBase {
     @Override
     public String getValueAsCode() {
         return "\""
-                + VLangUtils.addEscapesToCode(getValue().toString()) + "\"";
+                + VLangUtils.addEscapesToCode(getValue().toString()) + "\" as "+File.class.getName();
     }
 }

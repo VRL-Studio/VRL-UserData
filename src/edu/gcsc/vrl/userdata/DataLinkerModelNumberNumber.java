@@ -152,8 +152,8 @@ public class DataLinkerModelNumberNumber extends DataLinkerModel {
         Double data = getData();
 
         //writes a call into code of the specific factory which generates/recreate for us a copy of the wanted userdata
-        sb.append(UserDataCopyFactoryNumber.class.getName())
-                .append(".createUserDataCopy(")
+        sb.append("new ").append(UserDataCopyFactoryNumber.class.getName())
+                .append("().createUserDataCopy(")
                 .append(dim).append(",")
                 .append('"').append(inputType).append('"').append(",")
                 .append('"').append(codeData).append('"').append(",")

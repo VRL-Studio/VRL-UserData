@@ -11,7 +11,7 @@ package edu.gcsc.vrl.userdata;
  */
 public class UserDataCopyFactory {
 
-    public static Object createUserDataCopy(int dim, String inputType, String codeData, String codeDeriv, Object data) {
+    public Object createUserDataCopy(int dim, String inputType, String codeData, String codeDeriv, Object data) {
 
         UserMathDataModel.InputType type = null;
 
@@ -40,7 +40,7 @@ public class UserDataCopyFactory {
      @param data are the entries of User- Number/Vector/Matrix 
      @return a temporal object which creates the copy of an existing userdata
      */
-    public static Object createUserDataCopy(int dim, UserMathDataModel.InputType inputType, String codeData, String codeDeriv, Object data) {
+    public Object createUserDataCopy(int dim, UserMathDataModel.InputType inputType, String codeData, String codeDeriv, Object data) {
         return new UnsupportedOperationException("Needs to be implemented by a derived class.");
     }
 

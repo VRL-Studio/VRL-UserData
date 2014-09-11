@@ -6,18 +6,11 @@
 package edu.gcsc.vrl.userdata;
 
 import edu.gcsc.vrl.ug.api.ConstUserNumber;
-import edu.gcsc.vrl.ug.api.ConstUserNumber1d;
-import edu.gcsc.vrl.ug.api.ConstUserNumber2d;
-import edu.gcsc.vrl.ug.api.ConstUserNumber3d;
 import edu.gcsc.vrl.ug.api.I_UserDataInfo;
 import edu.gcsc.vrl.ug.api.I_VRLCondUserNumber;
-import edu.gcsc.vrl.ug.api.I_VRLUserNumber;
 import edu.gcsc.vrl.ug.api.VRLCondUserNumber1d;
 import edu.gcsc.vrl.ug.api.VRLCondUserNumber2d;
 import edu.gcsc.vrl.ug.api.VRLCondUserNumber3d;
-import edu.gcsc.vrl.ug.api.VRLUserNumber1d;
-import edu.gcsc.vrl.ug.api.VRLUserNumber2d;
-import edu.gcsc.vrl.ug.api.VRLUserNumber3d;
 import static edu.gcsc.vrl.userdata.UserMathDataModel.createCode;
 import edu.gcsc.vrl.userdata.util.DimensionUtil;
 
@@ -27,7 +20,8 @@ import edu.gcsc.vrl.userdata.util.DimensionUtil;
  */
 public class UserDataCopyFactoryCondNumber extends UserDataCopyFactory {
 
-    public static Object createUserDataCopy(int dim, UserMathDataModel.InputType inputType, String codeData, String codeDeriv, Object data) {
+    @Override
+    public Object createUserDataCopy(int dim, UserMathDataModel.InputType inputType, String codeData, String codeDeriv, Object data) {
 
         I_UserDataInfo result = null;
 

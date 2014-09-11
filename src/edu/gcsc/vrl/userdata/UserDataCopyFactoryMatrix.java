@@ -23,7 +23,8 @@ import edu.gcsc.vrl.userdata.util.DimensionUtil;
  */
 public class UserDataCopyFactoryMatrix extends UserDataCopyFactory {
 
-    public static Object createUserDataCopy(int dim, UserMathDataModel.InputType inputType, String codeData, String codeDeriv, Object data) {
+    @Override
+    public Object createUserDataCopy(int dim, UserMathDataModel.InputType inputType, String codeData, String codeDeriv, Object data) {
 
         I_UserDataInfo result = null;
 

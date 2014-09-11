@@ -22,7 +22,8 @@ import edu.gcsc.vrl.userdata.util.DimensionUtil;
  */
 public class UserDataCopyFactoryNumber extends UserDataCopyFactory {
 
-    public static Object createUserDataCopy(int dim, UserMathDataModel.InputType inputType, String codeData, String codeDeriv, Object data) {
+    @Override
+    public Object createUserDataCopy(int dim, UserMathDataModel.InputType inputType, String codeData, String codeDeriv, Object data) {
 
         I_UserDataInfo result = null;
 
@@ -31,7 +32,7 @@ public class UserDataCopyFactoryNumber extends UserDataCopyFactory {
         if (arrayDim == 0) {
             entry = (Double) data;
         } else {
-            throw new RuntimeException(UserDataCopyFactoryNumber.class.getName()+".createUserDataCopy( ):  Data has wrong size:" + arrayDim);
+            throw new RuntimeException(UserDataCopyFactoryNumber.class.getName() + ".createUserDataCopy( ):  Data has wrong size:" + arrayDim);
         }
 
         switch (inputType) {
@@ -56,20 +57,20 @@ public class UserDataCopyFactoryNumber extends UserDataCopyFactory {
 
             case CODE:
 
-               switch (dim) {
-            case 1:
-                result = new VRLUserNumber1d();
-                break;
-            case 2:
-                result = new VRLUserNumber2d();
-                break;
-            case 3:
-                result = new VRLUserNumber3d();
-                break;
-            default:
-                throw new RuntimeException(UserDataCopyFactoryNumber.class.getName()
-                        + ": UserData has invalid dimension!");
-        }
+                switch (dim) {
+                    case 1:
+                        result = new VRLUserNumber1d();
+                        break;
+                    case 2:
+                        result = new VRLUserNumber2d();
+                        break;
+                    case 3:
+                        result = new VRLUserNumber3d();
+                        break;
+                    default:
+                        throw new RuntimeException(UserDataCopyFactoryNumber.class.getName()
+                                + ": UserData has invalid dimension!");
+                }
 
                 ((I_VRLUserNumber) result).data(createCode(codeData, dim, 0, false));
 

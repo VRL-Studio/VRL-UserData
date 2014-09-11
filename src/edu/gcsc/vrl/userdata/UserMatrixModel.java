@@ -287,8 +287,8 @@ public class UserMatrixModel extends UserMathDataModel {
         Double[][] data = getData();
 
         //writes a call into code of the specific factory which generates/recreate for us a copy of the wanted userdata
-        sb.append(UserDataCopyFactoryMatrix.class.getName())
-                .append(".createUserDataCopy(")
+        sb.append("new ").append(UserDataCopyFactoryMatrix.class.getName())
+                .append("().createUserDataCopy(")
                 .append(dim).append(",")
                 .append('"').append(inputType).append('"').append(",")
                 .append('"').append(code).append('"').append(",")
@@ -296,7 +296,10 @@ public class UserMatrixModel extends UserMathDataModel {
                 .append("[");
 
         for (int i = 0; i < data.length; i++) {
-                sb.append("[");
+                
+                if (i > 0) {
+                        sb.append(", ");
+                    }
                 for (int j = 0; j < data[i].length; j++) {
 
                     if (j == 0) {
@@ -310,11 +313,11 @@ public class UserMatrixModel extends UserMathDataModel {
                     if (j == data[i].length - 1) {
                         sb.append("]");
                     }
-                }
-                sb.append("]");
-            }
+                }//for j end
+                
+            }// for i end
 
-            sb.append("] as double[][])");
+            sb.append("] as Double[][])");
 
         //        return VLangUtils.addEscapesToCode(sb.toString());
         return sb.toString();

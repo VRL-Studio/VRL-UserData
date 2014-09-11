@@ -182,13 +182,13 @@ public class UserNumberModel extends UserMathDataModel {
         Double data = getData();
 
         //writes a call into code of the specific factory which generates/recreate for us a copy of the wanted userdata
-        sb.append(UserDataCopyFactoryNumber.class.getName())
-                .append(".createUserDataCopy(")
+        sb.append("new ").append(UserDataCopyFactoryNumber.class.getName())
+                .append("().createUserDataCopy(")
                 .append(dim).append(",")
                 .append('"').append(inputType).append('"').append(",")
                 .append('"').append(code).append('"').append(",")
                 .append('"').append('"').append(",")
-                .append(data)
+                .append(data).append(" as Double")        
                 .append(")");
 
         //        return VLangUtils.addEscapesToCode(sb.toString());
