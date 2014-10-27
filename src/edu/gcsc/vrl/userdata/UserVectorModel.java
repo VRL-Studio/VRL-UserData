@@ -8,13 +8,16 @@ import edu.gcsc.vrl.ug.UserDataCompiler;
 import edu.gcsc.vrl.ug.api.ConstUserVector1d;
 import edu.gcsc.vrl.ug.api.ConstUserVector2d;
 import edu.gcsc.vrl.ug.api.ConstUserVector3d;
+import edu.gcsc.vrl.ug.api.I_ConstUserNumber;
 import edu.gcsc.vrl.ug.api.I_ConstUserVector;
 import edu.gcsc.vrl.ug.api.I_UserDataInfo;
+import edu.gcsc.vrl.ug.api.I_VRLUserNumber;
 import edu.gcsc.vrl.ug.api.I_VRLUserVector;
 import edu.gcsc.vrl.ug.api.VRLUserVector1d;
 import edu.gcsc.vrl.ug.api.VRLUserVector2d;
 import edu.gcsc.vrl.ug.api.VRLUserVector3d;
 import edu.gcsc.vrl.userdata.util.DimensionUtil;
+import eu.mihosoft.vrl.lang.VLangUtils;
 import eu.mihosoft.vrl.system.VMessage;
 import javax.swing.table.TableModel;
 
@@ -216,7 +219,7 @@ public class UserVectorModel extends UserMathDataModel {
     @Override
     public String checkUserData() {
         if (getInputType() == InputType.CODE) {
-           int type = 1; //means Vector, see docu of createCode()
+            int type = 1; //means Vector, see docu of createCode()
             int dim = getDimension();
 
             String codeText = getCode();
@@ -236,4 +239,40 @@ public class UserVectorModel extends UserMathDataModel {
 
         return "";
     }
+
+    @Override
+    public String getModelAsCode() {
+
+        StringBuilder sb = new StringBuilder();
+
+        //the data of the userdata we want to copy
+        int dim = getDimension();
+        UserMathDataModel.InputType inputType = getInputType();
+        String code = getCode();
+        Double[] data = getData();
+
+        //writes a call into code of the specific factory which generates/recreate for us a copy of the wanted userdata
+        sb.append("new ")
+                .append(UserDataCopyFactoryVector.class.getName())
+                .append("().createUserDataCopy(")
+                .append(dim).append(",")
+                .append('"').append(inputType).append('"').append(",")
+                .append('"').append(code).append('"').append(",")
+                .append('"').append('"').append(",")
+                .append("[");
+
+        for (int i = 0; i < data.length; i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            sb.append(data[i]);
+
+        }
+        sb.append("] as Double[]")
+                .append(")");
+
+        //        return VLangUtils.addEscapesToCode(sb.toString());
+        return sb.toString();
+    }
+
 }

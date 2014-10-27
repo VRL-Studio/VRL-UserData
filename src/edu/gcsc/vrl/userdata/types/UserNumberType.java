@@ -7,7 +7,9 @@ package edu.gcsc.vrl.userdata.types;
 import edu.gcsc.vrl.ug.api.*;
 import edu.gcsc.vrl.userdata.UserDataTuple;
 import eu.mihosoft.vrl.annotation.TypeInfo;
+import eu.mihosoft.vrl.lang.VLangUtils;
 import java.io.Serializable;
+import java.util.IllegalFormatException;
 
 /**
  *
@@ -19,10 +21,19 @@ public class UserNumberType extends UserDataTupleType implements Serializable {
 
     private static final long serialVersionUID = 1;
 
+    protected Data getDataOfUserData() {
+        if (getDatas().size() == 1) {
+            return getDatas().get(0);
+        } else {
+            String message = "UserDatas as User- Number/Vector/Matrix have to got one entry in datas array.";
+            System.err.println(message);
+            throw new RuntimeException(message);
+        }
+    }
+
     @Override
     public String getValueAsCode() {
-        // TODO this is ony to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
-        return "null as " + getType().getName();
+            return getDataOfUserData().model.getModelAsCode();
     }
 
     @Override
@@ -74,7 +85,7 @@ public class UserNumberType extends UserDataTupleType implements Serializable {
 
     @Override
     public Object getViewValue() {
-        UserDataTuple tuple = (UserDataTuple)super.getViewValue();
+        UserDataTuple tuple = (UserDataTuple) super.getViewValue();
         return tuple.getNumberData(0);
     }
 }

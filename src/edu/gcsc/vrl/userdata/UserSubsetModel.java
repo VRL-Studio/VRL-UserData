@@ -5,6 +5,7 @@
 package edu.gcsc.vrl.userdata;
 
 import edu.gcsc.vrl.ug.api.UGXFileInfo;
+import eu.mihosoft.vrl.lang.VLangUtils;
 
 /**
  *
@@ -84,4 +85,25 @@ public class UserSubsetModel extends UserDataModel {
     public String checkUserData() {
         return "";
     }
+
+//    @Override
+//    public int getDimension() {
+//        //a subset has no dimension, so we return just zero.
+//        return 0;
+////        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
+
+    @Override
+    public String getModelAsCode() {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append('"')
+                .append(VLangUtils.addEscapesToCode(data))
+                .append('"');
+
+//        return VLangUtils.addEscapesToCode(sb.toString());
+        return sb.toString();
+    }
 }
+

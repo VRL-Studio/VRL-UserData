@@ -4,6 +4,10 @@
  */
 package edu.gcsc.vrl.userdata.types;
 
+import edu.gcsc.vrl.ug.api.I_CondUserNumber;
+import edu.gcsc.vrl.ug.api.I_UserMatrix;
+import edu.gcsc.vrl.ug.api.I_UserNumber;
+import edu.gcsc.vrl.ug.api.I_UserVector;
 import edu.gcsc.vrl.ug.api.UGXFileInfo;
 import edu.gcsc.vrl.userdata.LoadUGXFileObservable;
 import edu.gcsc.vrl.userdata.LoadUGXFileObserver;
@@ -13,6 +17,7 @@ import edu.gcsc.vrl.userdata.UserDataTuple;
 import edu.gcsc.vrl.userdata.UserDataView;
 import edu.gcsc.vrl.userdata.UserDependentSubsetView;
 import eu.mihosoft.vrl.annotation.TypeInfo;
+import eu.mihosoft.vrl.lang.VLangUtils;
 import eu.mihosoft.vrl.reflection.CustomParamData;
 import eu.mihosoft.vrl.reflection.LayoutType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
@@ -30,6 +35,13 @@ import javax.swing.Box;
  */
 @TypeInfo(type = UserDataTuple.class, input = true, output = false, style = "default")
 public class UserDataTupleType extends TypeRepresentationBase implements Serializable, LoadUGXFileObserver {
+
+    /**
+     * @return the datas
+     */
+    protected ArrayList<Data> getDatas() {
+        return datas;
+    }
 
     protected static class Data {
 
@@ -221,9 +233,7 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
             pData = new CustomParamData();
         }
 
-
-        for (int i = 0; i < datas.size(); i++)
-        {
+        for (int i = 0; i < datas.size(); i++) {
             Data data = datas.get(i);
             //if (data.category != UserDataModel.Category.DEPENDENT_SUBSET)
             pData.put("UserDataTuple:" + i, data.model);
@@ -326,8 +336,7 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
             datas.add(newData);
         }
 
-
-        if (nameCnt != nameArray.length) {
+        if (datas.size() != nameArray.length) {
             throw new RuntimeException("UserDataTupleType: number of categories does "
                     + "not match number of names.");
         }
@@ -461,7 +470,16 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
     
     @Override
     public String getValueAsCode() {
-        // TODO this is only to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
-        return "null as " + getType().getName();
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("new ").append(UserDataTuple.class.getName()).append("()");
+
+        for (int i = 0; i < getDatas().size(); i++) {
+            sb.append(".add(").append(getDatas().get(i).model.getModelAsCode()).append(")");
+        }
+
+        return sb.toString();
+        //return VLangUtils.addEscapesToCode(sb.toString());
+//        return "null as " + getType().getName();
     }
 }

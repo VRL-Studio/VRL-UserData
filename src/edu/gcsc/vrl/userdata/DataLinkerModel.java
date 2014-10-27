@@ -10,7 +10,7 @@ import edu.gcsc.vrl.ug.api.UGXFileInfo;
 import java.util.ArrayList;
 
 /**
- *
+ * @author Andreas Vogel <andreas.vogel@gcsc.uni-frankfurt.de>
  */
 public abstract class DataLinkerModel extends UserDataModel {
 

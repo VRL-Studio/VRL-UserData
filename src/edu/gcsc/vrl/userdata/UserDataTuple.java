@@ -42,8 +42,15 @@ public class UserDataTuple implements Serializable {
         data.clear();
     }
 
-    public void add(Object userData) {
+    /**
+     * Adds an user data to this UserDataTupel object by using the builder pattern.
+     * @param userData the userData to set
+     * @return this UserDataTupel object
+     */
+    public UserDataTuple add(Object userData) {
         data.add(userData);
+
+        return this;
     }
 
     public Object getData(int i) {

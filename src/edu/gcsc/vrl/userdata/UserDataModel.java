@@ -4,6 +4,8 @@
  */
 package edu.gcsc.vrl.userdata;
 
+import edu.gcsc.vrl.ug.api.I_UserDataInfo;
+import edu.gcsc.vrl.ug.api.UGXFileInfo;
 import java.io.Serializable;
 
 /**
@@ -36,12 +38,11 @@ public abstract class UserDataModel implements Serializable {
         DEPENDENT_SUBSET,
         LINKER
     }
-    
+
     protected Status status = Status.WARNING;
     protected Category category;
     protected boolean externTriggered = false;
 
-    
     public Status getStatus() {
         return status;
     }
@@ -56,6 +57,16 @@ public abstract class UserDataModel implements Serializable {
     public Category getCategory() {
         return category;
     }
+
+    /**
+     * @return a string which has the code to construct a new copy an existing model 
+     */
+    public abstract String getModelAsCode();
+
+//    /**
+//     * @return the dimension
+//     */
+//    public abstract int getDimension();
 
     /**
      * @return the data
