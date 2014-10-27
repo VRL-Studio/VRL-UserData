@@ -139,7 +139,7 @@ public class FunctionDefinitionObservable
      * fct_tag entry is created. If no fct_tag exists and create is set to false 
      * then null is returned.
      * 
-     * @param fct_tag   ugx_tag name
+     * @param fct_tag   fct_tag name
      * @param create    flag indicating if fct_tag should be created
      * @return          file fct_tag info
      */
@@ -201,7 +201,7 @@ public class FunctionDefinitionObservable
     
     
     /**
-     * Add an observer to this Observable. The observer listens to a ugx_tag.
+     * Add an observer to this Observable. The observer listens to a fct_tag.
      * The observer will be updated with the current data automatically.
      * 
      * @param obs           the observer to be added
@@ -230,7 +230,7 @@ public class FunctionDefinitionObservable
     }
 
     /**
-     * Removes all observer of a ugx_tag from this Observable. 
+     * Removes all observers of a fct_tag from this Observable. 
      * 
      * @param fct_tag   the fct_tag
      * @param windowID  the window containing the object
@@ -279,7 +279,7 @@ public class FunctionDefinitionObservable
     }
 
     /**
-     * Sets that a ugx_tag has an invalid file.
+     * Sets that a fct_tag has an invalid file.
      * 
      * @param fct_tag   the fct_tag
      * @param windowID  the window containing the object

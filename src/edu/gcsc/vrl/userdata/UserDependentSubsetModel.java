@@ -1,5 +1,6 @@
 package edu.gcsc.vrl.userdata;
 
+import eu.mihosoft.vrl.lang.VLangUtils;
 import java.io.Serializable;
 import java.util.List;
 
@@ -387,6 +388,15 @@ public class UserDependentSubsetModel extends UserDataModel
     public String checkUserData()
     {
         return "";
+    }
+
+    @Override
+    public String getModelAsCode()
+    {
+        // TODO: This is a stub. Implement properly.
+        StringBuilder sb = new StringBuilder();
+        
+        return sb.toString();
     }
     
 }

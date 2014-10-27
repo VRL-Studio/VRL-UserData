@@ -262,12 +262,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         
         // register at the observable for ugx-file-loads if ugx_tag given
         if (ugx_tag != null)
-        {
-            int id = this.getParentMethod().getParentObject().getObjectID();
-            Object o = ((VisualCanvas) getMainCanvas()).getInspector().getObject(id);
-            int windowID = 0;
-            LoadUGXFileObservable.getInstance().addObserver(this, ugx_tag, o, windowID);
-        }
+            LoadUGXFileObservable.getInstance().addObserver(this, ugx_tag);
         
         // get an index from functionDefinitionObservable (array index)
         if (fct_tag != null)

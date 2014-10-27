@@ -233,7 +233,8 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
             pData = new CustomParamData();
         }
 
-        for (int i = 0; i < datas.size(); i++) {
+        for (int i = 0; i < datas.size(); i++)
+        {
             Data data = datas.get(i);
             //if (data.category != UserDataModel.Category.DEPENDENT_SUBSET)
             pData.put("UserDataTuple:" + i, data.model);
@@ -336,7 +337,8 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
             datas.add(newData);
         }
 
-        if (datas.size() != nameArray.length) {
+        if (nameCnt != nameArray.length)
+        {
             throw new RuntimeException("UserDataTupleType: number of categories does "
                     + "not match number of names.");
         }
