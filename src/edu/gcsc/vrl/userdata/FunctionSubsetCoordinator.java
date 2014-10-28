@@ -185,9 +185,7 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
             // in the subsets list of a selected function
             subsets = new ArrayList<String>(FunctionDefinitionObservable.getInstance()
                     .requestSubsetsForFunction(selFcts[0], fct_tag, windowID));
-/*System.out.println(">>> subsets: --------");
-for (String s: subsets) System.out.println(">>> "+s);
-System.out.println("");*/
+
             for (int sfi=1; sfi < selFcts.length; sfi++)
             {
                 List<String> currSsl;
@@ -198,9 +196,6 @@ System.out.println("");*/
                 }
                 else  currSsl = new ArrayList<String>();
                 
-/*System.out.println(">>> currSsl: --------");
-for (String s: currSsl) System.out.println(">>> "+s);
-System.out.println("");*/
                 int i = 0;
                 while (i < subsets.size())
                 {
@@ -209,7 +204,6 @@ System.out.println("");*/
                     {
                         if (subsets.get(i).equals(currSsl.get(j)))
                         {
-/*System.out.println(">>>> found item '"+subsets.get(i)+"'");*/
                             found = true;
                             i++;
                             currSsl.remove(j);
@@ -218,14 +212,10 @@ System.out.println("");*/
                     }
                     if (!found)
                     {
-/*System.out.println(">>>> item '"+subsets.get(i)+"' not found, removing");*/
                         subsets.remove(i);
                     }
                 }
             }
-/*System.out.println(">>> subsets: --------");
-for (String s: subsets) System.out.println(">>> "+s);
-System.out.println("");*/
         }
         // empty list if no function selected
         else subsets = new ArrayList<String>();

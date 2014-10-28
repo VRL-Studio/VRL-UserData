@@ -4,11 +4,9 @@
  */
 package edu.gcsc.vrl.userdata;
 
-import edu.gcsc.vrl.ug.api.UGXFileInfo;
 import edu.gcsc.vrl.userdata.UserDataModel.Status;
 import edu.gcsc.vrl.userdata.types.UserDataTupleType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
-import eu.mihosoft.vrl.visual.CanvasActionListener;
 import eu.mihosoft.vrl.visual.CanvasWindow;
 import eu.mihosoft.vrl.visual.VButton;
 import eu.mihosoft.vrl.visual.VSwingUtil;

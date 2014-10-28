@@ -256,7 +256,7 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
             throw new RuntimeException("UserDependentSubsetView: Number of "
                     + "functions in view and model are not identical: model has "
                     + ((UserDependentSubsetModel) model).getnFct() + ", view "
-                    + nFct + ". (UserDatatuple )" + tuple.getValueOptions());
+                    + nFct + ". (UserDatatuple " + tuple.getValueOptions() + ")");
         }
         
         if (fctSelection != null)
@@ -350,21 +350,22 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
                         fctSelection[i].setSelectedIndex(((UserDependentSubsetModel)model).getSelectedFunctionIndices()[i]);
                     }
                     // if one of the indices is out of bounds
-                    // (should not happen, as model is always updated beforehand)
+                    // (should not happen, as model is always updated beforehand
+                    // except when loading project)
                     catch (java.lang.IllegalArgumentException ex)
                     {
                         VMessage.warning("Illegal Argument in UserDependentSubsetModel",
-                                "The model holds a function index as selected which does not exist in the corresponding view"
+                                        "The model holds a function index as selected which does not exist in the corresponding view"
                                         + "(index is " + ((UserDependentSubsetModel)model).getSelectedFunctionIndices()[i]
                                         + ", but only " + fctSelection[i].getItemCount()
                                         + " item(s) in the view. "
                                         + "This is an error, strictly-speaking. Please report it.");
                     }
                 }
-                // if nothing is selected (can that happen at all?)
+                // if nothing is selected
                 if (fctSelection[i].getSelectedItem() == null) 
                 {
-                    ((UserDependentSubsetModel)model).setSelectedFunction(i,"", -1);
+                    ((UserDependentSubsetModel)model).setSelectedFunction(i,((UserDependentSubsetModel)model).getSelectedFunction(i), -1);
                     ((UserDependentSubsetModel)model).adjustSubsetData(null);
                     adjustSubsetView(null);
                     model.setStatus(UserDataModel.Status.INVALID);
@@ -438,12 +439,14 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
                 adjustView(model.getStatus());
             }
 
+            /*
             if (ssSelection.getSelectedIndices().length == 0) 
             {
                 ((UserDependentSubsetModel)model).setSelectedSubsets(new String[]{}, new int[]{});
                 if (model.getStatus() != UserDataModel.Status.INVALID) model.setStatus(UserDataModel.Status.WARNING);
                 adjustView(model.getStatus());
             }
+                    */
         }
 
         // set the maximum size to prefered size in order to avoid stretched drop-downs

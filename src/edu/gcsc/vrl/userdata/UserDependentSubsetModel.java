@@ -246,10 +246,18 @@ public class UserDependentSubsetModel extends UserDataModel
         // selected functions; if that is the case, adjust selected indices and
         // do not change status
         boolean allFunctionsPresent = true;
+        int[] newFctSelInd;
+        newFctSelInd = selections.getSelFctInd();
         for (int i=0; i<selections.getSelFct().length; i++)
         {
             String selFct = selections.getSelFct()[i];
-            if (selFct.equals("")) continue;   // no sense looking for non-selected functions
+            // no sense looking for non-selected functions
+            if (selFct.equals(""))
+            {
+                allFunctionsPresent = false;
+                newFctSelInd[i] = -1;
+                continue;
+            }
             boolean fctPresent = false;
             for (int j=0; j<fctList.size(); j++)
             {
@@ -257,55 +265,21 @@ public class UserDependentSubsetModel extends UserDataModel
                 if (fct.equals(selFct))
                 {
                     fctPresent = true;
-                    selections.getSelFctInd()[i] = j;
+                    newFctSelInd[i] = j;
                     break;
                 }
             }
             if (!fctPresent)
             {
                 allFunctionsPresent = false;
-                break;
+                newFctSelInd[i] = -1;
             }
         }
         
-        if (allFunctionsPresent) return;
-        
-        // control reaches this code only if new function definition
-        // does not contain all currently selected functions, then:
-        // if possible: select the same indices as before and warn
-        int maxSelInd = -1;
-        for (int sfi: selections.getSelFctInd())
-            if (maxSelInd < sfi) maxSelInd = sfi;
-        
-        if (fctList.size() > maxSelInd)
-        {
-            boolean allFctDefOK = true;
-            for (int i=0; i<nFct; i++)
-            {
-                if (selections.getSelFctInd()[i] < 0) continue;   // no sense looking for non-selected functions
-                if (fctList.get(selections.getSelFctInd()[i]) == null
-                    || fctList.get(selections.getSelFctInd()[i]).equals(""))
-                {
-                    allFctDefOK = false;
-                    break;
-                }
-            }
-            if (allFctDefOK)
-            {
-                for (int i=0; i<nFct; i++)
-                    if (selections.getSelFctInd()[i] >= 0) selections.getSelFct()[i] = fctList.get(selections.getSelFctInd()[i]);
-                if (getStatus() != Status.INVALID) setStatus(Status.WARNING);
-                return;
-            }
-        }
-    
-        // if both fail: set invalid
-        for (int i=0; i<nFct; i++)
-        {
-            selections.getSelFct()[i] = "";
-            selections.getSelFctInd()[i] = -1;
-        }
-        setStatus(Status.INVALID);
+        selections.setSelFctInd(newFctSelInd);
+            
+        if (allFunctionsPresent) setStatus(Status.VALID);
+        else setStatus(Status.INVALID);
     }
 
     
@@ -326,11 +300,10 @@ public class UserDependentSubsetModel extends UserDataModel
         // compare selectedSubsetsList with given List,
         // check occurence of each selected element 
         boolean allFound = true;
-        int[] ssiList = selections.getSelSsInd();
-        int selssi = -1;
+        int[] ssiList = new int[selections.getSelSs().length];
+        int selssi = 0;
         for (String sel: selections.getSelSs())
         {
-            selssi++;
             boolean found = false;
             String ss;
             for (int ssi=0; ssi < ssList.size(); ssi++)
@@ -340,6 +313,7 @@ public class UserDependentSubsetModel extends UserDataModel
                 {
                     ssiList[selssi] = ssi;
                     found = true;
+                    selssi++;
                     break;
                 }
             }
@@ -353,16 +327,22 @@ public class UserDependentSubsetModel extends UserDataModel
 
         // control reaches this code only if new subset definition
         // does not contain currently selected subsets, then:
+        // select whatever has been found
         if (ssList.size() > 0 && ssList.get(0) != null)
         {
-            selections.setSelSs(new String[]{ssList.get(0)});
-            selections.setSelSsInd(new int[]{0});
+            //selections.setSelSs(new String[]{ssList.get(0)});
+            int[] newSelSsIndices = new int[selssi];
+            System.arraycopy(ssiList, 0, newSelSsIndices, 0, selssi);
+            
+            selections.setSelSsInd(newSelSsIndices);
             
             if (!(getStatus() == Status.INVALID)) setStatus(Status.WARNING);
         }
+        // or select nothing at all
         else
         {
-            selections.setSelSs(new String[]{});                
+            
+            //selections.setSelSs(new String[]{});                
             selections.setSelSsInd(new int[]{});
             
             setStatus(Status.INVALID);

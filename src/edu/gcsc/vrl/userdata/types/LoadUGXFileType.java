@@ -172,6 +172,21 @@ public class LoadUGXFileType extends TypeRepresentationBase {
         // register at Observable using ugx_tag
         notifyLoadUGXFileObservable();
     }
+    
+    /**
+     * Disposes additional resources, e.g., Java 3D render threads. It will be
+     * called when the parent canvas window is closed.
+     */
+    @Override
+    public void dispose()
+    {
+        int id = this.getParentMethod().getParentObject().getObjectID();
+        Object o = ((VisualCanvas) getMainCanvas()).getInspector().getObject(id);
+        int windowID = 0;
+        LoadUGXFileObservable.getInstance().setInvalidFile(ugx_tag, o, windowID);
+
+        super.dispose();
+    }
 
     protected void notifyLoadUGXFileObservable() {
         File file = new File(input.getText());

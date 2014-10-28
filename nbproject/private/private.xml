@@ -3,7 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/mbreit/Developing/VRL-UserData/src/edu/gcsc/vrl/userdata/types/UserDataTupleType.java</file>
+            <file>file:/Users/mbreit/Developing/VRL-UserData/src/edu/gcsc/vrl/userdata/types/LoadUGXFileStringType.java</file>
+            <file>file:/Users/mbreit/Developing/VRL-UserData/src/edu/gcsc/vrl/userdata/UserDependentSubsetModel.java</file>
+            <file>file:/Users/mbreit/Developing/VRL-UserData/src/edu/gcsc/vrl/userdata/LoadUGXFileObservable.java</file>
+            <file>file:/Users/mbreit/Developing/VRL-UserData/src/edu/gcsc/vrl/userdata/types/LoadUGXFileType.java</file>
+            <file>file:/Users/mbreit/Developing/VRL-UserData/src/edu/gcsc/vrl/userdata/UserDependentSubsetView.java</file>
         </group>
     </open-files>
 </project-private>

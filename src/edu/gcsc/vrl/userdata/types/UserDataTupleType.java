@@ -4,10 +4,6 @@
  */
 package edu.gcsc.vrl.userdata.types;
 
-import edu.gcsc.vrl.ug.api.I_CondUserNumber;
-import edu.gcsc.vrl.ug.api.I_UserMatrix;
-import edu.gcsc.vrl.ug.api.I_UserNumber;
-import edu.gcsc.vrl.ug.api.I_UserVector;
 import edu.gcsc.vrl.ug.api.UGXFileInfo;
 import edu.gcsc.vrl.userdata.LoadUGXFileObservable;
 import edu.gcsc.vrl.userdata.LoadUGXFileObserver;
@@ -17,7 +13,6 @@ import edu.gcsc.vrl.userdata.UserDataTuple;
 import edu.gcsc.vrl.userdata.UserDataView;
 import edu.gcsc.vrl.userdata.UserDependentSubsetView;
 import eu.mihosoft.vrl.annotation.TypeInfo;
-import eu.mihosoft.vrl.lang.VLangUtils;
 import eu.mihosoft.vrl.reflection.CustomParamData;
 import eu.mihosoft.vrl.reflection.LayoutType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;

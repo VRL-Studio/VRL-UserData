@@ -4,8 +4,6 @@
  */
 package edu.gcsc.vrl.userdata;
 
-import edu.gcsc.vrl.ug.api.I_UserDataInfo;
-import edu.gcsc.vrl.ug.api.UGXFileInfo;
 import java.io.Serializable;
 
 /**
@@ -99,7 +97,7 @@ public abstract class UserDataModel implements Serializable {
 
     /**
      *  checks if user data can be created
-     * returns empty message if everything ok, error message else
+     * @return empty message if everything ok, error message else
      */
     public abstract String checkUserData();
 

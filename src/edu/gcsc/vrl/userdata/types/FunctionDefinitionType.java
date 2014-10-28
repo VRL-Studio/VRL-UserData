@@ -267,7 +267,6 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         // get an index from functionDefinitionObservable (array index)
         if (fct_tag != null)
         {
-            int id = this.getParentMethod().getParentObject().getObjectID();
             int windowID = 0;
             arrayIndex = FunctionDefinitionObservable.getInstance().receiveArrayIndex(fct_tag, windowID);
         }

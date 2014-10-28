@@ -5,7 +5,6 @@
 package edu.gcsc.vrl.userdata;
 
 import edu.gcsc.vrl.ug.UserDataCompiler;
-import edu.gcsc.vrl.ug.api.ConstUserNumber;
 import edu.gcsc.vrl.ug.api.ConstUserNumber1d;
 import edu.gcsc.vrl.ug.api.ConstUserNumber2d;
 import edu.gcsc.vrl.ug.api.ConstUserNumber3d;
@@ -178,7 +177,7 @@ public class UserNumberModel extends UserMathDataModel {
         //the data of the userdata we want to copy
         int dim = getDimension();
         UserMathDataModel.InputType inputType = getInputType();
-        String code = getCode();
+        String code = VLangUtils.addEscapesToCode(getCode());
         Double data = getData();
 
         //writes a call into code of the specific factory which generates/recreate for us a copy of the wanted userdata

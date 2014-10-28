@@ -190,6 +190,8 @@ public class LoadUGXFileObservable {
      * 
      * @param obs       the observer to remove
      * @param ugx_tag       the ugx_tag
+     * @param object
+     * @param windowID
      */
     public synchronized void deleteObserver(LoadUGXFileObserver obs, String ugx_tag, Object object, int windowID) {
         Identifier id = new Identifier(ugx_tag, object, windowID);
@@ -331,6 +333,8 @@ public class LoadUGXFileObservable {
      * Sets that a ugx_tag has an invalid file.
      * 
      * @param ugx_tag       the ugx_tag
+     * @param object
+     * @param windowID
      */
     public synchronized void setInvalidFile(String ugx_tag, Object object, int windowID) {
         UGXFileTag ugxTag = getTag(ugx_tag, object, windowID, true);

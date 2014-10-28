@@ -7,9 +7,7 @@ package edu.gcsc.vrl.userdata.types;
 import edu.gcsc.vrl.ug.api.*;
 import edu.gcsc.vrl.userdata.UserDataTuple;
 import eu.mihosoft.vrl.annotation.TypeInfo;
-import eu.mihosoft.vrl.lang.VLangUtils;
 import java.io.Serializable;
-import java.util.IllegalFormatException;
 
 /**
  *
