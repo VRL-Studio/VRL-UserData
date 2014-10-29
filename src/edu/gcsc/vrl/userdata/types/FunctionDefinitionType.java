@@ -398,14 +398,14 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
                 for (int i=0; i<indexList.size(); i++) indices[i] = indexList.get(i).intValue();
 
                 subsetList.setSelectedIndices(indices);
-            }
             
-            // warn if not all selected functions found
-            if (!allFound)
-            {
-                eu.mihosoft.vrl.system.VMessage.warning("Missing subsets", "Not "
-                        + "all subsets stored in FunctionDefinitionType are "
-                        + "present in the current UGX file.");
+                // warn if not all selected functions found
+                if (!allFound)
+                {
+                    eu.mihosoft.vrl.system.VMessage.warning("Missing subsets", "Not "
+                            + "all subsets stored in FunctionDefinitionType are "
+                            + "present in the current UGX file.");
+                }
             }
             
             // notify observable
