@@ -14,7 +14,6 @@ import edu.gcsc.vrl.userdata.LoadUGXFileObserver;
 import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.reflection.LayoutType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
-import eu.mihosoft.vrl.reflection.VisualCanvas;
 import eu.mihosoft.vrl.visual.VBoxLayout;
 import eu.mihosoft.vrl.visual.VTextField;
 import groovy.lang.Script;
@@ -169,10 +168,10 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
             // the available subsets might not be up to date
             if (ugx_tag != null)
             {
-                int id = this.getParentMethod().getParentObject().getObjectID();
-                Object obj = ((VisualCanvas) getMainCanvas()).getInspector().getObject(id);
+                int objectID = this.getParentMethod().getParentObject().getObjectID();
+                //Object obj = ((VisualCanvas) getMainCanvas()).getInspector().getObject(objectID);
                 int windowID = 0;
-                LoadUGXFileObservable.getInstance().notifyObserver(this, ugx_tag, obj, windowID);
+                LoadUGXFileObservable.getInstance().notifyObserver(this, ugx_tag, objectID, windowID);
             }
             else adjustView(); // this also notifies observable
         }

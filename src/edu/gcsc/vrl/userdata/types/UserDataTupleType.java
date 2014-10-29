@@ -16,7 +16,6 @@ import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.reflection.CustomParamData;
 import eu.mihosoft.vrl.reflection.LayoutType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
-import eu.mihosoft.vrl.reflection.VisualCanvas;
 import eu.mihosoft.vrl.visual.MessageType;
 import eu.mihosoft.vrl.visual.VBoxLayout;
 import groovy.lang.Script;
@@ -385,10 +384,10 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
         
         // register at the observable for ugx-file-loads if ugx_tag given
         if (ugx_tag != null) {
-            int id = this.getParentMethod().getParentObject().getObjectID();
-            Object o = ((VisualCanvas) getMainCanvas()).getInspector().getObject(id);
+            int objectID = this.getParentMethod().getParentObject().getObjectID();
+            //Object o = ((VisualCanvas) getMainCanvas()).getInspector().getObject(objectID);
             int windowID = 0;
-            LoadUGXFileObservable.getInstance().addObserver(this, ugx_tag, o, windowID);
+            LoadUGXFileObservable.getInstance().addObserver(this, ugx_tag, objectID, windowID);
         }
 
         if (ugx_globalTag != null) {

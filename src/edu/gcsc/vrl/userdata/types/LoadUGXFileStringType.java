@@ -7,7 +7,6 @@ import eu.mihosoft.vrl.io.VFileFilter;
 import eu.mihosoft.vrl.lang.VLangUtils;
 import eu.mihosoft.vrl.reflection.LayoutType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
-import eu.mihosoft.vrl.reflection.VisualCanvas;
 import eu.mihosoft.vrl.visual.MessageType;
 import eu.mihosoft.vrl.visual.VBoxLayout;
 import eu.mihosoft.vrl.visual.VTextField;
@@ -173,13 +172,12 @@ public class LoadUGXFileStringType extends TypeRepresentationBase {
  
     protected void notifyLoadUGXFileObservable() {
         File file = new File(input.getText());
-            int id = this.getParentMethod().getParentObject().getObjectID();
-            Object o = ((VisualCanvas) getMainCanvas()).getInspector().getObject(id);
+            int objectID = this.getParentMethod().getParentObject().getObjectID();
             int windowID = 0;
 
         //  Here we inform the Singleton, that the file no scheduled
         if (!file.getAbsolutePath().isEmpty() && file.isFile()) {
-            String msg = LoadUGXFileObservable.getInstance().setSelectedFile(file, ugx_tag, o, windowID);
+            String msg = LoadUGXFileObservable.getInstance().setSelectedFile(file, ugx_tag, objectID, windowID);
 
             if (!msg.isEmpty() && !getMainCanvas().isLoadingSession()) {
                 getMainCanvas().getMessageBox().addMessage("Invalid ugx-File",
@@ -187,7 +185,7 @@ public class LoadUGXFileStringType extends TypeRepresentationBase {
             }
 
         } else {
-            LoadUGXFileObservable.getInstance().setInvalidFile(ugx_tag, o, windowID);
+            LoadUGXFileObservable.getInstance().setInvalidFile(ugx_tag, objectID, windowID);
             
             if (!input.getText().isEmpty() && !getMainCanvas().isLoadingSession()) {
                 getMainCanvas().getMessageBox().addMessage("Invalid ugx-File",

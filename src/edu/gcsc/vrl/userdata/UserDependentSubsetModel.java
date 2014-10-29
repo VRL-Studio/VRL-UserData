@@ -1,6 +1,5 @@
 package edu.gcsc.vrl.userdata;
 
-import eu.mihosoft.vrl.lang.VLangUtils;
 import java.io.Serializable;
 import java.util.List;
 
