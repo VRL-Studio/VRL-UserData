@@ -113,82 +113,6 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
         
         horizBox.add(vBox);
         
-        /*
-        button = new VButton(name);
-        defaultColor = button.getBackground();
-        defaultTextColor = button.getForeground();
-        button.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                if (window == null || window.isDisposed())
-                {
-                    window = new SubsetSelectionWindow(this);
-                    window.getTitleBar().addMouseListener(new MouseAdapter()
-                    {
-                        @Override
-                        public void mousePressed(MouseEvent e)
-                        {
-                            button.setForeground(tuple.getMainCanvas().getStyle().getBaseValues().getColor(
-                                    CanvasWindow.UPPER_ACTIVE_TITLE_COLOR_KEY));
-                        }
-
-                        @Override
-                        public void mouseReleased(MouseEvent e)
-                        {
-                            button.setForeground(defaultTextColor);
-                        }
-                    });
-
-                    tuple.getMainCanvas().addWindow(window);
-                }
-
-                if (model.getStatus() != UserDataModel.Status.INVALID) model.setStatus(Status.VALID);
-                
-                adjustView(model.getStatus());
-
-                Point loc = VSwingUtil.getAbsPos(tuple);
-
-                Point buttonLoc = new Point(loc.x + button.getX(),
-                        loc.y + button.getY());
-
-                window.setLocation(buttonLoc);
-
-                tuple.getMainCanvas().setComponentZOrder(window, 0);
-            }
-        });
-
-        // tuning tooltip to be shown all the time on mouse-over
-        button.addMouseListener(new MouseAdapter()
-        {
-            private int defaultDismissDelay;
-            private int defaultInitialDelay;
-            private int defaultReshowDelay;
-
-            @Override
-            public void mouseEntered(MouseEvent me)
-            {
-                defaultDismissDelay = ToolTipManager.sharedInstance().getDismissDelay();
-                defaultInitialDelay = ToolTipManager.sharedInstance().getInitialDelay();
-                defaultReshowDelay = ToolTipManager.sharedInstance().getReshowDelay();
-                ToolTipManager.sharedInstance().setDismissDelay(60000000);
-                ToolTipManager.sharedInstance().setInitialDelay(0);
-                ToolTipManager.sharedInstance().setReshowDelay(0);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent me)
-            {
-                ToolTipManager.sharedInstance().setDismissDelay(defaultDismissDelay);
-                ToolTipManager.sharedInstance().setInitialDelay(defaultInitialDelay);
-                ToolTipManager.sharedInstance().setReshowDelay(defaultReshowDelay);
-            }
-        });
-        
-        
-        horizBox.add(button);
-        */
         
         ssSelectionModel = new DefaultListModel();
         ssSelection = new JList(ssSelectionModel);
@@ -340,6 +264,9 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
         {
             for (int i=0; i<nFct; i++)
             {
+                // add an empty item to combobox
+                fctSelection[i].addItem("");
+                
                 // add all fct items to combobox
                 for (String fct : thisList) fctSelection[i].addItem(fct);
 

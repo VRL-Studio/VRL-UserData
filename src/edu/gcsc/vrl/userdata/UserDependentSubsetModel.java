@@ -22,7 +22,7 @@ public class UserDependentSubsetModel extends UserDataModel
         for (int i=0; i<nFct; i++)
         {
             selectedFunctions[i] = "";
-            selectedFunctionIndices[i] = -1;
+            selectedFunctionIndices[i] = 0;
         }
         String[] selectedSubsets = new String[]{};
         int[] selectedSubsetIndices = new int[]{};
@@ -251,10 +251,12 @@ public class UserDependentSubsetModel extends UserDataModel
         {
             String selFct = selections.getSelFct()[i];
             // no sense looking for non-selected functions
+            // (I guess this special case can be neglected as the 0-th entry
+            // in the fct list is always "")
             if (selFct.equals(""))
             {
                 allFunctionsPresent = false;
-                newFctSelInd[i] = -1;
+                newFctSelInd[i] = 0;
                 continue;
             }
             boolean fctPresent = false;

@@ -179,46 +179,53 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
             throw new RuntimeException("FunctionSubsetCoordinator: selFctIndices has no entries!");
   
         List<String> subsets;
-        if (!"".equals(selFcts[0]))
+        
+        // find first selected unknown index
+        int first_sfi = 0;
+        while ("".equals(selFcts[first_sfi]) && first_sfi < selFcts.length) ++first_sfi;
+        
+        // empty list if no function selected
+        if (first_sfi == selFcts.length)
         {
-            // iteratively construct subset list by removing subsets not contained
-            // in the subsets list of a selected function
-            subsets = new ArrayList<String>(FunctionDefinitionObservable.getInstance()
-                    .requestSubsetsForFunction(selFcts[0], fct_tag, windowID));
+            subsets = new ArrayList<String>();
+            couplingMap.get(id).get(couplingIndex).sObs.updateSubsets(subsets);
+            return;
+        }
+        
+        // else:
+        // iteratively construct subset list by removing subsets not contained
+        // in the subsets list of a selected function
+        subsets = new ArrayList<String>(FunctionDefinitionObservable.getInstance()
+                    .requestSubsetsForFunction(selFcts[first_sfi], fct_tag, windowID));
 
-            for (int sfi=1; sfi < selFcts.length; sfi++)
+        for (int sfi=first_sfi+1; sfi < selFcts.length; sfi++)
+        {
+            // do not take functions into account that are selected ""
+            if ("".equals(selFcts[sfi])) continue;
+ 
+            List<String> currSsl = new ArrayList<String>(FunctionDefinitionObservable.getInstance()
+                .requestSubsetsForFunction(selFcts[sfi], fct_tag, windowID));
+            
+            int i = 0;
+            while (i < subsets.size())
             {
-                List<String> currSsl;
-                if (!"".equals(selFcts[sfi]))
+                boolean found = false;
+                for (int j=0; j<currSsl.size(); j++)
                 {
-                    currSsl = new ArrayList<String>(FunctionDefinitionObservable.getInstance()
-                        .requestSubsetsForFunction(selFcts[sfi], fct_tag, windowID));
+                    if (subsets.get(i).equals(currSsl.get(j)))
+                    {
+                        found = true;
+                        i++;
+                        currSsl.remove(j);
+                        break;
+                    }
                 }
-                else  currSsl = new ArrayList<String>();
-                
-                int i = 0;
-                while (i < subsets.size())
+                if (!found)
                 {
-                    boolean found = false;
-                    for (int j=0; j<currSsl.size(); j++)
-                    {
-                        if (subsets.get(i).equals(currSsl.get(j)))
-                        {
-                            found = true;
-                            i++;
-                            currSsl.remove(j);
-                            break;
-                        }
-                    }
-                    if (!found)
-                    {
-                        subsets.remove(i);
-                    }
+                    subsets.remove(i);
                 }
             }
         }
-        // empty list if no function selected
-        else subsets = new ArrayList<String>();
         
         couplingMap.get(id).get(couplingIndex).sObs.updateSubsets(subsets);
     }
