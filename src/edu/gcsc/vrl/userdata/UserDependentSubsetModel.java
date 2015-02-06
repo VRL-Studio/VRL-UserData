@@ -253,12 +253,12 @@ public class UserDependentSubsetModel extends UserDataModel
             // no sense looking for non-selected functions
             // (I guess this special case can be neglected as the 0-th entry
             // in the fct list is always "")
-            if (selFct.equals(""))
+            /*if (selFct.equals(""))
             {
                 allFunctionsPresent = false;
                 newFctSelInd[i] = 0;
                 continue;
-            }
+            }*/
             boolean fctPresent = false;
             for (int j=0; j<fctList.size(); j++)
             {

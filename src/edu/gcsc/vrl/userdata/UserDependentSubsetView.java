@@ -249,26 +249,21 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
         boolean saveIntAdjState = internalAdjustment;
         internalAdjustment = true;
         
-        for (int i=0; i<nFct; i++) fctSelection[i].removeAllItems();
-        
-        List<String> thisList = fctList;        
+        for (int i=0; i<nFct; i++) fctSelection[i].removeAllItems();  
 
         // delete empty string from list
-        if (thisList != null)
+        /*if (fctList != null)
         {
-            for (int i=0; i<thisList.size(); i++)
-                if (thisList.get(i).equals("")) thisList.remove(i);
+            for (int i=0; i<fctList.size(); i++)
+                if (fctList.get(i).equals("")) fctList.remove(i);
         }
-        
-        if (thisList != null && !thisList.isEmpty())
+        */
+        if (fctList != null && !fctList.isEmpty())
         {
             for (int i=0; i<nFct; i++)
             {
-                // add an empty item to combobox
-                fctSelection[i].addItem("");
-                
                 // add all fct items to combobox
-                for (String fct : thisList) fctSelection[i].addItem(fct);
+                for (String fct : fctList) fctSelection[i].addItem(fct);
 
                 if (model != null)
                 {
@@ -446,6 +441,9 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
     @Override
     public void updateFunctions(List<String> fctData)
     {
+        // add "" to the head of the list
+        fctData.add(0, "");
+        
         ((UserDependentSubsetModel)model).adjustFunctionData(fctData);
         adjustFunctionView(fctData);
     }
