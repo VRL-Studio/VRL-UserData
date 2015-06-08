@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package edu.gcsc.vrl.userdata.types;
 
 import edu.gcsc.vrl.ug.api.UGXFileInfo;
@@ -34,7 +28,15 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.text.Position;
 
 /**
- *
+ * FunctionDefinitionType class.
+ * This type is used to represent a function definition class.
+ * It is meant to be used in a class that will enable the user to pick a
+ * geometry and then define functions on subsets of this geometry.
+ * 
+ * It is crucial to the implementation of the FunctionDefinitionType that the
+ * loading dialog feeding the LoadUGXFileObservable be in the same class
+ * representation window as the FunctionDefinitions.
+ * 
  * @author mbreit
  */
 @TypeInfo(type = FunctionDefinition.class, input = true, output = false, style = "default")
@@ -260,15 +262,18 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         init();
         
         // register at the observable for ugx-file-loads if ugx_tag given
+        int objectID = this.getParentMethod().getParentObject().getObjectID();
+        int windowID = 0;
+        
         if (ugx_tag != null)
-            LoadUGXFileObservable.getInstance().addObserver(this, ugx_tag);
+            LoadUGXFileObservable.getInstance().addObserver(this, ugx_tag, objectID, windowID);
         
         // get an index from functionDefinitionObservable (array index)
         if (fct_tag != null)
-        {
-            int windowID = 0;
             arrayIndex = FunctionDefinitionObservable.getInstance().receiveArrayIndex(fct_tag, windowID);
-        }
+        
+        // update subset list
+        LoadUGXFileObservable.getInstance().notifyObserver(this, ugx_tag, objectID, windowID);
         
         //if (!getMainCanvas().isLoadingSession()) storeCustomParamData();
     }
@@ -281,7 +286,12 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
     @Override
     public void dispose()
     {
-        if (ugx_tag != null) LoadUGXFileObservable.getInstance().deleteObserver(this);
+        if (ugx_tag != null)
+        {
+            int objectID = this.getParentMethod().getParentObject().getObjectID();
+            int windowID = 0;
+            LoadUGXFileObservable.getInstance().deleteObserver(this, ugx_tag, objectID, windowID);
+        }
         
         if (fct_tag != null)
         {

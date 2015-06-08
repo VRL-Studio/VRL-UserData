@@ -207,7 +207,6 @@ public class LoadUGXFileObservable {
      * Removes an observer from this Observable. 
      * 
      * @param obs       the observer to remove
-     * @param ugx_tag       the ugx_tag
      */
     public synchronized void deleteObserver(LoadUGXFileObserver obs) {
 
