@@ -77,7 +77,7 @@ public class LoadUGXFileType extends TypeRepresentationBase {
         horizBox.add(input);
 
         // hide connector, since no external data allowed
-        setHideConnector(true);
+        //setHideConnector(true);
 
         // set to ugx ending only
         ArrayList<String> endings = new ArrayList<String>();

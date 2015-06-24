@@ -351,7 +351,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         else
         {
             subsetListModel.removeAllElements();
-            subsetListModel.addElement("-- no grid --");
+            subsetListModel.addElement("-- no grid --");   
         }
         internalAdjustment = mem_internalAdjustment;
         
@@ -366,11 +366,18 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         
         fctNameField.setText("");
             
-        if (fd == null || fd.getFctData().subsetList.isEmpty())
+        /*if (fd == null)// || fd.getFctData().subsetList.isEmpty())
         {
             subsetList.clearSelection();
         }
-        else   
+        // if no valid geometry given, keep selections in model
+        // (in case the geometry can be recovered later)
+        else )
+        {
+            subsetList.clearSelection();
+        }*/
+        // update avail. subsets list only if new geometry is valid
+        if (!(subsetListModel.size() == 1 && "-- no grid --".equals(subsetListModel.get(0))))
         {
             fctNameField.setText(fd.getFctData().fctName);
             

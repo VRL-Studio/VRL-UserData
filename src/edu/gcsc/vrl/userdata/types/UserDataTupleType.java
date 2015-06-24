@@ -325,7 +325,8 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
                     throw new RuntimeException("UserDataTupleType: invalid type identifier");
             }
 
-            if (nameCnt < nameArray.length && twoParts[0].charAt(i-1) != 'S') {
+            if (nameCnt < nameArray.length && (i==0 || twoParts[0].charAt(i-1) != 'S'))
+            {
                 newData.name = nameArray[nameCnt++].trim();
             }
             datas.add(newData);
@@ -399,7 +400,15 @@ public class UserDataTupleType extends TypeRepresentationBase implements Seriali
         {
             if (theData.category == UserDataModel.Category.DEPENDENT_SUBSET)
             {   
-                ((UserDependentSubsetView)theData.view).addAsObserver();
+                try
+                {
+                    ((UserDependentSubsetView)theData.view).addAsObserver();
+                }
+                catch (Exception ex)
+                {
+                    getMainCanvas().getMessageBox().addMessage("DependentSubsetView could not be created",
+                        ex.getMessage() + "\n", MessageType.ERROR);
+                }
                 break;
             }
         }

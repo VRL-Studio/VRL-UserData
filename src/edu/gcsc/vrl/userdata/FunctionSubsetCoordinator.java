@@ -182,7 +182,7 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
         
         // find first selected unknown index
         int first_sfi = 0;
-        while ("".equals(selFcts[first_sfi]) && first_sfi < selFcts.length) ++first_sfi;
+        while (first_sfi < selFcts.length && "".equals(selFcts[first_sfi])) ++first_sfi;
         
         // empty list if no function selected
         if (first_sfi == selFcts.length)
