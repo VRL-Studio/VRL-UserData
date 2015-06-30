@@ -102,9 +102,11 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
                 {
                     // construct selectedValuesList by hand since 
                     // getSelectedValuesList() depends on 1.7 and may raise an exception
-                    List<String> selSubsets = new ArrayList<String>();
+                    /*List<String> selSubsets = new ArrayList<String>();
                     for (int i: subsetList.getSelectedIndices()) selSubsets.add((String) subsetList.getModel().getElementAt(i));
                     fd.setFctData(new FunctionDefinitionObservable.FctData(fctNameField.getText(), selSubsets));
+                    */
+                    fd.getFctData().fctName = fctNameField.getText();
                     //storeCustomParamData();
                     notifyFunctionDefinitionObservable();
                 }
@@ -149,7 +151,8 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
                     // getSelectedValuesList() depends on 1.7 and may raise an exception
                     List<String> selSubsets = new ArrayList<String>();
                     for (int i: subsetList.getSelectedIndices()) selSubsets.add((String) subsetList.getModel().getElementAt(i));
-                    fd.setFctData(new FunctionDefinitionObservable.FctData(fctNameField.getText(), selSubsets));
+                    fd.getFctData().subsetList = selSubsets;
+                    
                     //storeCustomParamData();
                     notifyFunctionDefinitionObservable();
                 }
@@ -344,6 +347,12 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
                 throw new RuntimeException("UserSubsetModel: Passed data is not of required type UGXFileInfo.");
             
             subsetListModel.removeAllElements();
+            
+            if (((UGXFileInfo)info).const__num_grids() != 1)
+                throw new RuntimeException("UGX file must contain exactly one grid.");
+            
+            if (((UGXFileInfo)info).const__num_subset_handlers(0) < 1)
+                throw new RuntimeException("UGX file must contain at least one subset handler.");
             
             for (int i = 0; i < ((UGXFileInfo)info).const__num_subsets(0, 0); ++i)
                 subsetListModel.addElement(((UGXFileInfo)info).const__subset_name(0, 0, i));

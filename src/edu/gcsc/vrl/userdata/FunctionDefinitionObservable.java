@@ -176,7 +176,7 @@ public class FunctionDefinitionObservable
         
         // create a fctTagMap entry
         Integer index = new Integer(arrayIndexMap.get(id).getAndIncrement());        
-        fctTagMap.get(id).data.put(index, new FctData("",new ArrayList<String>()));
+        fctTagMap.get(id).data.put(index, new FctData());
         
         notifyObservers(fct_tag, windowID);
         
