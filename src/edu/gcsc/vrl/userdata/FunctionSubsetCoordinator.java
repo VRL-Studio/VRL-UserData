@@ -119,7 +119,7 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
         if (!couplingMap.containsKey(id)) couplingMap.put(id, new HashMap<Integer,FSCoupling>());
         
         // create a coupling entry
-        Integer index = new Integer(indexMap.get(id).getAndIncrement());
+        Integer index = indexMap.get(id).getAndIncrement();
         couplingMap.get(id).put(index, new FSCoupling());
         
         couplingMap.get(id).get(index).fObs = fObs;
@@ -132,7 +132,7 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
         List<String> fcts = FunctionDefinitionObservable.getInstance().requestFunctions(fct_tag, windowID);
         fObs.updateFunctions(fcts);
         
-        return index.intValue();
+        return index;
     }
     
     
@@ -147,7 +147,7 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
      */
     public synchronized void revokeKey(String fct_tag, int windowID, int key)
     {
-        Integer index = new Integer(key);
+        Integer index = key;
         Identifier id = new Identifier(fct_tag, windowID);
         
         // remove from couplingMap
@@ -238,7 +238,7 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
      * @param windowID  windowID the data is associated to
      */
     @Override
-    public void update(Collection<FunctionDefinitionObservable.FctData> data,
+    public void update(final Collection<FunctionDefinitionObservable.FctData> data,
                        String fct_tag, int windowID)
     {
         Identifier id = new Identifier(fct_tag, windowID);
@@ -248,12 +248,10 @@ public class FunctionSubsetCoordinator implements FunctionDefinitionObserver
         for (FunctionDefinitionObservable.FctData fctData: data)
             fcts.add(fctData.getFctName());
         
-        if (indexMap.containsKey(id))
+        if (couplingMap.containsKey(id))
         {
             for (FSCoupling fsc: couplingMap.get(id).values())
                 fsc.fObs.updateFunctions(fcts);
         }
-        
-        
     }
 }

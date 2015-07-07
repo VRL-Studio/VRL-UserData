@@ -268,12 +268,13 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         int objectID = this.getParentMethod().getParentObject().getObjectID();
         int windowID = 0;
         
-        if (ugx_tag != null)
-            LoadUGXFileObservable.getInstance().addObserver(this, ugx_tag, objectID, windowID);
-        
         // get an index from functionDefinitionObservable (array index)
+        // MUST be done before addObserver for ugx file
         if (fct_tag != null)
             arrayIndex = FunctionDefinitionObservable.getInstance().receiveArrayIndex(fct_tag, windowID);
+        
+        if (ugx_tag != null)
+            LoadUGXFileObservable.getInstance().addObserver(this, ugx_tag, objectID, windowID);
         
         // update subset list
         LoadUGXFileObservable.getInstance().notifyObserver(this, ugx_tag, objectID, windowID);

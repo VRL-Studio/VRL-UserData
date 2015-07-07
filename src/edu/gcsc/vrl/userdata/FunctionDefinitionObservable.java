@@ -175,10 +175,10 @@ public class FunctionDefinitionObservable
         if (!fctTagMap.containsKey(id)) fctTagMap.put(id, new FctTagData());
         
         // create a fctTagMap entry
-        Integer index = new Integer(arrayIndexMap.get(id).getAndIncrement());        
+        Integer index = arrayIndexMap.get(id).getAndIncrement();        
         fctTagMap.get(id).data.put(index, new FctData());
         
-        notifyObservers(fct_tag, windowID);
+        //notifyObservers(fct_tag, windowID);
         
         return index;
     }

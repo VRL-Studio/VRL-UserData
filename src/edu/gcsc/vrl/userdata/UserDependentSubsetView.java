@@ -3,7 +3,6 @@ package edu.gcsc.vrl.userdata;
 import edu.gcsc.vrl.userdata.UserDataModel.Status;
 import edu.gcsc.vrl.userdata.types.UserDataTupleType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
-import eu.mihosoft.vrl.system.VMessage;
 import eu.mihosoft.vrl.visual.VButton;
 import java.awt.Color;
 import java.awt.Component;
@@ -91,7 +90,7 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
                     if (fctSelection[j].getSelectedItem() != null && !internalAdjustment)
                     {
                         ((UserDependentSubsetModel)model).setSelectedFunction(
-                            j, (String) fctSelection[j].getSelectedItem(), fctSelection[j].getSelectedIndex());
+                            j, (String) fctSelection[j].getSelectedItem());
 
                         // update subset list accordingly
                         notifySubsetObserver();
@@ -251,43 +250,23 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
         
         for (int i=0; i<nFct; i++) fctSelection[i].removeAllItems();  
 
-        // delete empty string from list
-        /*if (fctList != null)
-        {
-            for (int i=0; i<fctList.size(); i++)
-                if (fctList.get(i).equals("")) fctList.remove(i);
-        }
-        */
         if (fctList != null && !fctList.isEmpty())
         {
             for (int i=0; i<nFct; i++)
             {
+                // add "" to the head of the combobox
+                fctSelection[i].addItem("");
+        
                 // add all fct items to combobox
                 for (String fct : fctList) fctSelection[i].addItem(fct);
 
                 if (model != null)
-                {
-                    try
-                    {
-                        fctSelection[i].setSelectedIndex(((UserDependentSubsetModel)model).getSelectedFunctionIndices()[i]);
-                    }
-                    // if one of the indices is out of bounds
-                    // (should not happen, as model is always updated beforehand
-                    // except when loading project)
-                    catch (java.lang.IllegalArgumentException ex)
-                    {
-                        VMessage.warning("Illegal Argument in UserDependentSubsetModel",
-                                        "The model holds a function index as selected which does not exist in the corresponding view"
-                                        + "(index is " + ((UserDependentSubsetModel)model).getSelectedFunctionIndices()[i]
-                                        + ", but only " + fctSelection[i].getItemCount()
-                                        + " item(s) in the view. "
-                                        + "This is an error, strictly-speaking. Please report it.");
-                    }
-                }
+                    fctSelection[i].setSelectedItem(((UserDependentSubsetModel)model).getSelectedFunction(i));
+                
                 // if nothing is selected
                 if (fctSelection[i].getSelectedItem() == null) 
                 {
-                    ((UserDependentSubsetModel)model).setSelectedFunction(i,((UserDependentSubsetModel)model).getSelectedFunction(i), -1);
+                    ((UserDependentSubsetModel)model).setSelectedFunction(i,((UserDependentSubsetModel)model).getSelectedFunction(i));
                     ((UserDependentSubsetModel)model).adjustSubsetData(null);
                     adjustSubsetView(null);
                     model.setStatus(UserDataModel.Status.INVALID);
@@ -441,9 +420,6 @@ public class UserDependentSubsetView extends UserDataView implements FunctionSub
     @Override
     public void updateFunctions(List<String> fctData)
     {
-        // add "" to the head of the list
-        fctData.add(0, "");
-        
         ((UserDependentSubsetModel)model).adjustFunctionData(fctData);
         adjustFunctionView(fctData);
     }

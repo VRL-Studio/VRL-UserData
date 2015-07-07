@@ -15,5 +15,5 @@ public interface FunctionDefinitionObserver
      * @param fct_tag   fct_tag the data is associated to
      * @param windowID  windowID the data is associated to
      */
-    public void update(Collection<FunctionDefinitionObservable.FctData> data, String fct_tag, int windowID);
+    public void update(final Collection<FunctionDefinitionObservable.FctData> data, String fct_tag, int windowID);
 }
