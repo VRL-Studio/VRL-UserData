@@ -185,7 +185,7 @@ public class UserNumberModel extends UserMathDataModel {
                 .append("().createUserDataCopy(")
                 .append(dim).append(",")
                 .append('"').append(inputType).append('"').append(",")
-                .append('"').append(code).append('"').append(",")
+                .append('"').append(VLangUtils.addEscapeCharsToCode(code)).append('"').append(",")
                 .append('"').append('"').append(",")
                 .append(data).append(" as Double")        
                 .append(")");

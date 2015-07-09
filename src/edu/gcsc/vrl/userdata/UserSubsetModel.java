@@ -102,7 +102,6 @@ public class UserSubsetModel extends UserDataModel {
                 .append(VLangUtils.addEscapesToCode(data))
                 .append('"');
 
-//        return VLangUtils.addEscapesToCode(sb.toString());
         return sb.toString();
     }
 }
