@@ -6,6 +6,7 @@ import edu.gcsc.vrl.userdata.FunctionDefinitionObservable;
 import edu.gcsc.vrl.userdata.LoadUGXFileObservable;
 import edu.gcsc.vrl.userdata.LoadUGXFileObserver;
 import eu.mihosoft.vrl.annotation.TypeInfo;
+import eu.mihosoft.vrl.lang.VLangUtils;
 import eu.mihosoft.vrl.reflection.LayoutType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.visual.VBoxLayout;
@@ -306,14 +307,6 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         super.dispose();
     }
     
-    /*
-    @Override
-    public String getValueAsCode()
-    {
-        // TODO this is only to prevent warnings that are irrelevant for lectures 2012 (this must be solved!!!)
-        return "null as " + getType().getName();
-    }
-    */
     
     protected void notifyFunctionDefinitionObservable()
     {
@@ -453,8 +446,34 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
     @Override
     public String getValueAsCode()
     {
-        // TODO: This is a stub. The real code will eventually have to be implemented!
-        return "null";
+        // type checked in getValue() method
+        FunctionDefinition fdv = (FunctionDefinition) getValue();
+        
+        if (fdv == null)
+            return "null";
+        
+        String fctName = fdv.getFctData().getFctName();
+        List<String> fdSubsetList = fdv.getFctData().getSubsetList();
+        
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("new edu.gcsc.vrl.userdata.FunctionDefinition(");
+        sb.append(  "new edu.gcsc.vrl.userdata.FunctionDefinitionObservable.FctData(\"");
+        sb.append(     VLangUtils.addEscapesToCode(fctName));
+        sb.append(     "\", ");
+        sb.append(     "java.util.Arrays.asList(");
+        
+        String subsets_string = "";
+        for (String ss : fdSubsetList)
+            subsets_string += ",\""+VLangUtils.addEscapesToCode(ss)+"\"";
+        subsets_string = subsets_string.substring(1);
+        
+        sb.append(subsets_string);
+        sb.append(    ")");
+        sb.append(  ")");
+        sb.append(")");
+        
+        return sb.toString();
     }
     
 }
