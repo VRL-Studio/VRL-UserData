@@ -457,8 +457,13 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         
         StringBuilder sb = new StringBuilder();
 
-        sb.append("new edu.gcsc.vrl.userdata.FunctionDefinition(");
-        sb.append(  "new edu.gcsc.vrl.userdata.FunctionDefinitionObservable.FctData(\"");
+        sb.append("new ")
+          .append(FunctionDefinition.class.getName())
+          .append("(");
+        sb.append(  "new ")
+          .append(  FunctionDefinitionObservable.FctData.class.getName())
+          .append(  "(");
+        sb.append(    "\"");
         sb.append(     VLangUtils.addEscapesToCode(fctName));
         sb.append(     "\", ");
         sb.append(     "java.util.Arrays.asList(");
@@ -466,7 +471,7 @@ public class FunctionDefinitionType extends TypeRepresentationBase implements Se
         String subsets_string = "";
         for (String ss : fdSubsetList)
             subsets_string += ",\""+VLangUtils.addEscapesToCode(ss)+"\"";
-        subsets_string = subsets_string.substring(1);
+        if (subsets_string.length() > 0) subsets_string = subsets_string.substring(1);
         
         sb.append(subsets_string);
         sb.append(    ")");
