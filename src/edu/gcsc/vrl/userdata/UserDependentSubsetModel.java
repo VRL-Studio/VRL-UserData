@@ -1,5 +1,6 @@
 package edu.gcsc.vrl.userdata;
 
+import eu.mihosoft.vrl.lang.VLangUtils;
 import java.io.Serializable;
 import java.util.List;
 
@@ -334,9 +335,40 @@ public class UserDependentSubsetModel extends UserDataModel
     @Override
     public String getModelAsCode()
     {
-        // TODO: This is a stub. Implement properly.
         StringBuilder sb = new StringBuilder();
         
+        sb.append("new ")
+          .append(FSDataType.class.getName())
+          .append("(");
+          
+        // String[] _selFct
+        sb.append("[");
+        String selFct_string = "";
+        for (String selFct : selections.selFct)
+            selFct_string += ",\"" + VLangUtils.addEscapesToCode(selFct) + "\"";
+        if (selFct_string.length() > 0) selFct_string = selFct_string.substring(1);
+        sb.append(selFct_string);
+        sb.append("] as String[], ");
+        
+        // String[] _selSs
+        sb.append("[");
+        String selSs_string = "";
+        for (String selSs : selections.selSs)
+            selSs_string += ",\"" + VLangUtils.addEscapesToCode(selSs) + "\"";
+        if (selSs_string.length() > 0) selSs_string = selSs_string.substring(1);
+        sb.append(selSs_string);
+        sb.append("] as String[], ");
+        
+        // int[] _selSsInd
+        sb.append("[");
+        String selSsi_string = "";
+        for (int selSs : selections.selSsInd)
+            selSsi_string += "," + selSs;
+        if (selSsi_string.length() > 0) selSsi_string = selSsi_string.substring(1);
+        sb.append(selSsi_string);
+        sb.append("] as int[]");
+        
+        sb.append(")");
         return sb.toString();
     }
     
