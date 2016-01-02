@@ -17,6 +17,11 @@ public class FunctionDefinition implements Serializable
         fctData = new FunctionDefinitionObservable.FctData();
     }
     
+    public FunctionDefinition(FunctionDefinitionObservable.FctData _fctData)
+    {
+        fctData = _fctData;
+    }
+    
     public FunctionDefinitionObservable.FctData getFctData()
     {
         return fctData;

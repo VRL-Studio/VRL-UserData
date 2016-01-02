@@ -28,13 +28,4 @@ public class FunctionDefinitionArrayType extends UserDataArrayBaseType
 
         if (value == null) invalidateValue();
     }
-    
-    @Override
-    public String getValueAsCode()
-    {
-        // TODO: This is a stub. The real code will eventually have to be implemented!
-        return "null";
-    }
-    
-    
 }

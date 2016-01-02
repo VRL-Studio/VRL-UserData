@@ -1,5 +1,6 @@
 package edu.gcsc.vrl.userdata;
 
+import eu.mihosoft.vrl.lang.VLangUtils;
 import java.io.Serializable;
 import java.util.List;
 
@@ -18,16 +19,13 @@ public class UserDependentSubsetModel extends UserDataModel
     public UserDependentSubsetModel(int nFct)
     {
         String[] selectedFunctions = new String[nFct];
-        int[] selectedFunctionIndices = new int[nFct];
         for (int i=0; i<nFct; i++)
-        {
             selectedFunctions[i] = "";
-            selectedFunctionIndices[i] = 0;
-        }
+        
         String[] selectedSubsets = new String[]{};
         int[] selectedSubsetIndices = new int[]{};
         
-        this.selections = new FSDataType(selectedFunctions, selectedFunctionIndices,
+        this.selections = new FSDataType(selectedFunctions,
                               selectedSubsets, selectedSubsetIndices);
         this.nFct = nFct;
     }
@@ -40,25 +38,19 @@ public class UserDependentSubsetModel extends UserDataModel
         // make class conform to javabeans standard (necessary for xml export)
         public FSDataType() {}
         
-        public FSDataType(String[] _selFct, int[] _selFctInd,
-                          String[] _selSs, int[] _selSsInd)
+        public FSDataType(String[] _selFct, String[] _selSs, int[] _selSsInd)
         {
             selFct = _selFct;
-            selFctInd = _selFctInd;
             selSs = _selSs;
             selSsInd = _selSsInd;
         }
         
         String[] selFct;
-        int[] selFctInd;
         String[] selSs;
         int[] selSsInd;
 
         public String[] getSelFct() {return selFct;}
         public void setSelFct(String[] selFct) {this.selFct = selFct;}
-
-        public int[] getSelFctInd() {return selFctInd;}
-        public void setSelFctInd(int[] selFctInd) {this.selFctInd = selFctInd;}
 
         public String[] getSelSs() {return selSs;}
         public void setSelSs(String[] selSs) {this.selSs = selSs;}
@@ -107,14 +99,6 @@ public class UserDependentSubsetModel extends UserDataModel
         return selections.getSelFct();
     }
     
-    /**
-     * @return  selected function indices
-     */
-    public int[] getSelectedFunctionIndices()
-    {
-        return selections.getSelFctInd();
-    }
-    
     
     /**
      * @param arrayIndex index of function selector in JComboBox array    
@@ -129,12 +113,10 @@ public class UserDependentSubsetModel extends UserDataModel
     /**
      * Set information about selected function.
      * @param fctNames   function names as array of string
-     * @param fctIndices   function index in definition
      */
-    public void setSelectedFunctions(String[] fctNames, int[] fctIndices)
+    public void setSelectedFunctions(String[] fctNames)
     {
          selections.setSelFct(fctNames);
-         selections.setSelFctInd(fctIndices);
          
          if (fctNames == null) return;
          if (fctNames.length != nFct)
@@ -153,12 +135,10 @@ public class UserDependentSubsetModel extends UserDataModel
      * Set information about selected function.
      * @param arrayIndex index of function selector in JComboBox array
      * @param fctName    function name as string
-     * @param fctIndex   index of fctName in definition
      */
-    public void setSelectedFunction(int arrayIndex, String fctName, int fctIndex)
+    public void setSelectedFunction(int arrayIndex, String fctName)
     {
          selections.getSelFct()[arrayIndex] = fctName;
-         selections.getSelFctInd()[arrayIndex] = fctIndex;
          
          if (fctName == null) return;
          
@@ -245,39 +225,20 @@ public class UserDependentSubsetModel extends UserDataModel
         // selected functions; if that is the case, adjust selected indices and
         // do not change status
         boolean allFunctionsPresent = true;
-        int[] newFctSelInd;
-        newFctSelInd = selections.getSelFctInd();
-        for (int i=0; i<selections.getSelFct().length; i++)
+        for (String selFct : selections.getSelFct())
         {
-            String selFct = selections.getSelFct()[i];
-            // no sense looking for non-selected functions
-            // (I guess this special case can be neglected as the 0-th entry
-            // in the fct list is always "")
-            /*if (selFct.equals(""))
-            {
-                allFunctionsPresent = false;
-                newFctSelInd[i] = 0;
-                continue;
-            }*/
             boolean fctPresent = false;
-            for (int j=0; j<fctList.size(); j++)
+            for (String fct : fctList)
             {
-                String fct = fctList.get(j);
                 if (fct.equals(selFct))
                 {
                     fctPresent = true;
-                    newFctSelInd[i] = j;
                     break;
                 }
             }
             if (!fctPresent)
-            {
                 allFunctionsPresent = false;
-                newFctSelInd[i] = -1;
-            }
         }
-        
-        selections.setSelFctInd(newFctSelInd);
             
         if (allFunctionsPresent) setStatus(Status.VALID);
         else setStatus(Status.INVALID);
@@ -374,9 +335,40 @@ public class UserDependentSubsetModel extends UserDataModel
     @Override
     public String getModelAsCode()
     {
-        // TODO: This is a stub. Implement properly.
         StringBuilder sb = new StringBuilder();
         
+        sb.append("new ")
+          .append(FSDataType.class.getName())
+          .append("(");
+          
+        // String[] _selFct
+        sb.append("[");
+        String selFct_string = "";
+        for (String selFct : selections.selFct)
+            selFct_string += ",\"" + VLangUtils.addEscapesToCode(selFct) + "\"";
+        if (selFct_string.length() > 0) selFct_string = selFct_string.substring(1);
+        sb.append(selFct_string);
+        sb.append("] as String[], ");
+        
+        // String[] _selSs
+        sb.append("[");
+        String selSs_string = "";
+        for (String selSs : selections.selSs)
+            selSs_string += ",\"" + VLangUtils.addEscapesToCode(selSs) + "\"";
+        if (selSs_string.length() > 0) selSs_string = selSs_string.substring(1);
+        sb.append(selSs_string);
+        sb.append("] as String[], ");
+        
+        // int[] _selSsInd
+        sb.append("[");
+        String selSsi_string = "";
+        for (int selSs : selections.selSsInd)
+            selSsi_string += "," + selSs;
+        if (selSsi_string.length() > 0) selSsi_string = selSsi_string.substring(1);
+        sb.append(selSsi_string);
+        sb.append("] as int[]");
+        
+        sb.append(")");
         return sb.toString();
     }
     
