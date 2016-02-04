@@ -295,15 +295,21 @@ public class UserDependentSubsetModel extends UserDataModel
             //selections.setSelSs(new String[]{ssList.get(0)});
             int[] newSelSsIndices = new int[selssi];
             System.arraycopy(ssiList, 0, newSelSsIndices, 0, selssi);
-            
             selections.setSelSsInd(newSelSsIndices);
+            
+            String[] newSelSsNames = new String[selssi];
+            for (int i = 0; i < selssi; ++i)
+                newSelSsNames[i] = ssList.get(newSelSsIndices[i]);
+            selections.setSelSs(newSelSsNames);
             
             if (!(getStatus() == Status.INVALID)) setStatus(Status.WARNING);
         }
         // or select nothing at all
         else
         {
-            
+            // Do NOT erase selected subset NAMES, only indices!
+            // This allows to load a project and retain selection info
+            // even if geometry is not yet selected.
             //selections.setSelSs(new String[]{});                
             selections.setSelSsInd(new int[]{});
             

@@ -75,7 +75,7 @@ public class UserSubsetModel extends UserDataModel {
             else {
                 data = "";
             }
-            setStatus(Status.WARNING);
+            setStatus(Status.INVALID);
         } else {
             setStatus(Status.INVALID);
         }
