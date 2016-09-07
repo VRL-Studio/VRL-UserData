@@ -79,11 +79,13 @@
     
     <target name="-post-jar">
 
-        <echo message="Copying ${dist.jar} to ${vrl.dir}/plugin-updates"/>
+        <!--<echo message="Copying ${dist.jar} to ${vrl.dir}/plugin-updates"/>-->
 
+        <!--
         <copy 
         file="${dist.jar}" 
         todir="${vrl.dir}/plugin-updates"/>
+        -->
         
     </target>
     
